@@ -1,0 +1,92 @@
+{
+	"common": {
+		"name": "time-switch",
+		"version": "0.0.1",
+		"news": {
+			"0.0.1": {
+				"en": "initial release",
+				"de": "Erstveröffentlichung",
+				"ru": "Начальная версия",
+				"pt": "lançamento inicial",
+				"nl": "Eerste uitgave",
+				"fr": "Première version",
+				"it": "Versione iniziale",
+				"es": "Versión inicial",
+				"pl": "Pierwsze wydanie",
+				"zh-cn": "首次出版"
+			}
+		},
+		"title": "time-switch",
+		"titleLang": {
+			"en": "time-switch",
+			"de": "Zeitschaltuhr",
+			"ru": "реле времени",
+			"pt": "mudança de tempo",
+			"nl": "tijdschakelaar",
+			"fr": "interrupteur horaire",
+			"it": "tempo-interruttore",
+			"es": "interruptor de tiempo",
+			"pl": "zmiana czasu",
+			"zh-cn": "定时开关"
+		},
+		"desc": {
+			"en": "Time based switching of devices",
+			"de": "Zeitbasiertes Schalten von Geräten",
+			"ru": "Переключение устройств по времени",
+			"pt": "Troca de dispositivos com base no tempo",
+			"nl": "Tijdgebaseerd schakelen van apparaten",
+			"fr": "Commutation temporelle des appareils",
+			"it": "Commutazione dei dispositivi basata sul tempo",
+			"es": "Cambio de dispositivos basado en el tiempo",
+			"pl": "Czasowe przełączanie urządzeń",
+			"zh-cn": "基于时间的设备切换"
+		},
+		"authors": ["walli545 <walli5446@gmail.com>"],
+		"keywords": ["ioBroker", "template", "Smart Home", "home automation"],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "build/main.js",
+		"icon": "time-switch.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/walli545/ioBroker.time-switch/master/admin/time-switch.png",
+		"readme": "https://github.com/walli545/ioBroker.time-switch/blob/master/README.md",
+		"loglevel": "info",
+		"restartAdapters": ["vis"],
+		"localLink": "%web_protocol%://%ip%:%web_port%/vis/edit.html",
+		"mode": "daemon",
+		"type": "logic",
+		"compact": true,
+		"materialize": true,
+		"materializeTab": true,
+		"adminTab": {
+			"singleton": true,
+			"name": {
+				"en": "time-switch",
+				"de": "Zeitschaltuhr",
+				"ru": "реле времени",
+				"pt": "mudança de tempo",
+				"nl": "tijdschakelaar",
+				"fr": "interrupteur horaire",
+				"it": "tempo-interruttore",
+				"es": "interruptor de tiempo",
+				"pl": "zmiana czasu",
+				"zh-cn": "定时开关"
+			},
+			"link": "",
+			"fa-icon": "info"
+		},
+		"supportCustoms": true,
+		"dependencies": [
+			{
+				"js-controller": ">=1.4.2"
+			},
+			"vis"
+		]
+	},
+	"native": {
+		"option1": true,
+		"option2": "42"
+	},
+	"objects": [],
+	"instanceObjects": []
+}
