@@ -1,0 +1,16 @@
+export enum AstroTime {
+	Sunrise = 'sunrise',
+	SunriseEnd = 'sunriseEnd',
+	GoldenHourEnd = 'goldenHourEnd',
+	SolarNoon = 'solarNoon',
+	GoldenHour = 'goldenHour',
+	SunsetStart = 'sunsetStart',
+	Sunset = 'sunset',
+	Dusk = 'dusk',
+	NauticalDusk = 'nauticalDusk',
+	Night = 'night',
+	NightEnd = 'nightEnd',
+	NauticalDawn = 'nauticalDawn',
+	Dawn = 'dawn',
+	Nadir = 'nadir',
+}
