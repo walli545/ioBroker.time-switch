@@ -7,6 +7,8 @@
 */
 'use strict';
 
+import {TobiTest} from "./Tesclass.js";
+
 // add translations for edit mode
 $.get('adapter/time-switch/words.js', function(script) {
 	let translation = script.substring(script.indexOf('{'), script.length);
@@ -14,41 +16,87 @@ $.get('adapter/time-switch/words.js', function(script) {
 	$.extend(systemDictionary, JSON.parse(translation));
 });
 
-// this code can be placed directly in time-switch.html
+// export vis binds for widget
 vis.binds['time-switch'] = {
 	version: '0.0.1',
-	showVersion: function() {
-		if (vis.binds['time-switch'].version) {
-			console.log('Version time-switch: ' + vis.binds['time-switch'].version);
-			vis.binds['time-switch'].version = null;
-		}
-	},
-	createWidget: function(widgetID, view, data, style) {
-		var $div = $('#' + widgetID);
-		// if nothing found => wait
-		if (!$div.length) {
-			return setTimeout(function() {
-				vis.binds['time-switch'].createWidget(widgetID, view, data, style);
-			}, 100);
-		}
-
-		var text = '';
-		text += 'OID: ' + data.oid + '</div><br>';
-		text += 'OID value: <span class="myset-value">' + vis.states[data.oid + '.val'] + '</span><br>';
-		text += 'Color: <span style="color: ' + data.myColor + '">' + data.myColor + '</span><br>';
-		text += 'extraAttr: ' + data.extraAttr + '<br>';
-		text += 'Browser instance: ' + vis.instance + '<br>';
-		text += 'htmlText: <textarea readonly style="width:100%">' + (data.htmlText || '') + '</textarea><br>';
-
-		$('#' + widgetID).html(text);
-
-		// subscribe on updates of value
-		if (data.oid) {
-			vis.states.bind(data.oid + '.val', function(e, newVal, oldVal) {
-				$div.find('.time-switch-value').html(newVal);
-			});
-		}
-	},
+	showVersion: showVersion,
+	createWidget: createWidget,
+	actionsByWidgetId: new can.List([]),
 };
-
 vis.binds['time-switch'].showVersion();
+
+let deviceId = null;
+let actions = [];
+let stateId = null;
+let stateValue = null;
+let stateType = null;
+let dataRef = null;
+
+function showVersion() {
+	if (vis.binds['time-switch'].version) {
+		console.log('Version time-switch: ' + vis.binds['time-switch'].version);
+	}
+}
+
+function createWidget(widgetID, view, data, style) {
+	console.debug(`Create widget ${widgetID}`);
+	const widgetElement = document.querySelector(`#${widgetID}`);
+	if (!widgetElement) {
+		console.warn('Widget not found, waiting ...');
+		return setTimeout(function() {
+			vis.binds['time-switch'].createWidget(widgetID, view, data, style);
+		}, 100);
+	}
+
+	if(!data.oid) {
+		console.error('Oid not set');
+		return;
+	}
+	dataRef = data;
+	deviceId = data.oid;
+	getInitialData();
+	subscribeToChanges();
+	// vis.conn.getStates(data.oid + '.id', (c, b) => {
+	// 	console.log('got state ');
+	// 	console.log(b[data.oid + '.id']);
+	// 	vis.states.bind(b[data.oid + '.id'].val + '.val', function(e, newVal, oldVal) {
+	// 		console.log('val change: ' + newVal);
+	// 	});
+	// });
+}
+
+function getInitialData() {
+	vis.conn.getStates([
+		`${deviceId}.id`,
+		`${deviceId}.actions`
+	], (_, states) => {
+		stateId = states[`${deviceId}.id`].val;
+		actions = JSON.parse(states[`${deviceId}.actions`].val);
+		dataRef.attr('stateId', stateId);
+		actions.forEach(a => vis.binds['time-switch'].actions.push(a));
+		console.log('Initial stateId: ' + stateId);
+		console.log('Initial actions: ' + actions);
+	});
+}
+
+function subscribeToChanges() {
+	vis.states.bind(`${deviceId}.actions.val`, function(e, newVal, oldVal) {
+		console.log('actions change');
+		actions = JSON.parse(newVal);
+		clearActions();
+		actions.forEach(a => vis.binds['time-switch'].actions.push(a));
+		dataRef.attr('actions', actions);
+	});
+	vis.states.bind(`${deviceId}.id.val`, function(e, newVal, oldVal) {
+		console.log('id change: ' + newVal);
+		stateId = newVal;
+		dataRef.attr('stateId', stateId);
+	});
+}
+
+function clearActions() {
+	const length = vis.binds['time-switch'].actions.attr("length");
+	for (let i = 0; i < length; i++) {
+		vis.binds['time-switch'].actions.pop();
+	}
+}
