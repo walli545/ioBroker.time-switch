@@ -7,7 +7,7 @@
 */
 'use strict';
 
-import {TobiTest} from "./Tesclass.js";
+import {Schedule} from "./Schedule.js";
 
 // add translations for edit mode
 $.get('adapter/time-switch/words.js', function(script) {
@@ -21,16 +21,10 @@ vis.binds['time-switch'] = {
 	version: '0.0.1',
 	showVersion: showVersion,
 	createWidget: createWidget,
-	actionsByWidgetId: new can.List([]),
+	scheduleByWidgetId: new Map(),
 };
 vis.binds['time-switch'].showVersion();
 
-let deviceId = null;
-let actions = [];
-let stateId = null;
-let stateValue = null;
-let stateType = null;
-let dataRef = null;
 
 function showVersion() {
 	if (vis.binds['time-switch'].version) {
@@ -38,13 +32,13 @@ function showVersion() {
 	}
 }
 
-function createWidget(widgetID, view, data, style) {
-	console.debug(`Create widget ${widgetID}`);
-	const widgetElement = document.querySelector(`#${widgetID}`);
+function createWidget(widgetId, view, data, style) {
+	console.debug(`Create widget ${widgetId}`);
+	const widgetElement = document.querySelector(`#${widgetId}`);
 	if (!widgetElement) {
 		console.warn('Widget not found, waiting ...');
 		return setTimeout(function() {
-			vis.binds['time-switch'].createWidget(widgetID, view, data, style);
+			vis.binds['time-switch'].createWidget(widgetId, view, data, style);
 		}, 100);
 	}
 
@@ -52,51 +46,78 @@ function createWidget(widgetID, view, data, style) {
 		console.error('Oid not set');
 		return;
 	}
-	dataRef = data;
-	deviceId = data.oid;
-	getInitialData();
-	subscribeToChanges();
-	// vis.conn.getStates(data.oid + '.id', (c, b) => {
-	// 	console.log('got state ');
-	// 	console.log(b[data.oid + '.id']);
-	// 	vis.states.bind(b[data.oid + '.id'].val + '.val', function(e, newVal, oldVal) {
-	// 		console.log('val change: ' + newVal);
-	// 	});
-	// });
+	const deviceId = data.oid;
+	const schedule = {
+		widgetId: widgetId,
+    	deviceId: deviceId,
+        stateId: null,
+        actions: []
+	};
+	console.log(schedule);
+	console.log(vis.binds['time-switch'].scheduleByWidgetId);
+    vis.binds['time-switch'].scheduleByWidgetId.set(widgetId, schedule)
+	getInitialData(schedule);
+	subscribeToChanges(schedule);
 }
 
-function getInitialData() {
+function extractDeviceName(deviceId) {
+	const indexOfLastDot = deviceId.lastIndexOf('.');
+	return deviceId.substr(indexOfLastDot + 1);
+}
+
+function getInitialData(schedule) {
+	if(vis.conn.gettingStates && vis.conn.gettingStates > 0) {
+		console.log('wait for getting of states (from ' + schedule.deviceId + ')');
+		return setTimeout(function() {
+			getInitialData(schedule);
+		}, 100);
+	}
+
 	vis.conn.getStates([
-		`${deviceId}.id`,
-		`${deviceId}.actions`
+		`${schedule.deviceId}.id`,
+		`${schedule.deviceId}.actions`
 	], (_, states) => {
-		stateId = states[`${deviceId}.id`].val;
-		actions = JSON.parse(states[`${deviceId}.actions`].val);
-		dataRef.attr('stateId', stateId);
-		actions.forEach(a => vis.binds['time-switch'].actions.push(a));
-		console.log('Initial stateId: ' + stateId);
-		console.log('Initial actions: ' + actions);
+		console.group('getInitial Data');
+		console.log(states);
+		console.log(schedule.deviceId);
+		console.groupEnd();
+		schedule.stateId = states[`${schedule.deviceId}.id`].val;
+		const actions = JSON.parse(states[`${schedule.deviceId}.actions`].val);
+		actions.forEach(a => {
+			schedule.actions.push(a)
+			const actionListElement = document.createElement('li');
+			actionListElement.textContent = a.text;
+			document.querySelector(`#${schedule.widgetId} .actions`).appendChild(actionListElement);
+		});
+		console.log('Initial schedule: ');
+		console.log(schedule);
+		document.querySelector(`#${schedule.widgetId} .state-id`).textContent = schedule.stateId;
 	});
 }
 
-function subscribeToChanges() {
-	vis.states.bind(`${deviceId}.actions.val`, function(e, newVal, oldVal) {
+function subscribeToChanges(schedule) {
+	vis.states.bind(`${schedule.deviceId}.actions.val`, function(e, newVal, oldVal) {
 		console.log('actions change');
-		actions = JSON.parse(newVal);
-		clearActions();
-		actions.forEach(a => vis.binds['time-switch'].actions.push(a));
-		dataRef.attr('actions', actions);
+		clearActions(schedule);
+		const actions = JSON.parse(newVal);
+		actions.forEach(a => {
+			schedule.actions.push(a);
+			const actionListElement = document.createElement('li');
+			actionListElement.textContent = a.text;
+			document.querySelector(`#${schedule.widgetId} .actions`).appendChild(actionListElement);
+		});
 	});
-	vis.states.bind(`${deviceId}.id.val`, function(e, newVal, oldVal) {
+	vis.states.bind(`${schedule.deviceId}.id.val`, function(e, newVal, oldVal) {
 		console.log('id change: ' + newVal);
-		stateId = newVal;
-		dataRef.attr('stateId', stateId);
+        schedule.stateId = newVal;
+		document.querySelector(`#${schedule.widgetId} .state-id`).textContent = schedule.stateId;
 	});
 }
 
-function clearActions() {
-	const length = vis.binds['time-switch'].actions.attr("length");
-	for (let i = 0; i < length; i++) {
-		vis.binds['time-switch'].actions.pop();
+function clearActions(schedule) {
+    schedule.actions = [];
+	const actionContainer = document.querySelector(`#${schedule.widgetId} .actions`);
+	while (actionContainer.firstChild) {
+		actionContainer.removeChild(actionContainer.firstChild);
 	}
 }

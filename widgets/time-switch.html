@@ -113,19 +113,19 @@
 		data-vis-set="time-switch"
 		data-vis-type="ctrl"
 		data-vis-name="Device plan">
-	<% console.log(vis.binds); vis.binds['time-switch'].createWidget(this.data.wid, this.view, this.data, this.style); %>
+	<% vis.binds['time-switch'].createWidget(this.data.wid, this.view, this.data, this.style); %>
 	<div style="width:230px; height:210px;" id="<%= this.data.attr('wid') %>">
 		<h1>StateId:</h1>
-		<p><%= this.data.attr('stateId') %></p>
+		<p class="state-id"></p>
 		<h1>Actions:</h1>
-		<ul>
-        	<% vis.binds['time-switch'].actions.each(function(e) { %>
-        		<li><%= e.text %></li>
-        	<% }); %>
+		<ul class="actions">
     	</ul>
 	</div>
 </script>
 
+<!--        	<% vis.binds['time-switch'].scheduleByWidgetId.attr(this.data.attr('oid')).attr('actions').each(function(e) { %>-->
+<!--        		<li><%= e.text %></li>-->
+<!--        	<% }); %>-->
 <!--		<p>StateId: <%= vis.binds['time-switch'].device.attr('stateId') %> </p>-->
 <!--<script id="tplTime-switchHelper"
 		type="text/ejs"
