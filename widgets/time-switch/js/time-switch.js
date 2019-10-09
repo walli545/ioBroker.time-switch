@@ -22,6 +22,7 @@ vis.binds['time-switch'] = {
 	showVersion: showVersion,
 	createWidget: createWidget,
 	scheduleWidgets: [],
+	onDataIdChange: onDataIdChange,
 };
 vis.binds['time-switch'].showVersion();
 
@@ -53,6 +54,12 @@ function createWidget(widgetId, view, data, style) {
 	vis.binds['time-switch'].scheduleWidgets.push(widget);
 }
 
+function onDataIdChange(widgetId, view, newId, attr, isCss, oldId) {
+	console.log(`onDataIdChange ${widgetId} ${view} ${newId} ${oldId}`);
+	vis.views[view].widgets[widgetId].data.oid1 = newId + '.actions';
+	vis.views[view].widgets[widgetId].data.oid2 = newId + '.id';
+}
+
 function onDeleteAction(widget, actionId) {
     console.log('delete action' + actionId);
     const currentActions = widget.scheduledActions;
@@ -63,22 +70,6 @@ function onDeleteAction(widget, actionId) {
 function getInitialData(widget) {
 	widget.setSwitchedStateId(vis.states[`${widget.scheduleDataId}.id.val`]);
 	widget.setScheduledActions(JSON.parse(vis.states[`${widget.scheduleDataId}.actions.val`]));
-	// if(vis.conn.gettingStates && vis.conn.gettingStates > 0) {
-	// 	console.log('wait for getting of states (from ' + widget.scheduleDataId + ')');
-	// 	return setTimeout(function() {
-	// 		getInitialData(widget);
-	// 	}, 100);
-	// }
-	//
-	// vis.conn.getStates([
-	// 	`${widget.scheduleDataId}.id`,
-	// 	`${widget.scheduleDataId}.actions`
-	// ], (_, states) => {
-	// 	widget.setSwitchedStateId(states[`${widget.scheduleDataId}.id`].val);
-	// 	widget.setScheduledActions(JSON.parse(states[`${widget.scheduleDataId}.actions`].val));
-	// 	console.log('Initial widget data: ');
-	// 	console.log(widget);
-	// });
 }
 
 function subscribeToChanges(widget) {
