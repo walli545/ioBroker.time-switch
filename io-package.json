@@ -54,7 +54,7 @@
 		"restartAdapters": ["vis"],
 		"localLink": "%web_protocol%://%ip%:%web_port%/vis/edit.html",
 		"mode": "daemon",
-		"type": "logic",
+		"type": "date-and-time",
 		"compact": true,
 		"materialize": true,
 		"materializeTab": true,
