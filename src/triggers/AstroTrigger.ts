@@ -28,8 +28,4 @@ export class AstroTrigger extends BaseTrigger {
 	public getShiftInMinutes(): number {
 		return this.shiftInMinutes;
 	}
-
-	public getSchedule(): any {
-		return { astro: this.astroTime, shift: this.shiftInMinutes };
-	}
 }

@@ -75,13 +75,4 @@ describe('AstroTrigger', () => {
 			expect(AstroTrigger.MAX_SHIFT).to.equal(600);
 		});
 	});
-
-	describe('schedule', () => {
-		it('contains astro and shift', () => {
-			const sut = new AstroTrigger(AstroTime.Sunrise, 42, [Weekday.Monday]);
-			const have = sut.getSchedule();
-			expect(have.astro).to.equal(AstroTime.Sunrise);
-			expect(have.shift).to.equal(42);
-		});
-	});
 });

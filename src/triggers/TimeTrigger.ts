@@ -24,8 +24,4 @@ export class TimeTrigger extends BaseTrigger {
 	public getMinutes(): number {
 		return this.minutes;
 	}
-
-	public getSchedule(): any {
-		return { time: { hour: this.getHours(), minute: this.getMinutes() } };
-	}
 }

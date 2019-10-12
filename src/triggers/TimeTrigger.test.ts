@@ -71,13 +71,4 @@ describe('TimeTrigger', () => {
 			expect(have.getWeekdays().length).to.equal(3);
 		});
 	});
-
-	describe('schedule', () => {
-		it('contains hours and minutes', () => {
-			const sut = new TimeTrigger(14, 23, [Weekday.Monday]);
-			const have = sut.getSchedule();
-			expect(have.time.hour).to.equal(14);
-			expect(have.time.minute).to.equal(23);
-		});
-	});
 });

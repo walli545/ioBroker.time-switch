@@ -9,8 +9,6 @@ export abstract class BaseTrigger implements Trigger {
 		this.weekdays = weekdays;
 	}
 
-	public abstract getSchedule(): any;
-
 	public getWeekdays(): Weekday[] {
 		return this.weekdays;
 	}
