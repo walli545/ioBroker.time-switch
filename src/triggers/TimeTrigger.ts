@@ -17,11 +17,11 @@ export class TimeTrigger extends BaseTrigger {
 		this.minutes = minutes;
 	}
 
-	public getHours(): number {
+	public getHour(): number {
 		return this.hours;
 	}
 
-	public getMinutes(): number {
+	public getMinute(): number {
 		return this.minutes;
 	}
 }
