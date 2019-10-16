@@ -5,16 +5,16 @@ export class TimeTrigger extends BaseTrigger {
 	private readonly hours: number;
 	private readonly minutes: number;
 
-	constructor(hours: number, minutes: number, weekdays: Weekday[]) {
+	constructor(hour: number, minute: number, weekdays: Weekday[]) {
 		super(weekdays);
-		if (hours < 0 || hours > 23) {
-			throw new Error('Hours must be in range 0-23.');
+		if (hour == undefined || hour < 0 || hour > 23) {
+			throw new Error('Hour must be in range 0-23.');
 		}
-		if (minutes < 0 || minutes > 59) {
-			throw new Error('Minutes must be in range 0-59.');
+		if (minute == undefined || minute < 0 || minute > 59) {
+			throw new Error('Minute must be in range 0-59.');
 		}
-		this.hours = hours;
-		this.minutes = minutes;
+		this.hours = hour;
+		this.minutes = minute;
 	}
 
 	public getHour(): number {

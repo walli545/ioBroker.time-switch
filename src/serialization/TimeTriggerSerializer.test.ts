@@ -57,5 +57,33 @@ describe('TimeTriggerSerializer', () => {
 			// @ts-ignore
 			expect(() => sut.deserialize(serialized)).to.throw();
 		});
+
+		it('throws when property type is missing', () => {
+			const sut = new TimeTriggerSerializer();
+			const serialized = `{"minute": 12, "hour": 10, "weekdays": [1]}`;
+			// @ts-ignore
+			expect(() => sut.deserialize(serialized)).to.throw();
+		});
+
+		it('throws when property hour is missing', () => {
+			const sut = new TimeTriggerSerializer();
+			const serialized = `{"type": "${TimeTriggerSerializer.TYPE}", "minute": 57, "weekdays": [3, 5, 4]}`;
+			// @ts-ignore
+			expect(() => sut.deserialize(serialized)).to.throw();
+		});
+
+		it('throws when property minute is missing', () => {
+			const sut = new TimeTriggerSerializer();
+			const serialized = `{"type": "${TimeTriggerSerializer.TYPE}", "hour": 10, weekdays": [3, 5, 4]}`;
+			// @ts-ignore
+			expect(() => sut.deserialize(serialized)).to.throw();
+		});
+
+		it('throws when property weekdays is missing', () => {
+			const sut = new TimeTriggerSerializer();
+			const serialized = `{"type": "${TimeTriggerSerializer.TYPE}", "minute": 12, "hour": 10}`;
+			// @ts-ignore
+			expect(() => sut.deserialize(serialized)).to.throw();
+		});
 	});
 });

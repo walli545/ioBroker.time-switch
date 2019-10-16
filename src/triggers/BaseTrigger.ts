@@ -14,8 +14,8 @@ export abstract class BaseTrigger implements Trigger {
 	}
 
 	private checkWeekdays(weekdays: Weekday[]) {
-		if (weekdays == null) {
-			throw new Error('Weekdays may not be null.');
+		if (weekdays == null || weekdays == undefined) {
+			throw new Error('Weekdays may not be null or undefined.');
 		}
 		if (weekdays.length <= 0 || weekdays.length > 7) {
 			throw new Error('Weekdays length must be in range 1-7.');
