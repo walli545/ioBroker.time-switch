@@ -76,6 +76,20 @@ describe('SetStateValueActionSerializer', () => {
 			expect(json.valueType).to.equal('number');
 			expect(json.trigger).to.equal(new TimeTriggerSerializer().serialize(trigger));
 		});
+
+		it('should serialize boolean action with TimeTrigger', () => {
+			const sut = new SetStateValueActionSerializer(stateService.object);
+			const trigger = new TimeTrigger(12, 30, [0]);
+			const action = new SetStateValueAction<boolean>('02', trigger, 'state.0.to.set', true, stateService.object);
+			const serialized = sut.serialize(action);
+			const json = JSON.parse(serialized);
+			expect(json.type).to.equal(SetStateValueActionSerializer.TYPE);
+			expect(json.id).to.equal('02');
+			expect(json.idOfStateToSet).to.equal('state.0.to.set');
+			expect(json.valueToSet).to.equal(true);
+			expect(json.valueType).to.equal('boolean');
+			expect(json.trigger).to.equal(new TimeTriggerSerializer().serialize(trigger));
+		});
 	});
 
 	describe('deserialize', () => {
@@ -161,6 +175,20 @@ describe('SetStateValueActionSerializer', () => {
 			expect(deserialized.getIdOfStateToSet()).to.equal('id.of.state');
 			expect(deserialized.getValueToSet()).to.equal(1);
 			expect(typeof deserialized.getValueToSet()).to.equal('number');
+		});
+
+		it('should deserialize boolean action with TimeTrigger', () => {
+			const sut = new SetStateValueActionSerializer(stateService.object);
+			const trigger = new TimeTrigger(12, 30, [0]);
+			const serialized =
+				`{"type": "${SetStateValueActionSerializer.TYPE}",` +
+				`"trigger": ${new TimeTriggerSerializer().serialize(trigger)},` +
+				`"id": "05", "idOfStateToSet": "id.of.state", "valueToSet": true, "valueType": "boolean"}`;
+			const deserialized = sut.deserialize(serialized);
+			expect(deserialized.getId()).to.equal('05');
+			expect(deserialized.getIdOfStateToSet()).to.equal('id.of.state');
+			expect(deserialized.getValueToSet()).to.equal(true);
+			expect(typeof deserialized.getValueToSet()).to.equal('boolean');
 		});
 
 		it('should set value on execute', () => {

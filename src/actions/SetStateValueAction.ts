@@ -2,7 +2,7 @@ import { Trigger } from '../triggers/Trigger';
 import { Action } from './Action';
 import { StateService } from '../services/StateService';
 
-export class SetStateValueAction<T extends string | number> implements Action {
+export class SetStateValueAction<T extends string | number | boolean> implements Action {
 	private readonly id: string;
 	private readonly trigger: Trigger;
 	private readonly idOfStateToSet: string;

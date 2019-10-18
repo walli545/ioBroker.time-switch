@@ -9,7 +9,7 @@ export class SetStateValueActionSerializer extends ActionSerializer {
 		super();
 	}
 
-	deserialize(stringToDeserialize: string): SetStateValueAction<string | number> {
+	deserialize(stringToDeserialize: string): SetStateValueAction<string | number | boolean> {
 		const json = JSON.parse(stringToDeserialize);
 		if (json.type !== SetStateValueActionSerializer.TYPE) {
 			throw new Error(`Type must be ${SetStateValueActionSerializer.TYPE}.`);
@@ -34,12 +34,20 @@ export class SetStateValueActionSerializer extends ActionSerializer {
 				json.valueToSet,
 				this.stateService,
 			);
+		} else if (json.valueType == 'boolean') {
+			return new SetStateValueAction<boolean>(
+				json.id,
+				baseAction.getTrigger(),
+				json.idOfStateToSet,
+				json.valueToSet,
+				this.stateService,
+			);
 		} else {
 			throw new Error(`valueType ${json.valueType} can not be deserialized.`);
 		}
 	}
 
-	serialize(objectToSerialize: SetStateValueAction<string | number>): string {
+	serialize(objectToSerialize: SetStateValueAction<string | number | boolean>): string {
 		const baseAction = JSON.parse(super.serialize(objectToSerialize));
 		const valueType = typeof objectToSerialize.getValueToSet();
 		return JSON.stringify({

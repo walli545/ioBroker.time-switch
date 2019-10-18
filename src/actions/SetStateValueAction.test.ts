@@ -125,6 +125,23 @@ describe('SetStateValueAction', () => {
 			expect(sut.getTrigger()).to.equal(trigger.object);
 		});
 
+		it('should create with boolean value ', () => {
+			const trigger = TypeMoq.Mock.ofType<Trigger>();
+			const stateService = TypeMoq.Mock.ofType<StateService>();
+			const sut = new SetStateValueAction<boolean>(
+				'id01',
+				trigger.object,
+				'id.of.state',
+				true,
+				stateService.object,
+			);
+
+			expect(sut.getId()).to.equal('id01');
+			expect(sut.getIdOfStateToSet()).to.equal('id.of.state');
+			expect(sut.getValueToSet()).to.equal(true);
+			expect(sut.getTrigger()).to.equal(trigger.object);
+		});
+
 		it('should set state value on execute', () => {
 			const trigger = TypeMoq.Mock.ofType<Trigger>();
 			const stateService = TypeMoq.Mock.ofType<StateService>();
