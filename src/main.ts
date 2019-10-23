@@ -43,7 +43,7 @@ class TimeSwitch extends utils.Adapter {
 	}
 
 	private actions: Action[] = [];
-	private timeTriggerScheduler: TimeTriggerScheduler = new TimeTriggerScheduler(this.log);
+	private timeTriggerScheduler: TimeTriggerScheduler = new TimeTriggerScheduler();
 	private stateService = new IoBrokerStateService(this);
 	private setStateActionSerialier = new SetStateValueActionSerializer(this.stateService);
 
