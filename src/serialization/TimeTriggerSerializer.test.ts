@@ -34,7 +34,7 @@ describe('TimeTriggerSerializer', () => {
 			expect(deserialized.getMinute()).to.equal(57);
 			expect(deserialized.getWeekdays().length).to.equal(3);
 			expect(deserialized.getWeekdays().includes(Weekday.Thursday)).to.equal(true);
-			expect(deserialized.getWeekdays().includes(Weekday.Saturday)).to.equal(true);
+			expect(deserialized.getWeekdays().includes(Weekday.Wednesday)).to.equal(true);
 			expect(deserialized.getWeekdays().includes(Weekday.Friday)).to.equal(true);
 		});
 
