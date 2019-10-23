@@ -7,7 +7,7 @@
 */
 'use strict';
 
-import {ScheduleWidget} from "./ScheduleWidget.js";
+import { ScheduleWidget } from './ScheduleWidget.js';
 
 // add translations for edit mode
 $.get('adapter/time-switch/words.js', function(script) {
@@ -26,7 +26,6 @@ vis.binds['time-switch'] = {
 };
 vis.binds['time-switch'].showVersion();
 
-
 function showVersion() {
 	if (vis.binds['time-switch'].version) {
 		console.log('Version time-switch: ' + vis.binds['time-switch'].version);
@@ -43,7 +42,7 @@ function createWidget(widgetId, view, data, style) {
 		}, 100);
 	}
 
-	if(!data.dataId) {
+	if (!data.dataId) {
 		console.error(`Can not create widget ${widgetId} because dataId not set!`);
 		return;
 	}
@@ -61,14 +60,14 @@ function onDataIdChange(widgetId, view, newId, attr, isCss, oldId) {
 }
 
 function onDeleteAction(widget, actionId) {
-    console.log('delete action' + actionId);
-    const currentActions = widget.scheduledActions;
-    const newActions = currentActions.filter(a => a.id != actionId);
-    vis.conn.setState(`${widget.scheduleDataId}.actions`, JSON.stringify(newActions));
+	console.log('delete action' + actionId);
+	const currentActions = widget.scheduledActions;
+	const newActions = currentActions.filter(a => a.id != actionId);
+	vis.conn.setState(`${widget.scheduleDataId}.actions`, JSON.stringify(newActions));
 }
 
 function getInitialData(widget) {
-	widget.setSwitchedStateId(vis.states[`${widget.scheduleDataId}.id.val`]);
+	//widget.setSwitchedStateId(vis.states[`${widget.scheduleDataId}.id.val`]);
 	widget.setScheduledActions(JSON.parse(vis.states[`${widget.scheduleDataId}.actions.val`]));
 }
 
@@ -79,7 +78,6 @@ function subscribeToChanges(widget) {
 	});
 	vis.states.bind(`${widget.scheduleDataId}.id.val`, function(e, newVal, oldVal) {
 		console.log('id change: ' + newVal);
-        widget.setSwitchedStateId(newVal);
+		widget.setSwitchedStateId(newVal);
 	});
 }
-

@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="widgets/time-switch/css/style.css" />
 <link rel="stylesheet" href="widgets/time-switch/css/material-button.css" />
 <!-- here you can include so many js-files as you want -->
+<script src="widgets/time-switch/js/SetStateValueActionWidget.js"></script>
 <script type="module" src="widgets/time-switch/js/time-switch.js"></script>
-
 <!-- the full description of format in data-vis-attrs can be found here:
 	https://github.com/ioBroker/ioBroker.vis/blob/master/www/js/visEditInspect.js#L39
 
@@ -109,10 +109,9 @@
 		data-vis-type="ctrl"
 		data-vis-name="Device plan">
 	<% vis.binds['time-switch'].createWidget(this.data.wid, this.view, this.data, this.style); %>
-	<div style="width:100%; height: auto;" id="<%= this.data.attr('wid') %>">
-		<h1>StateId:</h1>
-		<p class="state-id"></p>
-		<h1>Actions:</h1>
+	<div style="width:100%; height: auto;" id="<%= this.data.attr('wid')%>" class="time-switch-widget vis-widget">
+		<h1>Weihnachtsbaum</h1>
+		Automatik
 		<div class="actions"></div>
 	</div>
 </script>

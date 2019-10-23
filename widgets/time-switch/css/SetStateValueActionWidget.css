@@ -1,0 +1,70 @@
+.container {
+	background: #272727;
+	border-radius: 3px;
+	padding: 10px 20px 10px 20px;
+	margin-top: 10px;
+	display: block;
+	align-items: center;
+	font-family: var(--pure-material-font, 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system);
+}
+
+.header {
+	display: flex;
+	width: 100%;
+}
+
+/*Weekdays*/
+
+.weekdays {
+	display: block;
+	color: rgb(93, 93, 93);
+	width: 100%;
+	margin-top: 20px;
+}
+
+.weekdays span {
+	font-weight: 500;
+	margin-left: 3px;
+	margin-right: 3px;
+	font-size: 23px;
+}
+
+.weekdays span:first-child {
+	margin-left: 0px;
+}
+
+.weekdays span.active {
+	color: white;
+}
+
+/* Buttons */
+
+.button {
+	filter: invert(1);
+	align-self: center;
+}
+
+.button.edit {
+	margin-left: calc(100% - 256px);
+}
+
+.button.delete {
+	margin-left: 10px;
+}
+
+/* Text */
+
+.value-to-set {
+	text-align: center;
+	font-size: 2em;
+	font-weight: bold;
+	width: 65px;
+}
+
+.trigger {
+	text-align: center;
+	margin-left: 40px;
+	font-size: 2em;
+	font-weight: bold;
+	width: 85px;
+}
