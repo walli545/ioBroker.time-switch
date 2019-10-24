@@ -55,7 +55,7 @@ class TimeSwitch extends utils.Adapter {
 		this.log.debug('onReady');
 		// Initialize your adapter here
 		this.stateService.setState('time-switch.0.teststate', 2);
-		this.timeTriggerScheduler = new TimeTriggerScheduler(this.log)
+		this.timeTriggerScheduler = new TimeTriggerScheduler();
 
 		// The adapters config (in the instance object everything under the attribute "native") is accessible via
 		// this.config:
