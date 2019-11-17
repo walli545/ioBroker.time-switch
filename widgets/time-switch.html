@@ -8,8 +8,13 @@
 <!-- here you can include so many css as you want -->
 <link rel="stylesheet" href="widgets/time-switch/css/style.css" />
 <link rel="stylesheet" href="widgets/time-switch/css/material-button.css" />
+<link rel="stylesheet" href="widgets/time-switch/css/material-checkbox.css" />
+<link rel="stylesheet" href="widgets/time-switch/css/material-radio-button.css" />
+<link rel="stylesheet" href="widgets/time-switch/css/material-toggle-switch.css" />
 <!-- here you can include so many js-files as you want -->
 <script src="widgets/time-switch/js/SetStateValueActionWidget.js"></script>
+<script src="widgets/time-switch/js/TimeTrigger.js"></script>
+<script src="widgets/time-switch/js/Weekdays.js"></script>
 <script type="module" src="widgets/time-switch/js/time-switch.js"></script>
 <!-- the full description of format in data-vis-attrs can be found here:
 	https://github.com/ioBroker/ioBroker.vis/blob/master/www/js/visEditInspect.js#L39
@@ -104,14 +109,27 @@
 		type="text/ejs"
 		class="vis-tpl"
 		data-vis-prev='<div id="prev_tplMysetShowInstance" style="position: relative; text-align: initial;padding: 4px "><div class="vis-widget_prev " style="width: 280px; height: 159px;" > <div class="myset-class vis-widget-prev-body " style="padding:2px"> OID: hm-rpc.0.EEQ0006629.1.STATE<br> OID value: true<br> Color: <span style="color: rgb(128, 0, 0);">#800000</span><br> htmlText: <textarea readonly="" style="width:100%">asda</textarea></div>'
-		data-vis-attrs="dataId/id/onDataIdChange;"
+		data-vis-attrs="dataId/id/onDataIdChange;stateId/id/onStateIdChange"
 		data-vis-set="time-switch"
 		data-vis-type="ctrl"
 		data-vis-name="Device plan">
 	<% vis.binds['time-switch'].createWidget(this.data.wid, this.view, this.data, this.style); %>
 	<div style="width:100%; height: auto;" id="<%= this.data.attr('wid')%>" class="time-switch-widget vis-widget">
-		<h1>Weihnachtsbaum</h1>
-		Automatik
+		<h1></h1>
+		<div id="switched-oid"><%= this.data.attr('stateId')%></div>
+		<div id="enabled" class="md-switch-container">
+  			<div class="md-switch-track"></div>
+  			<div class="md-switch-handle"></div>
+  			<div class="md-switch-label">Automatic switching enabled</div>
+		</div>
+		<div id="current-value" class="md-switch-container">
+  			<div class="md-switch-track"></div>
+  			<div class="md-switch-handle"></div>
+  			<div class="md-switch-label">Current value</div>
+		</div>
+		<div id="add">
+			<img class="button add" src="widgets/time-switch/img/add-24px.svg" width="28px" height="28px"/>
+		</div>
 		<div class="actions"></div>
 	</div>
 </script>

@@ -18,11 +18,12 @@ $.get('adapter/time-switch/words.js', function(script) {
 
 // export vis binds for widget
 vis.binds['time-switch'] = {
-	version: '0.0.17',
+	version: '0.0.1',
 	showVersion: showVersion,
 	createWidget: createWidget,
 	scheduleWidgets: [],
 	onDataIdChange: onDataIdChange,
+	onStateIdChange: onStateIdChange,
 };
 vis.binds['time-switch'].showVersion();
 
@@ -48,36 +49,110 @@ function createWidget(widgetId, view, data, style) {
 	}
 	const widget = new ScheduleWidget(widgetId, data.dataId, vis);
 	widget.subscribeOnDelete(onDeleteAction);
-	getInitialData(widget);
-	subscribeToChanges(widget);
+	widget.subscribeOnUpdate(onUpdateAction);
+	getInitialData(widget, data);
+	subscribeToChanges(widget, data);
 	vis.binds['time-switch'].scheduleWidgets.push(widget);
+	widgetElement.querySelector('.button.add').addEventListener('click', () => {
+		const currentActions = widget.scheduledActions;
+		let id = Math.max(...currentActions.map(a => Number.parseInt(a.id))) + 1;
+		if (!Number.isFinite(id)) {
+			id = 0;
+		}
+		currentActions.push({
+			type: 'setStateValueAction',
+			id: String(id),
+			valueType: 'boolean',
+			idOfStateToSet: data.stateId,
+			valueToSet: false,
+			trigger: {
+				type: 'time',
+				hour: '0',
+				minute: '0',
+				weekdays: [0, 1, 2, 3, 4, 5, 6],
+			},
+		});
+		changeActions(widget, currentActions);
+	});
+	widgetElement.querySelector('#enabled').addEventListener('click', () => {
+		widget.setEnabled(!widget.enabled);
+		changeEnabled(widget, widget.enabled);
+	});
+	widgetElement.querySelector('#current-value').addEventListener('click', () => {
+		const toggle = widgetElement.querySelector('#current-value');
+		toggle.classList.toggle('checked');
+		vis.conn.setState(data.attr('stateId'), toggle.classList.contains('checked'));
+	});
 }
 
 function onDataIdChange(widgetId, view, newId, attr, isCss, oldId) {
 	console.log(`onDataIdChange ${widgetId} ${view} ${newId} ${oldId}`);
-	vis.views[view].widgets[widgetId].data.oid1 = newId + '.actions';
-	vis.views[view].widgets[widgetId].data.oid2 = newId + '.id';
+	vis.views[view].widgets[widgetId].data.oid1 = newId;
+}
+
+function onStateIdChange(widgetId, view, newId, attr, isCss, oldId) {
+	console.log(`onStateIdChange ${widgetId} ${view} ${newId} ${oldId}`);
+	vis.views[view].widgets[widgetId].data.oid2 = newId;
 }
 
 function onDeleteAction(widget, actionId) {
-	console.log('delete action' + actionId);
 	const currentActions = widget.scheduledActions;
 	const newActions = currentActions.filter(a => a.id != actionId);
-	vis.conn.setState(`${widget.scheduleDataId}.actions`, JSON.stringify(newActions));
+	changeActions(widget, newActions);
 }
 
-function getInitialData(widget) {
-	//widget.setSwitchedStateId(vis.states[`${widget.scheduleDataId}.id.val`]);
-	widget.setScheduledActions(JSON.parse(vis.states[`${widget.scheduleDataId}.actions.val`]));
+function onUpdateAction(widget, action) {
+	const actions = widget.scheduledActions;
+	const index = actions.findIndex(a => a.id === action.id);
+	actions[index] = action;
+	changeActions(widget, actions);
 }
 
-function subscribeToChanges(widget) {
-	vis.states.bind(`${widget.scheduleDataId}.actions.val`, function(e, newVal, oldVal) {
-		console.log('actions change');
-		widget.setScheduledActions(JSON.parse(newVal));
+function changeActions(widget, newActions) {
+	vis.conn.setState(
+		`${widget.scheduleDataId}`,
+		JSON.stringify({
+			actions: newActions,
+			enabled: widget.enabled,
+			alias: widget.alias,
+		}),
+	);
+}
+
+function changeEnabled(widget, enabled) {
+	vis.conn.setState(
+		`${widget.scheduleDataId}`,
+		JSON.stringify({
+			actions: widget.scheduledActions,
+			enabled: enabled,
+			alias: widget.alias,
+		}),
+	);
+}
+
+function getInitialData(widget, data) {
+	const scheduleData = JSON.parse(vis.states[`${widget.scheduleDataId}.val`]);
+	widget.setScheduledActions(scheduleData.actions);
+	widget.setAlias(scheduleData.alias);
+	widget.setEnabled(scheduleData.enabled);
+	const stateVal = vis.states[data.attr('stateId') + '.val'];
+	document
+		.querySelector(`#${widget.widgetId}`)
+		.querySelector('#current-value')
+		.classList.toggle('checked', stateVal);
+}
+
+function subscribeToChanges(widget, data) {
+	vis.states.bind(`${widget.scheduleDataId}.val`, function(e, newVal) {
+		const scheduleData = JSON.parse(newVal);
+		widget.setScheduledActions(scheduleData.actions);
+		widget.setAlias(scheduleData.alias);
+		widget.setEnabled(scheduleData.enabled);
 	});
-	vis.states.bind(`${widget.scheduleDataId}.id.val`, function(e, newVal, oldVal) {
-		console.log('id change: ' + newVal);
-		widget.setSwitchedStateId(newVal);
+	vis.states.bind(data.attr('stateId') + '.val', function(ev, newValue) {
+		document
+			.querySelector(`#${widget.widgetId}`)
+			.querySelector('#current-value')
+			.classList.toggle('checked', newValue);
 	});
 }
