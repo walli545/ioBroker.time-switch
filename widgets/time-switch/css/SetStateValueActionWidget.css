@@ -1,3 +1,15 @@
+@keyframes ripple {
+	0% {
+		box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0);
+	}
+	50% {
+		box-shadow: 0px 0px 0px 13px rgba(255, 255, 255, 0.1);
+	}
+	100% {
+		box-shadow: 0px 0px 0px 13px rgba(255, 255, 255, 0);
+	}
+}
+
 .container {
 	background: #272727;
 	border-radius: 3px;
@@ -8,33 +20,30 @@
 	font-family: var(--pure-material-font, 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system);
 }
 
-.header {
+.validation-errors-container {
+	margin-top: 40px;
+	margin-bottom: 10px;
+	padding: 1px;
+	background-color: #cf6679;
+	border-radius: 3px;
+}
+
+.view .header {
 	display: flex;
 	width: 100%;
 }
 
-/*Weekdays*/
-
-.weekdays {
-	display: block;
-	color: rgb(93, 93, 93);
-	width: 100%;
-	margin-top: 20px;
+.edit .header {
+	position: relative;
+	float: right;
 }
 
-.weekdays span {
-	font-weight: 500;
-	margin-left: 3px;
-	margin-right: 3px;
-	font-size: 23px;
+#container-switched-value {
+	margin-left: 10px;
 }
 
-.weekdays span:first-child {
-	margin-left: 0px;
-}
-
-.weekdays span.active {
-	color: white;
+#container-switched-time {
+	margin: 10px;
 }
 
 /* Buttons */
@@ -42,6 +51,10 @@
 .button {
 	filter: invert(1);
 	align-self: center;
+}
+
+.button:active {
+	animation: ripple 0.2s linear forwards;
 }
 
 .button.edit {
@@ -52,6 +65,10 @@
 	margin-left: 10px;
 }
 
+.button.cancel {
+	margin-left: 10px;
+}
+
 /* Text */
 
 .value-to-set {
@@ -59,12 +76,4 @@
 	font-size: 2em;
 	font-weight: bold;
 	width: 65px;
-}
-
-.trigger {
-	text-align: center;
-	margin-left: 40px;
-	font-size: 2em;
-	font-weight: bold;
-	width: 85px;
 }
