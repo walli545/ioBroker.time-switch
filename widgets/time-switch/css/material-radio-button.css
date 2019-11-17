@@ -64,24 +64,3 @@
     transform: scale(0);
     background: #337ab7;
 }
-*, *:before, *:after {
-    box-sizing: border-box;
-}
-body {
-    background: #f0f0f0;
-    position: absolute;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    font-family: "Roboto", sans-serif;
-    color: #333;
-}
-section {
-    background: white;
-    margin: 0 auto;
-    padding: 4em;
-    max-width: 800px;
-}
-section h1 {
-    margin: 0 0 2em;
-}
