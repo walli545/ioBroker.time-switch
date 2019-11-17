@@ -200,7 +200,7 @@ describe('SetStateValueActionSerializer', () => {
 				`"id": "05", "idOfStateToSet": "id.of.state", "valueToSet": 1, "valueType": "number"}`;
 			const deserialized = sut.deserialize(serialized);
 			deserialized.execute();
-			stateService.verify(x => x.setState('id.of.state', 1), TypeMoq.Times.once());
+			stateService.verify(x => x.setForeignState('id.of.state', 1), TypeMoq.Times.once());
 		});
 	});
 });

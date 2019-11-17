@@ -28,7 +28,7 @@ describe('IoBrokerStateService', () => {
 		it('sets state in adapter', () => {
 			const sut = new IoBrokerStateService(adapterMock.object);
 			sut.setState('test.id.123', 'new value');
-			adapterMock.verify(x => x.setState('test.id.123', 'new value'), TypeMoq.Times.once());
+			adapterMock.verify(x => x.setState('test.id.123', 'new value', false), TypeMoq.Times.once());
 		});
 	});
 
@@ -36,7 +36,7 @@ describe('IoBrokerStateService', () => {
 		it('throws when id is null', () => {
 			const sut = new IoBrokerStateService(adapterMock.object);
 			// @ts-ignore
-			expect(() => sut.setForeignState(null, 'abc')).to.throw();
+			expect(() => sut.setForeignState(null, 'abc', false)).to.throw();
 		});
 
 		it('throws when id is empty', () => {
@@ -47,8 +47,8 @@ describe('IoBrokerStateService', () => {
 
 		it('sets state in adapter', () => {
 			const sut = new IoBrokerStateService(adapterMock.object);
-			sut.setState('test.id.123', 'new value');
-			adapterMock.verify(x => x.setForeignState('test.id.123', 'new value'), TypeMoq.Times.once());
+			sut.setForeignState('test.id.123', 'new value');
+			adapterMock.verify(x => x.setForeignState('test.id.123', 'new value', false), TypeMoq.Times.once());
 		});
 	});
 });

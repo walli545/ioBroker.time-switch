@@ -148,7 +148,7 @@ describe('SetStateValueAction', () => {
 			const sut = new SetStateValueAction<number>('id01', trigger.object, 'id.of.state', 12, stateService.object);
 
 			sut.execute();
-			stateService.verify(x => x.setState('id.of.state', 12), TypeMoq.Times.once());
+			stateService.verify(x => x.setForeignState('id.of.state', 12), TypeMoq.Times.once());
 		});
 	});
 });
