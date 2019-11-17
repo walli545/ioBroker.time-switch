@@ -49,6 +49,6 @@ export class SetStateValueAction<T extends string | number | boolean> implements
 	}
 
 	public execute(): void {
-		this.stateService.setState(this.getIdOfStateToSet(), this.getValueToSet());
+		this.stateService.setForeignState(this.getIdOfStateToSet(), this.getValueToSet());
 	}
 }

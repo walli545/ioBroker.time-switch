@@ -31,4 +31,24 @@ describe('IoBrokerStateService', () => {
 			adapterMock.verify(x => x.setState('test.id.123', 'new value'), TypeMoq.Times.once());
 		});
 	});
+
+	describe('setForeignState', () => {
+		it('throws when id is null', () => {
+			const sut = new IoBrokerStateService(adapterMock.object);
+			// @ts-ignore
+			expect(() => sut.setForeignState(null, 'abc')).to.throw();
+		});
+
+		it('throws when id is empty', () => {
+			const sut = new IoBrokerStateService(adapterMock.object);
+			// @ts-ignore
+			expect(() => sut.setForeignState('', 'abc')).to.throw();
+		});
+
+		it('sets state in adapter', () => {
+			const sut = new IoBrokerStateService(adapterMock.object);
+			sut.setState('test.id.123', 'new value');
+			adapterMock.verify(x => x.setForeignState('test.id.123', 'new value'), TypeMoq.Times.once());
+		});
+	});
 });
