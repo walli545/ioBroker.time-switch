@@ -1,0 +1,16 @@
+.time {
+	text-align: center;
+	margin-left: 40px;
+	font-size: 2em;
+	font-weight: bold;
+	width: 85px;
+}
+
+input:invalid {
+	color: red;
+}
+
+input {
+	font-size: 1.2rem;
+	width: 40px;
+}
