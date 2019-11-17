@@ -36,7 +36,7 @@ class SetStateValueAction {
         return this.valueToSet;
     }
     execute() {
-        this.stateService.setState(this.getIdOfStateToSet(), this.getValueToSet());
+        this.stateService.setForeignState(this.getIdOfStateToSet(), this.getValueToSet());
     }
 }
 exports.SetStateValueAction = SetStateValueAction;

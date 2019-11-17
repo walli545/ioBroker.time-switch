@@ -11,7 +11,13 @@ class IoBrokerStateService {
         if (id == null || id.length === 0) {
             throw new Error('id may not be null or empty.');
         }
-        this.adapter.setState(id, value);
+        this.adapter.setState(id, value, true);
+    }
+    setForeignState(id, value) {
+        if (id == null || id.length === 0) {
+            throw new Error('id may not be null or empty.');
+        }
+        this.adapter.setForeignState(id, value, true);
     }
 }
 exports.IoBrokerStateService = IoBrokerStateService;
