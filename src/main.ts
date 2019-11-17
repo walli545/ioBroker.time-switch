@@ -23,6 +23,7 @@ declare global {
 			// Define the shape of your options here (recommended)
 			option1: boolean;
 			option2: string;
+
 			// Or use a catch-all approach
 			[key: string]: any;
 		}
@@ -30,10 +31,14 @@ declare global {
 }
 
 class TimeSwitch extends utils.Adapter {
+	private scheduleToActions: Map<string, Action[]> = new Map<string, Action[]>();
+	private scheduleToTimeTriggerScheduler: Map<string, TimeTriggerScheduler> = new Map<string, TimeTriggerScheduler>();
+	private stateService = new IoBrokerStateService(this);
+	private setStateActionSerialier = new SetStateValueActionSerializer(this.stateService);
+
 	public constructor(options: Partial<ioBroker.AdapterOptions> = {}) {
 		super({
-			...options,
-			name: 'time-switch',
+			...options, name: 'time-switch',
 		});
 		this.on('ready', this.onReady.bind(this));
 		this.on('objectChange', this.onObjectChange.bind(this));
@@ -42,11 +47,6 @@ class TimeSwitch extends utils.Adapter {
 		this.on('unload', this.onUnload.bind(this));
 	}
 
-	private actions: Action[] = [];
-	private timeTriggerScheduler: TimeTriggerScheduler = new TimeTriggerScheduler();
-	private stateService = new IoBrokerStateService(this);
-	private setStateActionSerialier = new SetStateValueActionSerializer(this.stateService);
-
 	/**
 	 * Is called when databases are connected and adapter received configuration.
 	 */
@@ -54,25 +54,25 @@ class TimeSwitch extends utils.Adapter {
 		this.log.info('onReady');
 		this.log.debug('onReady');
 		// Initialize your adapter here
-		this.stateService.setState('time-switch.0.teststate', 2);
-		this.timeTriggerScheduler = new TimeTriggerScheduler();
+		//this.timeTriggerScheduler = new TimeTriggerScheduler();
 
 		// The adapters config (in the instance object everything under the attribute "native") is accessible via
 		// this.config:
 		// this.log.info('config option1: ' + this.config.option1);
 		// this.log.info('config option2: ' + this.config.option2);
-
-		this.getState(
-			'time-switch.0.device0.actions',
-			(err: string | null, state: ioBroker.State | null | undefined) => {
+		this.getStates('time-switch.0.schedule*', (err: string | null, record: Record<string, ioBroker.State>) => {
+			for (const id in record) {
+				this.scheduleToTimeTriggerScheduler.set(id, new TimeTriggerScheduler());
+				this.scheduleToActions.set(id, []);
+				const state = record[id];
 				this.log.info(`got state: ${state ? state.toString() : 'null'}`);
 				if (state) {
-					this.onActionsChange(state.val);
+					this.onScheduleChange(id, state.val);
 				} else {
 					this.log.error('Could not retrieve state: ' + err);
 				}
-			},
-		);
+			}
+		});
 		/*
 		For every state in the system there has to be also an object of type state
 		Here a simple template for a boolean variable named "testVariable"
@@ -115,9 +115,10 @@ class TimeSwitch extends utils.Adapter {
 		// this.log.info('check group user admin group admin: ' + result);
 	}
 
-	private registerAction(action: Action) {
+	private registerAction(id: string, action: Action) {
 		if (action.getTrigger() instanceof TimeTrigger) {
-			this.timeTriggerScheduler.register(action.getTrigger() as TimeTrigger, () => {
+			// @ts-ignore
+			this.scheduleToTimeTriggerScheduler.get(id).register(action.getTrigger() as TimeTrigger, () => {
 				this.log.info('trigger fired');
 				action.execute();
 			});
@@ -127,29 +128,39 @@ class TimeSwitch extends utils.Adapter {
 		}
 	}
 
-	private unregisterAction(action: Action) {
+	private unregisterAction(id: string, action: Action) {
 		if (action.getTrigger() instanceof TimeTrigger) {
-			this.timeTriggerScheduler.unregister(action.getTrigger() as TimeTrigger);
+			// @ts-ignore
+			this.scheduleToTimeTriggerScheduler.get(id).unregister(action.getTrigger() as TimeTrigger);
 			this.log.debug(`Unregistered trigger time trigger ${action.getTrigger()}`);
 		} else {
 			this.log.error(`No scheduler for trigger ${action.getTrigger()} found`);
 		}
 	}
 
-	private onActionsChange(actionsString: string) {
-		this.log.info('onActionsChange: ' + actionsString);
-		this.actions.forEach(a => {
-			this.unregisterAction(a);
-		});
-		this.actions = [];
-		const actions = JSON.parse(actionsString).map((a: any) =>
-			this.setStateActionSerialier.deserialize(JSON.stringify(a)),
-		);
-		this.log.info(`actions length: ${actions.length}`);
-		actions.forEach((a: Action) => {
-			this.actions.push(a);
-			this.registerAction(a);
-		});
+	private onScheduleChange(id: string, scheduleString: string) {
+		this.log.info('onScheduleChange: ' + scheduleString);
+		if (this.scheduleToActions.has(id)) {
+			// @ts-ignore
+			this.scheduleToActions.get(id).forEach(a => {
+				this.unregisterAction(id, a);
+			});
+		} else {
+		}
+		this.scheduleToActions.set(id, []);
+		const schedule = JSON.parse(scheduleString);
+		if (schedule.enabled == true) {
+			this.log.info('is enabled');
+			const actions = schedule.actions.map((a: any) => this.setStateActionSerialier.deserialize(JSON.stringify(a)));
+			this.log.info(`actions length: ${actions.length}`);
+			actions.forEach((a: Action) => {
+				// @ts-ignore
+				this.scheduleToActions.get(id).push(a);
+				this.registerAction(id, a);
+			});
+		} else {
+			this.log.info('schedule not enabled');
+		}
 	}
 
 	/**
@@ -184,9 +195,9 @@ class TimeSwitch extends utils.Adapter {
 		if (state) {
 			// The state was changed
 			this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-			if (id === 'time-switch.0.device0.actions') {
-				this.log.info('is actions id');
-				this.onActionsChange(state.val);
+			if (id.startsWith('time-switch.0.schedule')) {
+				this.log.info('is schedule id');
+				this.onScheduleChange(id, state.val);
 			}
 		} else {
 			// The state was deleted

@@ -22,8 +22,8 @@ const TimeTrigger_1 = require("./triggers/TimeTrigger");
 class TimeSwitch extends utils.Adapter {
     constructor(options = {}) {
         super(Object.assign(Object.assign({}, options), { name: 'time-switch' }));
-        this.actions = [];
-        this.timeTriggerScheduler = new TimeTriggerScheduler_1.TimeTriggerScheduler();
+        this.scheduleToActions = new Map();
+        this.scheduleToTimeTriggerScheduler = new Map();
         this.stateService = new IoBrokerStateService_1.IoBrokerStateService(this);
         this.setStateActionSerialier = new SetStateValueActionSerializer_1.SetStateValueActionSerializer(this.stateService);
         this.on('ready', this.onReady.bind(this));
@@ -40,19 +40,23 @@ class TimeSwitch extends utils.Adapter {
             this.log.info('onReady');
             this.log.debug('onReady');
             // Initialize your adapter here
-            this.stateService.setState('time-switch.0.teststate', 2);
-            this.timeTriggerScheduler = new TimeTriggerScheduler_1.TimeTriggerScheduler();
+            //this.timeTriggerScheduler = new TimeTriggerScheduler();
             // The adapters config (in the instance object everything under the attribute "native") is accessible via
             // this.config:
             // this.log.info('config option1: ' + this.config.option1);
             // this.log.info('config option2: ' + this.config.option2);
-            this.getState('time-switch.0.device0.actions', (err, state) => {
-                this.log.info(`got state: ${state ? state.toString() : 'null'}`);
-                if (state) {
-                    this.onActionsChange(state.val);
-                }
-                else {
-                    this.log.error('Could not retrieve state: ' + err);
+            this.getStates('time-switch.0.schedule*', (err, record) => {
+                for (const id in record) {
+                    this.scheduleToTimeTriggerScheduler.set(id, new TimeTriggerScheduler_1.TimeTriggerScheduler());
+                    this.scheduleToActions.set(id, []);
+                    const state = record[id];
+                    this.log.info(`got state: ${state ? state.toString() : 'null'}`);
+                    if (state) {
+                        this.onScheduleChange(id, state.val);
+                    }
+                    else {
+                        this.log.error('Could not retrieve state: ' + err);
+                    }
                 }
             });
             /*
@@ -91,9 +95,10 @@ class TimeSwitch extends utils.Adapter {
             // this.log.info('check group user admin group admin: ' + result);
         });
     }
-    registerAction(action) {
+    registerAction(id, action) {
         if (action.getTrigger() instanceof TimeTrigger_1.TimeTrigger) {
-            this.timeTriggerScheduler.register(action.getTrigger(), () => {
+            // @ts-ignore
+            this.scheduleToTimeTriggerScheduler.get(id).register(action.getTrigger(), () => {
                 this.log.info('trigger fired');
                 action.execute();
             });
@@ -103,27 +108,41 @@ class TimeSwitch extends utils.Adapter {
             this.log.error(`No scheduler for trigger ${action.getTrigger()} found`);
         }
     }
-    unregisterAction(action) {
+    unregisterAction(id, action) {
         if (action.getTrigger() instanceof TimeTrigger_1.TimeTrigger) {
-            this.timeTriggerScheduler.unregister(action.getTrigger());
+            // @ts-ignore
+            this.scheduleToTimeTriggerScheduler.get(id).unregister(action.getTrigger());
             this.log.debug(`Unregistered trigger time trigger ${action.getTrigger()}`);
         }
         else {
             this.log.error(`No scheduler for trigger ${action.getTrigger()} found`);
         }
     }
-    onActionsChange(actionsString) {
-        this.log.info('onActionsChange: ' + actionsString);
-        this.actions.forEach(a => {
-            this.unregisterAction(a);
-        });
-        this.actions = [];
-        const actions = JSON.parse(actionsString).map((a) => this.setStateActionSerialier.deserialize(JSON.stringify(a)));
-        this.log.info(`actions length: ${actions.length}`);
-        actions.forEach((a) => {
-            this.actions.push(a);
-            this.registerAction(a);
-        });
+    onScheduleChange(id, scheduleString) {
+        this.log.info('onScheduleChange: ' + scheduleString);
+        if (this.scheduleToActions.has(id)) {
+            // @ts-ignore
+            this.scheduleToActions.get(id).forEach(a => {
+                this.unregisterAction(id, a);
+            });
+        }
+        else {
+        }
+        this.scheduleToActions.set(id, []);
+        const schedule = JSON.parse(scheduleString);
+        if (schedule.enabled == true) {
+            this.log.info('is enabled');
+            const actions = schedule.actions.map((a) => this.setStateActionSerialier.deserialize(JSON.stringify(a)));
+            this.log.info(`actions length: ${actions.length}`);
+            actions.forEach((a) => {
+                // @ts-ignore
+                this.scheduleToActions.get(id).push(a);
+                this.registerAction(id, a);
+            });
+        }
+        else {
+            this.log.info('schedule not enabled');
+        }
     }
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
@@ -157,9 +176,9 @@ class TimeSwitch extends utils.Adapter {
         if (state) {
             // The state was changed
             this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-            if (id === 'time-switch.0.device0.actions') {
-                this.log.info('is actions id');
-                this.onActionsChange(state.val);
+            if (id.startsWith('time-switch.0.schedule')) {
+                this.log.info('is schedule id');
+                this.onScheduleChange(id, state.val);
             }
         }
         else {
