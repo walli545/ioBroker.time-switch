@@ -37,28 +37,43 @@ class TimeSwitch extends utils.Adapter {
      */
     onReady() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.log.info('onReady');
             this.log.debug('onReady');
-            // Initialize your adapter here
-            //this.timeTriggerScheduler = new TimeTriggerScheduler();
-            // The adapters config (in the instance object everything under the attribute "native") is accessible via
-            // this.config:
-            // this.log.info('config option1: ' + this.config.option1);
-            // this.log.info('config option2: ' + this.config.option2);
-            this.getStates('time-switch.0.schedule*', (err, record) => {
-                for (const id in record) {
-                    this.scheduleToTimeTriggerScheduler.set(id, new TimeTriggerScheduler_1.TimeTriggerScheduler());
-                    this.scheduleToActions.set(id, []);
-                    const state = record[id];
-                    this.log.info(`got state: ${state ? state.toString() : 'null'}`);
-                    if (state) {
-                        this.onScheduleChange(id, state.val);
-                    }
-                    else {
-                        this.log.error('Could not retrieve state: ' + err);
-                    }
+            this.log.info('config: ' + this.config.schedules.length);
+            let schedulesFromSettings = this.config.schedules;
+            this.log.info(schedulesFromSettings.join(', '));
+            let record = yield this.getStatesAsync(`time-switch.${this.instance}.schedule*`);
+            for (const fullId in record) {
+                const id = this.convertToLocalId(fullId);
+                if (schedulesFromSettings.includes(id)) {
+                    schedulesFromSettings = schedulesFromSettings.filter(i => i !== id);
+                    this.log.info('Found state ' + id);
                 }
-            });
+                else {
+                    this.log.info('Deleting state ' + id);
+                    yield this.deleteStateAsync(id);
+                }
+            }
+            for (const s of schedulesFromSettings) {
+                this.log.info('State ' + s + 'not found, creating');
+                yield this.createStateAsync('', '', s, { read: true, write: true, type: 'string', role: 'json' });
+                const r = yield this.setStateAsync(s, '{"alias": "", "enabled": false, "actions":[]}');
+                this.log.info('result: ' + r);
+            }
+            record = yield this.getStatesAsync(`time-switch.${this.instance}.schedule*`);
+            for (const fullId in record) {
+                const id = this.convertToLocalId(fullId);
+                this.log.info('Creating scheduler for ' + id);
+                this.scheduleToTimeTriggerScheduler.set(id, new TimeTriggerScheduler_1.TimeTriggerScheduler());
+                this.scheduleToActions.set(id, []);
+                const state = record[fullId];
+                this.log.info(`got state: ${state ? state.toString() : 'null'}`);
+                if (state) {
+                    this.onScheduleChange(id, state.val);
+                }
+                else {
+                    this.log.error('Could not retrieve state');
+                }
+            }
             /*
             For every state in the system there has to be also an object of type state
             Here a simple template for a boolean variable named "testVariable"
@@ -94,6 +109,10 @@ class TimeSwitch extends utils.Adapter {
             // result = await this.checkGroupAsync('admin', 'admin');
             // this.log.info('check group user admin group admin: ' + result);
         });
+    }
+    convertToLocalId(fullId) {
+        const prefix = `time-switch.${this.instance}.`;
+        return fullId.substr(prefix.length);
     }
     registerAction(id, action) {
         if (action.getTrigger() instanceof TimeTrigger_1.TimeTrigger) {
@@ -176,9 +195,10 @@ class TimeSwitch extends utils.Adapter {
         if (state) {
             // The state was changed
             this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-            if (id.startsWith('time-switch.0.schedule')) {
+            const pattern = `time-switch.${this.instance}.schedule`;
+            if (id.startsWith(pattern)) {
                 this.log.info('is schedule id');
-                this.onScheduleChange(id, state.val);
+                this.onScheduleChange(this.convertToLocalId(id), state.val);
             }
         }
         else {
