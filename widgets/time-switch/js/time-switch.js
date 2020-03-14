@@ -52,6 +52,7 @@ function createWidget(widgetId, view, data, style) {
 	const widget = new ScheduleWidget(widgetId, data.dataId, vis);
 	widget.subscribeOnDelete(onDeleteAction);
 	widget.subscribeOnUpdate(onUpdateAction);
+	widget.subscribeOnAliasChange(onAliasChange);
 	getInitialData(widget, data);
 	subscribeToChanges(widget, data);
 	vis.binds['time-switch'].scheduleWidgets.push(widget);
@@ -142,6 +143,15 @@ function onUpdateAction(widget, action) {
 	const index = actions.findIndex(a => a.id === action.id);
 	actions[index] = action;
 	changeActions(widget, actions);
+}
+
+/**
+ * Gets triggerd by alias save button
+ */
+function onAliasChange(widget, newAlias) {
+	const scheduleData = JSON.parse(vis.states[`${widget.scheduleDataId}.val`]);
+	scheduleData.alias = newAlias;
+	vis.conn.setState(`${widget.scheduleDataId}`, JSON.stringify(scheduleData));
 }
 
 function addAction(widget, stateId) {

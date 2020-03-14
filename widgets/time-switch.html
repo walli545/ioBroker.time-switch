@@ -115,7 +115,16 @@
 		data-vis-name="Device-Plan">
 	<% vis.binds['time-switch'].createWidget(this.data.wid, this.view, this.data, this.style); %>
 	<div style="width:100%; height: auto;" id="<%= this.data.attr('wid')%>" class="time-switch-widget vis-widget">
-		<h1></h1>
+		<div class="heading">
+			<div class="view">
+				<h1></h1>
+				<img class="button edit" src="widgets/time-switch/img/edit-24px.svg" width="28px" height="28px"/>
+			</div>
+			<div class="edit" style="display: none;">
+				<input type="text">
+				<img class="button save" src="widgets/time-switch/img/save-24px.svg" width="28px" height="28px"/>
+			</div>
+		</div>
 		<div id="switched-oid"><%= this.data.attr('stateId')%></div>
 		<div id="enabled" class="md-switch-container">
   			<div class="md-switch-track"></div>
@@ -133,3 +142,4 @@
 		<div class="actions"></div>
 	</div>
 </script>
+

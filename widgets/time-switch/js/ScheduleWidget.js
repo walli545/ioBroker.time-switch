@@ -10,11 +10,18 @@ export class ScheduleWidget {
 
 	deleteSubscribers = [];
 	updateSubscribers = [];
+	aliasChangeSubscribers = [];
 
 	constructor(widgetId, scheduleDataId, vis) {
 		this.widgetId = widgetId;
 		this.scheduleDataId = scheduleDataId;
 		this.vis = vis;
+		this.getWidgetDiv()
+			.querySelector('.button.edit')
+			.addEventListener('click', this.onEditAliasClick.bind(this));
+		this.getWidgetDiv()
+			.querySelector('.button.save')
+			.addEventListener('click', this.onSaveAliasClick.bind(this));
 	}
 
 	setSwitchedStateId(switchedStateId) {
@@ -24,7 +31,7 @@ export class ScheduleWidget {
 
 	setEnabled(enabled) {
 		this.enabled = enabled;
-		const toggle = document.querySelector(`#${this.widgetId}`).querySelector('#enabled');
+		const toggle = this.getWidgetDiv().querySelector('#enabled');
 		if (enabled) {
 			toggle.classList.add('checked');
 		} else {
@@ -34,7 +41,8 @@ export class ScheduleWidget {
 
 	setAlias(alias) {
 		this.alias = alias;
-		document.querySelector(`#${this.widgetId}`).querySelector('h1').textContent = alias;
+		this.getWidgetDiv().querySelector('.heading .view h1').textContent = alias;
+		this.getWidgetDiv().querySelector('.heading .edit input').value = alias;
 	}
 
 	setScheduledActions(scheduledActions) {
@@ -67,10 +75,38 @@ export class ScheduleWidget {
 		this.updateSubscribers.push(callback);
 	}
 
+	subscribeOnAliasChange(callback) {
+		this.aliasChangeSubscribers.push(callback);
+	}
+
 	clearScheduledActions() {
 		const actionContainer = document.querySelector(`#${this.widgetId} .actions`);
 		while (actionContainer.firstChild) {
 			actionContainer.removeChild(actionContainer.firstChild);
 		}
+	}
+
+	onEditAliasClick() {
+		this.setAliasEditMode(true);
+	}
+
+	onSaveAliasClick() {
+		const newAlias = this.getWidgetDiv().querySelector('.heading .edit input').value;
+		this.aliasChangeSubscribers.forEach(s => s(this, newAlias));
+		this.setAliasEditMode(false);
+	}
+
+	setAliasEditMode(isEdit) {
+		if (isEdit) {
+			this.getWidgetDiv().querySelector('.heading div.edit').style.display = null;
+			this.getWidgetDiv().querySelector('.heading div.view').style.display = 'none';
+		} else {
+			this.getWidgetDiv().querySelector('.heading div.edit').style.display = 'none';
+			this.getWidgetDiv().querySelector('.heading div.view').style.display = null;
+		}
+	}
+
+	getWidgetDiv() {
+		return document.querySelector(`#${this.widgetId}`);
 	}
 }
