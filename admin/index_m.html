@@ -1,7 +1,6 @@
 <html>
 
 <head>
-
 	<!-- Load ioBroker scripts and styles-->
 	<link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
 	<link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
@@ -18,122 +17,38 @@
 	<script type="text/javascript" src="words.js"></script>
 
 	<script type="text/javascript">
-		var g_onChange;
-
+		let g_onChange;
 		let scheduleIds;
 
 		// This will be called by the admin adapter when the settings page loads
 		function load(settings, onChange) {
 			g_onChange = onChange;
-			console.log('onLoad time-switch');
-			// values2table('values', [{name: 'test1'}, {name: 'test2'}], g_onChange);
-			// socket.emit('getStates', 'time-switch.0.', function (error, states) {
-			// 	console.log('got states:');
-			// 	console.log(states);
-			// });
-			// socket.emit('getState', 'vis.0.control.instance', function (error, state) {
-			// 	console.log('got state:');
-			// 	console.log(state);
-			// 	console.log(error);
-			// });
-			// socket.emit('setState', )
-			// example: select elements with id=key and class=value and insert value
-			console.log('adapter: ' + adapter + instance);
 			$('#addSchedule').on('click', function () {
-				const mapped = scheduleIds.map(i => i.match(/(?<=schedule)\d+/)[0]);
-				console.log('Mapped: ' + mapped);
-				let numbers = mapped.map(s => Number.parseInt(s, 10));
-				console.log('Numbers: ' + numbers);
-				numbers = numbers.sort((a, b) => a-b);
-				let newIndex = 0;
-				for (let i = 0; i < numbers.length; i++) {
-					if (numbers[i] > newIndex) {
-						break;
-					} else {
-						newIndex++;
-					}
-				}
-				// const max = Math.max(...numbers)
-				// console.log('Max: ' + max);
-				// const newId = `${adapter}.${instance}.schedules.schedule${Number.isFinite(max) ? max + 1 : 0}`;
-				const newId = `schedule${newIndex}`;
+				const newId = getNextScheduleId();
 				scheduleIds.push(newId);
-				addSchedule(onChange, newId);
+				addSchedule(newId);
 				onChange(true);
 			});
 
 			if (!settings) return;
-
 			if (settings.schedules) {
 				scheduleIds = settings.schedules;
-				settings.schedules.sort().forEach(s => {
-					addSchedule(onChange, s);
+				scheduleIds.sort().forEach(s => {
+					addSchedule(s);
 				});
 			}
-			console.log(settings);
-			// $('.value').each(function () {
-			// 	var $key = $(this);
-			// 	var id = $key.attr('id');
-			// 	if ($key.attr('type') === 'checkbox') {
-			// 		// do not call onChange direct, because onChange could expect some arguments
-			// 		$key.prop('checked', settings[id])
-			// 			.on('change', () => onChange())
-			// 			;
-			// 	} else {
-			// 		// do not call onChange direct, because onChange could expect some arguments
-			// 		$key.val(settings[id])
-			// 			.on('change', () => onChange())
-			// 			.on('keyup', () => onChange())
-			// 			;
-			// 	}
-			// });
+
 			onChange(false);
-			// reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
 			if (M) M.updateTextFields();
 		}
 
 		// This will be called by the admin adapter when the user presses the save button
 		function save(callback) {
-			// example: select elements with class=value and build settings object
-			// $('.value').each(function () {
-			// 	var $this = $(this);
-			// 	if ($this.attr('type') === 'checkbox') {
-			// 		obj[$this.attr('id')] = $this.prop('checked');
-			// 	} else {
-			// 		obj[$this.attr('id')] = $this.val();
-			// 	}
-			// });
-
-			let obj = {};
-			let countSchedules = $('#schedules > tr').length;
-			// let arrSchedules = [];
-			let ids = []
-			if (countSchedules > 0) {
-				for(let i = 0; i < countSchedules; i++){
-					let scheduleId = $('#schedules > tr').eq(i).find('td').eq(0).text();
-					// let alias = $('#schedules > tr').eq(i).find('td').eq(1).find('input').val() || '';
-					// let json = {scheduleId: scheduleId, alias:alias};
-					ids.push(scheduleId);
-				}
-			} else if (!countSchedules) {
-				// let json = {name: '', ip: '', mac: ''};
-				// arrDevices.push(json);
-			}
-			obj.schedules = ids;
-			callback(obj);
+			callback({schedules: scheduleIds});
 			g_onChange(false);
 		}
 
-		//Add new row to table for device
-		function addSchedule(onChange, scheduleId){
-			// let countRows = $('#schedules > tr').length;
-			// let newIndex = countRows + 1;
-			// let state = await new Promise((resolve, reject) => {
-			// 	socket.emit('getState', scheduleId, (error, state) => {
-			// 		resolve(state.val);
-			// 	});
-			// });
-
+		function addSchedule(scheduleId){
 			socket.emit('getState', `${adapter}.${instance}.${scheduleId}`, (error, state) => {
 				let scheduleData;
 				if (state && state.val) {
@@ -154,80 +69,43 @@
 					</tr>
 				`;
 
-				// let newRow = '<tr>\n' +
-				// 		// '                        <td>\n' +
-				// 		// '                            <p>'+ newIndex +'</p>\n' +
-				// 		// '                        </td>\n' +
-				// 		'                        <td>\n' +
-				// 		// '                                <input type="text" class="validate">\n' +
-				// 		'                        </td>\n' +
-				// 		'                        <td>\n' +
-				// 		// '                            <input type="text" class="validate">\n' +
-				// 		'                        </td>\n' +
-				// 		// '                        <td>\n' +
-				// 		// '                            <input type="text" class="validate mac">\n' +
-				// 		// '                        </td>\n' +
-				// 		'                        <td>\n' +
-				// 		'                            <a class="delete-schedule values-buttons btn-floating btn-small waves-effect waves-light red"><i class="material-icons" title="Remove schedule">delete</i></a>\n' +
-				// 		'                        </td>\n' +
-				// 		'                    </tr>';
-
 				$('#schedules').append(newRow);
-
-
 				$('.delete-schedule').on('click', function(){
 					$(this).parents('tr').remove();
 					let scheduleId = $(this).parents('tr').find('td').eq(0).text();
 					scheduleIds = scheduleIds.filter(i => i !== scheduleId);
-					// reIndex();
-					onChange(true);
+					g_onChange(true);
 				});
-
-				// if (scheduleId /*&& alias*/) {
-				// 	$('#schedules > tr').eq(countRows).find('td').eq(0).text(scheduleId);
-				// 	// 		.on('change', () => onChange())
-				// 	// 		.on('keyup', () => onChange());
-				//
-				// 	$('#schedules > tr').eq(countRows).find('td').eq(1).find('input').val(alias)
-				// 			.on('change', () => onChange())
-				// 			.on('keyup', () => onChange());
-				//
-				// 	// $('#schedules > tr').eq(countRows).find('td').eq(3).find('input').val(mac)
-				// 	// 		.on('change', () => onChange())
-				// 	// 		.on('keyup', () => onChange());
-				// }
-				M && M.updateTextFields();
-				// onChange();
+				if (M) M.updateTextFields();
 			});
 		}
-	</script>
 
+		function getNextScheduleId() {
+			const pattern = /(?<=schedule)\d+/;
+			const mapped = scheduleIds.map(i => i.match(pattern)[0]);
+			const numbers = mapped
+					.map(s => Number.parseInt(s, 10))
+					.sort((a, b) => a-b);
+			let newIndex = 0;
+			for (let i = 0; i < numbers.length; i++) {
+				if (numbers[i] > newIndex) {
+					break;
+				} else {
+					newIndex++;
+				}
+			}
+			return `schedule${newIndex}`;
+		}
+	</script>
 </head>
 
 <body>
-
 	<div class="m adapter-container">
-
 		<div class="row">
 			<div class="col s12 m4 l2">
 				<img src="time-switch.png" class="logo">
 			</div>
 		</div>
-
-		<!-- Put your content here -->
-
-		<!-- For example columns with settings: -->
-<!--		<div class="row">-->
-<!--			<div class="col s6 input-field">-->
-<!--				<input type="checkbox" class="value" id="option1" />-->
-<!--				<label for="option1" class="translate">option1</label>-->
-<!--			</div>-->
-
-<!--			<div class="col s6 input-field">-->
-<!--				<input type="text" class="value" id="option2" />-->
-<!--				<label for="option2" class="translate">option2</label>-->
-<!--			</div>-->
-<!--		</div>-->
 
 		<div class="row" style="padding-bottom: 0">
 			<div class="input-field col">
@@ -235,12 +113,8 @@
 					<i class="material-icons left">add</i><span class="translate">Add schedule</span>
 				</a>
 			</div>
-<!--			<div class="input-field col">-->
-<!--				<a class="waves-effect waves-light btn" id="find">-->
-<!--					<i class="material-icons left">search</i><span class="translate">Find a device</span>-->
-<!--				</a>-->
-<!--			</div>-->
 		</div>
+
 		<div class="table-values-div" style="height: calc(100% - 90px); overflow: auto">
 			<table class="centered highlight">
 				<thead>
