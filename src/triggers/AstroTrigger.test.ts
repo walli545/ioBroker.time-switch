@@ -6,8 +6,7 @@ import { Weekday } from './Weekday';
 describe('AstroTrigger', () => {
 	describe('ctor and getter', () => {
 		it('throws when astroTime is null', () => {
-			// @ts-ignore
-			expect(() => new AstroTrigger(null, 0, [Weekday.Monday])).to.throw();
+			expect(() => new AstroTrigger(null as any, 0, [Weekday.Monday])).to.throw();
 		});
 
 		it('throws when shift is 601', () => {
@@ -27,8 +26,7 @@ describe('AstroTrigger', () => {
 		});
 
 		it('throws when weekdays is null', () => {
-			// @ts-ignore
-			expect(() => new AstroTrigger(AstroTime.Dawn, 0, null)).to.throw();
+			expect(() => new AstroTrigger(AstroTime.Dawn, 0, null as any)).to.throw();
 		});
 
 		it('throws when weekdays is empty', () => {
