@@ -13,14 +13,12 @@ describe('SetStateValueActionSerializer', () => {
 	describe('serialize', () => {
 		it('throws when objectToSerialize is null', () => {
 			const sut = new SetStateValueActionSerializer(stateService.object);
-			// @ts-ignore
-			expect(() => sut.serialize(null)).to.throw();
+			expect(() => sut.serialize(null as any)).to.throw();
 		});
 
 		it('throws when objectToSerialize is undefined', () => {
 			const sut = new SetStateValueActionSerializer(stateService.object);
-			// @ts-ignore
-			expect(() => sut.serialize(undefined)).to.throw();
+			expect(() => sut.serialize(undefined as any)).to.throw();
 		});
 
 		it('throws when trigger type can not be serialized', () => {

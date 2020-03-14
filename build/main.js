@@ -1,7 +1,4 @@
 "use strict";
-/*
- * Created with @iobroker/create-adapter v1.16.0
- */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -115,9 +112,9 @@ class TimeSwitch extends utils.Adapter {
         return fullId.substr(prefix.length);
     }
     registerAction(id, action) {
+        var _a;
         if (action.getTrigger() instanceof TimeTrigger_1.TimeTrigger) {
-            // @ts-ignore
-            this.scheduleToTimeTriggerScheduler.get(id).register(action.getTrigger(), () => {
+            (_a = this.scheduleToTimeTriggerScheduler.get(id)) === null || _a === void 0 ? void 0 : _a.register(action.getTrigger(), () => {
                 this.log.info('trigger fired');
                 action.execute();
             });
@@ -128,9 +125,9 @@ class TimeSwitch extends utils.Adapter {
         }
     }
     unregisterAction(id, action) {
+        var _a;
         if (action.getTrigger() instanceof TimeTrigger_1.TimeTrigger) {
-            // @ts-ignore
-            this.scheduleToTimeTriggerScheduler.get(id).unregister(action.getTrigger());
+            (_a = this.scheduleToTimeTriggerScheduler.get(id)) === null || _a === void 0 ? void 0 : _a.unregister(action.getTrigger());
             this.log.debug(`Unregistered trigger time trigger ${action.getTrigger()}`);
         }
         else {
@@ -138,10 +135,10 @@ class TimeSwitch extends utils.Adapter {
         }
     }
     onScheduleChange(id, scheduleString) {
+        var _a;
         this.log.info('onScheduleChange: ' + scheduleString);
         if (this.scheduleToActions.has(id)) {
-            // @ts-ignore
-            this.scheduleToActions.get(id).forEach(a => {
+            (_a = this.scheduleToActions.get(id)) === null || _a === void 0 ? void 0 : _a.forEach(a => {
                 this.unregisterAction(id, a);
             });
         }
@@ -154,8 +151,8 @@ class TimeSwitch extends utils.Adapter {
             const actions = schedule.actions.map((a) => this.setStateActionSerialier.deserialize(JSON.stringify(a)));
             this.log.info(`actions length: ${actions.length}`);
             actions.forEach((a) => {
-                // @ts-ignore
-                this.scheduleToActions.get(id).push(a);
+                var _a;
+                (_a = this.scheduleToActions.get(id)) === null || _a === void 0 ? void 0 : _a.push(a);
                 this.registerAction(id, a);
             });
         }

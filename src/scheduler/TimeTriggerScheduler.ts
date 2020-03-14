@@ -39,7 +39,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 		}
 	}
 
-	private removeTrigger(trigger: Trigger) {
+	private removeTrigger(trigger: Trigger): void {
 		this.registered = this.registered.filter(r => r[0] !== trigger);
 	}
 

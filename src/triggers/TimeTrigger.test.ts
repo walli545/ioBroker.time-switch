@@ -5,8 +5,7 @@ import { Weekday } from './Weekday';
 describe('TimeTrigger', () => {
 	describe('ctor and getter', () => {
 		it('throws when hour is undefined', () => {
-			// @ts-ignore
-			expect(() => new TimeTrigger(undefined, 0, [Weekday.Monday])).to.throw();
+			expect(() => new TimeTrigger(undefined as any, 0, [Weekday.Monday])).to.throw();
 		});
 
 		it('throws when hour is 24', () => {
@@ -22,8 +21,7 @@ describe('TimeTrigger', () => {
 		});
 
 		it('throws when minute is undefined', () => {
-			// @ts-ignore
-			expect(() => new TimeTrigger(0, undefined, [Weekday.Monday])).to.throw();
+			expect(() => new TimeTrigger(0, undefined as any, [Weekday.Monday])).to.throw();
 		});
 
 		it('throws when minute is 60', () => {
@@ -39,13 +37,11 @@ describe('TimeTrigger', () => {
 		});
 
 		it('throws when weekdays is null', () => {
-			// @ts-ignore
-			expect(() => new TimeTrigger(0, 0, null)).to.throw();
+			expect(() => new TimeTrigger(0, 0, null as any)).to.throw();
 		});
 
 		it('throws when weekdays is undefined', () => {
-			// @ts-ignore
-			expect(() => new TimeTrigger(0, 0, undefined)).to.throw();
+			expect(() => new TimeTrigger(0, 0, undefined as any)).to.throw();
 		});
 
 		it('throws when weekdays is empty', () => {

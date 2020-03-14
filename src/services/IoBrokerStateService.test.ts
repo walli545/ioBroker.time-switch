@@ -7,21 +7,18 @@ describe('IoBrokerStateService', () => {
 
 	describe('ctor', () => {
 		it('throws when adapter is null', () => {
-			// @ts-ignore
-			expect(() => new IoBrokerStateService(null)).to.throw();
+			expect(() => new IoBrokerStateService(null as any)).to.throw();
 		});
 	});
 
 	describe('setState', () => {
 		it('throws when id is null', () => {
 			const sut = new IoBrokerStateService(adapterMock.object);
-			// @ts-ignore
-			expect(() => sut.setState(null, 'abc')).to.throw();
+			expect(() => sut.setState(null as any, 'abc')).to.throw();
 		});
 
 		it('throws when id is empty', () => {
 			const sut = new IoBrokerStateService(adapterMock.object);
-			// @ts-ignore
 			expect(() => sut.setState('', 'abc')).to.throw();
 		});
 
@@ -35,13 +32,11 @@ describe('IoBrokerStateService', () => {
 	describe('setForeignState', () => {
 		it('throws when id is null', () => {
 			const sut = new IoBrokerStateService(adapterMock.object);
-			// @ts-ignore
-			expect(() => sut.setForeignState(null, 'abc', false)).to.throw();
+			expect(() => sut.setForeignState(null as any, 'abc')).to.throw();
 		});
 
 		it('throws when id is empty', () => {
 			const sut = new IoBrokerStateService(adapterMock.object);
-			// @ts-ignore
 			expect(() => sut.setForeignState('', 'abc')).to.throw();
 		});
 

@@ -13,7 +13,7 @@ export abstract class BaseTrigger implements Trigger {
 		return this.weekdays;
 	}
 
-	private checkWeekdays(weekdays: Weekday[]) {
+	private checkWeekdays(weekdays: Weekday[]): void {
 		if (weekdays == null || weekdays == undefined) {
 			throw new Error('Weekdays may not be null or undefined.');
 		}

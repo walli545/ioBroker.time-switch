@@ -10,14 +10,14 @@ export class IoBrokerStateService implements StateService {
 		this.adapter = adapter;
 	}
 
-	setState(id: string, value: string | number | boolean) {
+	setState(id: string, value: string | number | boolean): void {
 		if (id == null || id.length === 0) {
 			throw new Error('id may not be null or empty.');
 		}
 		this.adapter.setState(id, value, false);
 	}
 
-	setForeignState(id: string, value: string | number | boolean) {
+	setForeignState(id: string, value: string | number | boolean): void {
 		if (id == null || id.length === 0) {
 			throw new Error('id may not be null or empty.');
 		}

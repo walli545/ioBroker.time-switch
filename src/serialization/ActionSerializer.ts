@@ -10,6 +10,7 @@ export abstract class ActionSerializer implements Serializer<Action> {
 		return {
 			getTrigger: () => this.deserializeTrigger(json.trigger),
 			getId: () => json.id,
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			execute: () => {},
 		} as Action;
 	}

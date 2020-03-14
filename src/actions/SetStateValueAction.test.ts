@@ -14,8 +14,14 @@ describe('SetStateValueAction', () => {
 
 		it('throws when id is null', () => {
 			expect(
-				// @ts-ignore
-				() => new SetStateValueAction<string>(null, validTrigger, validStateId, validValue, validStateService),
+				() =>
+					new SetStateValueAction<string>(
+						null as any,
+						validTrigger,
+						validStateId,
+						validValue,
+						validStateService,
+					),
 			).to.throw();
 		});
 
@@ -23,8 +29,7 @@ describe('SetStateValueAction', () => {
 			expect(
 				() =>
 					new SetStateValueAction<string>(
-						// @ts-ignore
-						undefined,
+						undefined as any,
 						validTrigger,
 						validStateId,
 						validValue,
@@ -35,42 +40,52 @@ describe('SetStateValueAction', () => {
 
 		it('throws when id is empty', () => {
 			expect(
-				// @ts-ignore
 				() => new SetStateValueAction<string>('', validTrigger, validStateId, validValue, validStateService),
 			).to.throw();
 		});
 
 		it('throws when trigger is null', () => {
 			expect(
-				// @ts-ignore
-				() => new SetStateValueAction<string>(validId, null, validStateId, validValue, validStateService),
+				() =>
+					new SetStateValueAction<string>(validId, null as any, validStateId, validValue, validStateService),
 			).to.throw();
 		});
 
 		it('throws when trigger is undefined', () => {
 			expect(
-				// @ts-ignore
-				() => new SetStateValueAction<string>(validId, undefined, validStateId, validValue, validStateService),
+				() =>
+					new SetStateValueAction<string>(
+						validId,
+						undefined as any,
+						validStateId,
+						validValue,
+						validStateService,
+					),
 			).to.throw();
 		});
 
 		it('throws when idOfStateToSet is null', () => {
 			expect(
-				// @ts-ignore
-				() => new SetStateValueAction<string>(validId, validTrigger, null, validValue, validStateService),
+				() =>
+					new SetStateValueAction<string>(validId, validTrigger, null as any, validValue, validStateService),
 			).to.throw();
 		});
 
 		it('throws when idOfStateToSet is undefined', () => {
 			expect(
-				// @ts-ignore
-				() => new SetStateValueAction<string>(validId, validTrigger, undefined, validValue, validStateService),
+				() =>
+					new SetStateValueAction<string>(
+						validId,
+						validTrigger,
+						undefined as any,
+						validValue,
+						validStateService,
+					),
 			).to.throw();
 		});
 
 		it('throws when idOfStateToSet is empty', () => {
 			expect(
-				// @ts-ignore
 				() => new SetStateValueAction<string>('', validTrigger, '', validValue, validStateService),
 			).to.throw();
 		});
@@ -78,22 +93,26 @@ describe('SetStateValueAction', () => {
 		it('throws when valueToSet is undefined', () => {
 			expect(
 				() =>
-					// @ts-ignore
-					new SetStateValueAction<string>(validId, validTrigger, validStateId, undefined, validStateService),
+					new SetStateValueAction<string>(
+						validId,
+						validTrigger,
+						validStateId,
+						undefined as any,
+						validStateService,
+					),
 			).to.throw();
 		});
 
 		it('throws when stateService is null', () => {
 			expect(
-				// @ts-ignore
-				() => new SetStateValueAction<string>(validId, validTrigger, validStateId, validValue, null),
+				() => new SetStateValueAction<string>(validId, validTrigger, validStateId, validValue, null as any),
 			).to.throw();
 		});
 
 		it('throws when stateService is undefined', () => {
 			expect(
-				// @ts-ignore
-				() => new SetStateValueAction<string>(validId, validTrigger, validStateId, validValue, undefined),
+				() =>
+					new SetStateValueAction<string>(validId, validTrigger, validStateId, validValue, undefined as any),
 			).to.throw();
 		});
 

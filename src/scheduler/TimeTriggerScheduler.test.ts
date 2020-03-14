@@ -9,7 +9,9 @@ describe('TimeTriggerScheduler', function() {
 		it('throws on registering same trigger twice', () => {
 			const sut = new TimeTriggerScheduler();
 			const trigger = new TimeTrigger(12, 30, [Weekday.Monday]);
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			sut.register(trigger, () => {});
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			expect(() => sut.register(trigger, () => {})).to.throw();
 			sut.unregister(trigger);
 		});
