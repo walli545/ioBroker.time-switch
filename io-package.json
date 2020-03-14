@@ -65,6 +65,7 @@
 		]
 	},
 	"native": {
+		"schedules": []
 	},
 	"objects": [],
 	"instanceObjects": []
