@@ -57,25 +57,6 @@
 		"type": "date-and-time",
 		"compact": true,
 		"materialize": true,
-		"materializeTab": true,
-		"adminTab": {
-			"singleton": true,
-			"name": {
-				"en": "time-switch",
-				"de": "Zeitschaltuhr",
-				"ru": "реле времени",
-				"pt": "mudança de tempo",
-				"nl": "tijdschakelaar",
-				"fr": "interrupteur horaire",
-				"it": "tempo-interruttore",
-				"es": "interruptor de tiempo",
-				"pl": "zmiana czasu",
-				"zh-cn": "定时开关"
-			},
-			"link": "",
-			"fa-icon": "info"
-		},
-		"supportCustoms": true,
 		"dependencies": [
 			{
 				"js-controller": ">=1.4.2"
@@ -84,8 +65,6 @@
 		]
 	},
 	"native": {
-		"option1": true,
-		"option2": "42"
 	},
 	"objects": [],
 	"instanceObjects": []
