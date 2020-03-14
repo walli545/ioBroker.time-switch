@@ -5,7 +5,6 @@ export class ScheduleWidget {
 	vis = null;
 
 	scheduledActions = [];
-	switchedStateId = null;
 	enabled = true;
 	alias = '';
 
