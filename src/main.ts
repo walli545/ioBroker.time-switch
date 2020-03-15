@@ -7,11 +7,7 @@ import { TimeTriggerScheduler } from './scheduler/TimeTriggerScheduler';
 import { Action } from './actions/Action';
 import { TimeTrigger } from './triggers/TimeTrigger';
 
-// Load your modules here, e.g.:
-// import * as fs from "fs";
-
 // Augment the adapter.config object with the actual types
-// TODO: delete this in the next version
 declare global {
 	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace ioBroker {
@@ -26,7 +22,7 @@ class TimeSwitch extends utils.Adapter {
 	private scheduleToActions: Map<string, Action[]> = new Map<string, Action[]>();
 	private scheduleToTimeTriggerScheduler: Map<string, TimeTriggerScheduler> = new Map<string, TimeTriggerScheduler>();
 	private stateService = new IoBrokerStateService(this);
-	private setStateActionSerialier = new SetStateValueActionSerializer(this.stateService);
+	private setStateActionSerializer = new SetStateValueActionSerializer(this.stateService);
 
 	public constructor(options: Partial<ioBroker.AdapterOptions> = {}) {
 		super({
@@ -44,83 +40,41 @@ class TimeSwitch extends utils.Adapter {
 	 * Is called when databases are connected and adapter received configuration.
 	 */
 	private async onReady(): Promise<void> {
-		this.log.debug('onReady');
-		this.log.info('config: ' + this.config.schedules.length);
 		let schedulesFromSettings = this.config.schedules;
-		this.log.info(schedulesFromSettings.join(', '));
 
 		let record = await this.getStatesAsync(`time-switch.${this.instance}.schedule*`);
 		for (const fullId in record) {
 			const id = this.convertToLocalId(fullId);
 			if (schedulesFromSettings.includes(id)) {
 				schedulesFromSettings = schedulesFromSettings.filter(i => i !== id);
-				this.log.info('Found state ' + id);
+				this.log.debug('Found state ' + id);
 			} else {
-				this.log.info('Deleting state ' + id);
+				this.log.debug('Deleting state ' + id);
 				await this.deleteStateAsync(id);
 			}
 		}
 		for (const s of schedulesFromSettings) {
-			this.log.info('State ' + s + 'not found, creating');
+			this.log.debug('State ' + s + 'not found, creating');
 			await this.createStateAsync('', '', s, { read: true, write: true, type: 'string', role: 'json' });
 			const r = await this.setStateAsync(s, '{"alias": "", "enabled": false, "actions":[]}');
-			this.log.info('result: ' + r);
+			this.log.debug('result: ' + r);
 		}
 
 		record = await this.getStatesAsync(`time-switch.${this.instance}.schedule*`);
 		for (const fullId in record) {
 			const id = this.convertToLocalId(fullId);
-			this.log.info('Creating scheduler for ' + id);
+			this.log.debug('Creating scheduler for ' + id);
 			this.scheduleToTimeTriggerScheduler.set(id, new TimeTriggerScheduler());
 			this.scheduleToActions.set(id, []);
 			const state = record[fullId];
-			this.log.info(`got state: ${state ? state.toString() : 'null'}`);
+			this.log.debug(`got state: ${state ? state.toString() : 'null'}`);
 			if (state) {
 				this.onScheduleChange(id, state.val);
 			} else {
 				this.log.error('Could not retrieve state');
 			}
 		}
-		/*
-		For every state in the system there has to be also an object of type state
-		Here a simple template for a boolean variable named "testVariable"
-		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-		*/
-		// await this.setObjectAsync('testVariable', {
-		// 	type: 'state',
-		// 	common: {
-		// 		name: 'testVariable',
-		// 		type: 'boolean',
-		// 		role: 'indicator',
-		// 		read: true,
-		// 		write: true,
-		// 	},
-		// 	native: {},
-		// });
-
-		// in this template all states changes inside the adapters namespace are subscribed
 		this.subscribeStates('*');
-
-		/*
-		setState examples
-		you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-		*/
-		// the variable testVariable is set to true as command (ack=false)
-		// await this.setStateAsync('testVariable', true);
-
-		// same thing, but the value is flagged "ack"
-		// ack should be always set to true if the value is received from or acknowledged from the target system
-		// await this.setStateAsync('testVariable', { val: true, ack: true });
-
-		// same thing, but the state is deleted after 30s (getState will return null afterwards)
-		// await this.setStateAsync('testVariable', { val: true, ack: true, expire: 30 });
-
-		// examples for the checkPassword/checkGroup functions
-		// let result = await this.checkPasswordAsync('admin', 'iobroker');
-		// this.log.info('check user admin pw ioboker: ' + result);
-
-		// result = await this.checkGroupAsync('admin', 'admin');
-		// this.log.info('check group user admin group admin: ' + result);
 	}
 
 	private convertToLocalId(fullId: string): string {
@@ -131,10 +85,10 @@ class TimeSwitch extends utils.Adapter {
 	private registerAction(id: string, action: Action): void {
 		if (action.getTrigger() instanceof TimeTrigger) {
 			this.scheduleToTimeTriggerScheduler.get(id)?.register(action.getTrigger() as TimeTrigger, () => {
-				this.log.info('trigger fired');
+				this.log.info(`Action ${action.getId()} from ${id} triggered`);
 				action.execute();
 			});
-			this.log.info(`Registered trigger time trigger ${action.getTrigger()}`);
+			this.log.debug(`Registered trigger time trigger ${action.getTrigger()}`);
 		} else {
 			this.log.error(`No scheduler for trigger ${action.getTrigger()} found`);
 		}
@@ -150,7 +104,7 @@ class TimeSwitch extends utils.Adapter {
 	}
 
 	private onScheduleChange(id: string, scheduleString: string): void {
-		this.log.info('onScheduleChange: ' + scheduleString);
+		this.log.debug('onScheduleChange: ' + scheduleString);
 		if (this.scheduleToActions.has(id)) {
 			this.scheduleToActions.get(id)?.forEach(a => {
 				this.unregisterAction(id, a);
@@ -160,17 +114,17 @@ class TimeSwitch extends utils.Adapter {
 		this.scheduleToActions.set(id, []);
 		const schedule = JSON.parse(scheduleString);
 		if (schedule.enabled == true) {
-			this.log.info('is enabled');
+			this.log.debug('is enabled');
 			const actions = schedule.actions.map((a: any) =>
-				this.setStateActionSerialier.deserialize(JSON.stringify(a)),
+				this.setStateActionSerializer.deserialize(JSON.stringify(a)),
 			);
-			this.log.info(`actions length: ${actions.length}`);
+			this.log.debug(`actions length: ${actions.length}`);
 			actions.forEach((a: Action) => {
 				this.scheduleToActions.get(id)?.push(a);
 				this.registerAction(id, a);
 			});
 		} else {
-			this.log.info('schedule not enabled');
+			this.log.debug('schedule not enabled');
 		}
 	}
 
@@ -179,6 +133,13 @@ class TimeSwitch extends utils.Adapter {
 	 */
 	private onUnload(callback: () => void): void {
 		try {
+			for (const id in this.scheduleToActions.keys()) {
+				this.scheduleToActions.get(id)?.forEach(a => {
+					this.unregisterAction(id, a);
+				});
+			}
+			this.scheduleToActions.clear();
+			this.scheduleToTimeTriggerScheduler.clear();
 			this.log.info('cleaned everything up...');
 			callback();
 		} catch (e) {
@@ -205,15 +166,15 @@ class TimeSwitch extends utils.Adapter {
 	private onStateChange(id: string, state: ioBroker.State | null | undefined): void {
 		if (state) {
 			// The state was changed
-			this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+			this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
 			const pattern = `time-switch.${this.instance}.schedule`;
 			if (id.startsWith(pattern)) {
-				this.log.info('is schedule id');
+				this.log.debug('is schedule id');
 				this.onScheduleChange(this.convertToLocalId(id), state.val);
 			}
 		} else {
 			// The state was deleted
-			this.log.info(`state ${id} deleted`);
+			this.log.debug(`state ${id} deleted`);
 		}
 	}
 
