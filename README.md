@@ -47,7 +47,7 @@ In the widget the schedule can be disabled temporarily and the switched state ca
 
 ## Changelog
 
-### 0.0.1
+### 1.0.0
 * (walli545) initial release, features:
     * Admin settings to create schedules
     * vis widget to edit schedules and add actions
