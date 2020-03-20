@@ -1,0 +1,31 @@
+.view {
+	display: block;
+	color: rgb(93, 93, 93);
+	width: 100%;
+	margin-top: 20px;
+}
+
+.view span {
+	font-weight: 500;
+	margin-left: 3px;
+	margin-right: 3px;
+	font-size: 23px;
+}
+
+.view span:first-child {
+	margin-left: 0px;
+}
+
+.view span.active {
+	color: white;
+}
+
+.edit {
+	display: grid;
+	margin: 10px;
+}
+
+.pure-material-checkbox {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}

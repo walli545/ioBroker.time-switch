@@ -12,70 +12,46 @@
 
 ## time-switch adapter for ioBroker
 
-Time based switching of devices
+This adapter allows the user to switch devices on and off using time schedules. 
+The schedules can be fully configured by a vis widget.
+One schedule switches one ioBroker state and consists of one or more actions that define when and how the state should be switched. 
+It is possible to configure at which time and on which weekdays the action should be triggered. There can be custom on/off values also.
+In the widget the schedule can be disabled temporarily and the switched state can be controlled manually.
 
-## Developer manual
-This section is intended for the developer. It can be deleted later
+![Preview](widgets/time-switch/img/prev/prev-device-schedule.jpg)
 
-### Getting started
+## How to setup a schedule
 
-You are almost done, only a few steps left:
-1. Create a new repository on GitHub with the name `ioBroker.time-switch`
+  1. Install the adapter and create an instance (one instance can handle many schedules) 
+  2. Go to the instance settings and click "Add schedule" to create a new schedule (one schedule can switch one ioBroker state).
+     
+     Keep the schedule OID of the newly created schedule in mind, we will need that later.
+  3. Now go to the vis editor and open the view where the schedule should be visible.
+     Create a new "Device-Schedule" widget and adjust it's size and position to fit your layout.
+  4. Now configure the widget with the following properties found under the "Common" attributes:
+   
+     - dataId: Open the select OID dialog and select the schedule OID that you remembered earlier. It can be found under "time-switch.0".
+     - stateId: Select the OID of the state that should be switched by the schedule, e.g. on/off status of a wall plug.
+     - onValue/offValue: Enter the values that represent the devices on/off state, e.g. 0/1, true/false, ON/OFF, ... .
+  5. The rest can be configured in the view part of the widget.
+   
+     - Enable/Disable automatic switching
+     - Change the current value of the state
+     - Add/Delete/Edit actions
+     - Change the heading of the schedule plan
+     
+## Possible features in the future
 
-1. Push all files to the GitHub repo. The creator has already set up the local repository for you:  
-	```bash
-	git push origin master
-	```
-1. Head over to [src/main.ts](src/main.ts) and start programming!
-
-### Scripts in `package.json`
-Several npm scripts are predefined for your convenience. You can run them using `npm run <scriptname>`
-| Script name | Description                                              |
-|-------------|----------------------------------------------------------|
-| `build`    | Re-compile the TypeScript sources.                       |
-| `watch`     | Re-compile the TypeScript sources and watch for changes. |
-| `test:ts`   | Executes the tests you defined in `*.test.ts` files.     |
-| `test:package`    | Ensures your `package.json` and `io-package.json` are valid. |
-| `test:unit`       | Tests the adapter startup with unit tests (fast, but might require module mocks to work). |
-| `test:integration`| Tests the adapter startup with an actual instance of ioBroker. |
-| `test` | Performs a minimal test run on package files and your tests. |
-| `coverage` | Generates code coverage using your test files. |
-
-### Writing tests
-When done right, testing code is invaluable, because it gives you the 
-confidence to change your code while knowing exactly if and when 
-something breaks. A good read on the topic of test-driven development 
-is https://hackernoon.com/introduction-to-test-driven-development-tdd-61a13bc92d92. 
-Although writing tests before the code might seem strange at first, but it has very 
-clear upsides.
-
-The template provides you with basic tests for the adapter startup and package files.
-It is recommended that you add your own tests into the mix.
-
-### Publishing the adapter
-See the documentation of [ioBroker.repositories](https://github.com/ioBroker/ioBroker.repositories#requirements-for-adapter-to-get-added-to-the-latest-repository).
-
-### Test the adapter manually on a local ioBroker installation
-In order to install the adapter locally without publishing, the following steps are recommended:
-1. Create a tarball from your dev directory:  
-	```bash
-	npm pack
-	```
-1. Upload the resulting file to your ioBroker host
-1. Install it locally (The paths are different on Windows):
-	```bash
-	cd /opt/iobroker
-	npm i /path/to/tarball.tgz
-	```
-
-For later updates, the above procedure is not necessary. Just do the following:
-1. Overwrite the changed files in the adapter directory (`/opt/iobroker/node_modules/iobroker.time-switch`)
-1. Execute `iobroker upload time-switch` on the ioBroker host
+- Translations for schedule widget
+- Astro actions (switch on sunrise, etc.)
 
 ## Changelog
 
-### 0.0.1
-* (walli545) initial release
+### 1.0.0
+* (walli545) initial release, features:
+    * Admin settings to create schedules
+    * vis widget to edit schedules and add actions
+    
 
 ## License
 MIT License

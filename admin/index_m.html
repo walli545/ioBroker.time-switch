@@ -1,7 +1,6 @@
 <html>
 
 <head>
-
 	<!-- Load ioBroker scripts and styles-->
 	<link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
 	<link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
@@ -18,76 +17,120 @@
 	<script type="text/javascript" src="words.js"></script>
 
 	<script type="text/javascript">
+		let g_onChange;
+		let scheduleIds;
+
 		// This will be called by the admin adapter when the settings page loads
 		function load(settings, onChange) {
-			// example: select elements with id=key and class=value and insert value
-			if (!settings) return;
-			$('.value').each(function () {
-				var $key = $(this);
-				var id = $key.attr('id');
-				if ($key.attr('type') === 'checkbox') {
-					// do not call onChange direct, because onChange could expect some arguments
-					$key.prop('checked', settings[id])
-						.on('change', () => onChange())
-						;
-				} else {
-					// do not call onChange direct, because onChange could expect some arguments
-					$key.val(settings[id])
-						.on('change', () => onChange())
-						.on('keyup', () => onChange())
-						;
-				}
+			g_onChange = onChange;
+			$('#addSchedule').on('click', function () {
+				const newId = getNextScheduleId();
+				scheduleIds.push(newId);
+				addSchedule(newId);
+				onChange(true);
 			});
+
+			if (!settings) return;
+			if (settings.schedules) {
+				scheduleIds = settings.schedules;
+				scheduleIds.sort().forEach(s => {
+					addSchedule(s);
+				});
+			}
+
 			onChange(false);
-			// reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
 			if (M) M.updateTextFields();
 		}
 
 		// This will be called by the admin adapter when the user presses the save button
 		function save(callback) {
-			// example: select elements with class=value and build settings object
-			var obj = {};
-			$('.value').each(function () {
-				var $this = $(this);
-				if ($this.attr('type') === 'checkbox') {
-					obj[$this.attr('id')] = $this.prop('checked');
+			callback({schedules: scheduleIds});
+			g_onChange(false);
+		}
+
+		function addSchedule(scheduleId){
+			socket.emit('getState', `${adapter}.${instance}.${scheduleId}`, (error, state) => {
+				let scheduleData;
+				if (state && state.val) {
+					scheduleData = JSON.parse(state.val)
 				} else {
-					obj[$this.attr('id')] = $this.val();
+					scheduleData = {actions: [], enabled: false, alias: ''};
 				}
+				let enabledText = translateWord(scheduleData.enabled ? 'true' : 'false');
+				let newRow = `
+					<tr>
+						<td>${scheduleId}</td>
+						<td>${scheduleData.alias}</td>
+						<td>${scheduleData.actions.length}</td>
+						<td>${enabledText}</td>
+						<td>
+							<a class="delete-schedule values-buttons btn-floating btn-small waves-effect waves-light red"><i class="material-icons" title="Remove schedule">delete</i></a>
+						</td>
+					</tr>
+				`;
+
+				$('#schedules').append(newRow);
+				$('.delete-schedule').on('click', function(){
+					$(this).parents('tr').remove();
+					let scheduleId = $(this).parents('tr').find('td').eq(0).text();
+					scheduleIds = scheduleIds.filter(i => i !== scheduleId);
+					g_onChange(true);
+				});
+				if (M) M.updateTextFields();
 			});
-			callback(obj);
+		}
+
+		function getNextScheduleId() {
+			const pattern = /(?<=schedule)\d+/;
+			const mapped = scheduleIds.map(i => i.match(pattern)[0]);
+			const numbers = mapped
+					.map(s => Number.parseInt(s, 10))
+					.sort((a, b) => a-b);
+			let newIndex = 0;
+			for (let i = 0; i < numbers.length; i++) {
+				if (numbers[i] > newIndex) {
+					break;
+				} else {
+					newIndex++;
+				}
+			}
+			return `schedule${newIndex}`;
 		}
 	</script>
-
 </head>
 
 <body>
-
 	<div class="m adapter-container">
-
 		<div class="row">
 			<div class="col s12 m4 l2">
 				<img src="time-switch.png" class="logo">
 			</div>
 		</div>
 
-		<!-- Put your content here -->
-
-		<!-- For example columns with settings: -->
-		<div class="row">
-			<div class="col s6 input-field">
-				<input type="checkbox" class="value" id="option1" />
-				<label for="option1" class="translate">option1</label>
-			</div>
-
-			<div class="col s6 input-field">
-				<input type="text" class="value" id="option2" />
-				<label for="option2" class="translate">option2</label>
+		<div class="row" style="padding-bottom: 0">
+			<div class="input-field col">
+				<a class="waves-effect waves-light btn" id="addSchedule">
+					<i class="material-icons left">add</i><span class="translate">Add schedule</span>
+				</a>
 			</div>
 		</div>
 
+		<div class="table-values-div" style="height: calc(100% - 90px); overflow: auto">
+			<table class="centered highlight">
+				<thead>
+				<tr>
+					<th class="translate">scheduleId</th>
+					<th class="translate">name</th>
+					<th class="translate">action count</th>
+					<th class="translate">enabled</th>
+					<th class="translate" id="scheduleDelete" style="width: 30px"></th>
+				</tr>
+				</thead>
+				<tbody id="schedules">
+				</tbody>
+			</table>
+		</div>
 	</div>
-
 </body>
 
 </html>

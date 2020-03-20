@@ -1,4 +1,70 @@
 /* Style your widget here */
 .time-switch-class {
-	font-style: italic;
+
+}
+
+.time-switch-widget {
+	padding: 10px;
+	background-color: #424242;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	border-radius: 5px;;
+}
+
+.button {
+	cursor: pointer;
+	filter: invert(1);
+	align-self: center;
+}
+
+.md-switch-container {
+	margin: 10px;
+}
+
+#switched-oid {
+	color: #a5a5a5;
+	margin-bottom: 10px;
+}
+
+.heading div {
+	display: flex;
+}
+
+.heading .view h1 {
+	margin-bottom: 5px;
+	margin-top: 0px;
+	width: calc(100% - 30px);
+}
+
+.heading .edit input {
+	margin-bottom: 10px;
+	margin-top: 10px;
+	margin-right: 10px;
+	width: calc(100% - 30px);
+}
+
+#add img {
+	float: right;
+}
+
+.actions {
+	overflow-y: scroll;
+	padding-right: 5px;
+}
+.actions::-webkit-scrollbar-track
+{
+	border-radius: 10px;
+}
+
+.actions::-webkit-scrollbar
+{
+	width: 4px;
+	background-color: #424242;
+}
+
+.actions::-webkit-scrollbar-thumb
+{
+	border-radius: 4px;
+	background-color: #fff;
 }
