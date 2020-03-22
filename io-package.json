@@ -52,7 +52,6 @@
 		"readme": "https://github.com/walli545/ioBroker.time-switch/blob/master/README.md",
 		"loglevel": "info",
 		"restartAdapters": ["vis"],
-		"localLink": "%web_protocol%://%ip%:%web_port%/vis/edit.html",
 		"mode": "daemon",
 		"singleton": true,
 		"type": "date-and-time",
