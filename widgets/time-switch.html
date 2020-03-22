@@ -108,13 +108,13 @@
 <script id="tplTime-switchDevicePlan"
 		type="text/ejs"
 		class="vis-tpl"
-		data-vis-prev='<img src="widgets/time-switch/img/prev/prev-device-schedule.jpg"></img>'
+		data-vis-prev='<img src="widgets/time-switch/img/prev/prev-device-schedule.jpg" width="110px"></img>'
 		data-vis-attrs="dataId/id/onDataIdChange;stateId/id/onStateIdChange;onValue[true]/string/onOnValueChange;offValue[false]/string/onOffValueChange"
 		data-vis-set="time-switch"
 		data-vis-type="ctrl"
 		data-vis-name="Device-Schedule">
 	<% vis.binds['time-switch'].createWidget(this.data.wid, this.view, this.data, this.style); %>
-	<div style="width:100%; height: auto;" id="<%= this.data.attr('wid')%>" class="time-switch-widget vis-widget">
+	<div style="width:300px; height: auto;" id="<%= this.data.attr('wid')%>" class="time-switch-widget vis-widget">
 		<div class="heading">
 			<div class="view">
 				<h1></h1>
