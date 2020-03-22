@@ -33,7 +33,7 @@ In the widget the schedule can be disabled temporarily and the switched state ca
      - dataId: Open the select OID dialog and select the schedule OID that you remembered earlier. It can be found under "time-switch.0".
      - stateId: Select the OID of the state that should be switched by the schedule, e.g. on/off status of a wall plug.
      - onValue/offValue: Enter the values that represent the devices on/off state, e.g. 0/1, true/false, ON/OFF, ... .
-  5. The rest can be configured in the view part of the widget.
+  5. Everything else can be configured in the view part of the widget.
    
      - Enable/Disable automatic switching
      - Change the current value of the state
