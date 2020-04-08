@@ -33,9 +33,13 @@
 			if (!settings) return;
 			if (settings.schedules) {
 				scheduleIds = settings.schedules;
-				scheduleIds.sort().forEach(s => {
-					addSchedule(s);
-				});
+				scheduleIds
+						.map(i => Number.parseInt(i.substr('schedule'.length), 10))
+						.sort((a, b) => a-b)
+						.map(i => `schedule${i}`)
+						.forEach(s => {
+							addSchedule(s);
+						});
 			}
 
 			onChange(false);
