@@ -81,8 +81,7 @@
 		}
 
 		function getNextScheduleId() {
-			const pattern = /(?<=schedule)\d+/;
-			const mapped = scheduleIds.map(i => i.match(pattern)[0]);
+			const mapped = scheduleIds.map(i => i.substr(`schedule`.length));
 			const numbers = mapped
 					.map(s => Number.parseInt(s, 10))
 					.sort((a, b) => a-b);
