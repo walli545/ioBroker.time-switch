@@ -59,7 +59,7 @@
 				let enabledText = translateWord(scheduleData.enabled ? 'true' : 'false');
 				let newRow = `
 					<tr>
-						<td>${scheduleId}</td>
+						<td>${adapter}.${instance}.${scheduleId}</td>
 						<td>${scheduleData.alias}</td>
 						<td>${scheduleData.actions.length}</td>
 						<td>${enabledText}</td>
@@ -72,7 +72,8 @@
 				$('#schedules').append(newRow);
 				$('.delete-schedule').on('click', function(){
 					$(this).parents('tr').remove();
-					let scheduleId = $(this).parents('tr').find('td').eq(0).text();
+					let scheduleId = $(this).parents('tr').find('td').eq(0)
+							.text().substr(`${adapter}.${instance}.`.length);
 					scheduleIds = scheduleIds.filter(i => i !== scheduleId);
 					g_onChange(true);
 				});
