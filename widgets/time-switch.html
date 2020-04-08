@@ -109,7 +109,7 @@
 		type="text/ejs"
 		class="vis-tpl"
 		data-vis-prev='<img src="widgets/time-switch/img/prev/prev-device-schedule.jpg" width="110px"></img>'
-		data-vis-attrs="dataId/id/onDataIdChange;stateId/id/onStateIdChange;onValue[true]/string/onOnValueChange;offValue[false]/string/onOffValueChange"
+		data-vis-attrs="dataId/id/onDataIdChange;stateId/id/onStateIdChange;onValue[true]/string/onOnValueChange;offValue[false]/string/onOffValueChange;showOid[true]/checkbox"
 		data-vis-set="time-switch"
 		data-vis-type="ctrl"
 		data-vis-name="Device-Schedule">
@@ -125,7 +125,9 @@
 				<img class="button save" src="widgets/time-switch/img/save-24px.svg" width="28px" height="28px"/>
 			</div>
 		</div>
-		<div id="switched-oid"><%= this.data.attr('stateId')%></div>
+		<div id="switched-oid" style="<%= this.data.attr('showOid') ? '': 'display: none' %>">
+			<%= this.data.attr('stateId') %>
+		</div>
 		<div id="enabled" class="md-switch-container">
   			<div class="md-switch-track"></div>
   			<div class="md-switch-handle"></div>
