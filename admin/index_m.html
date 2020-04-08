@@ -33,9 +33,13 @@
 			if (!settings) return;
 			if (settings.schedules) {
 				scheduleIds = settings.schedules;
-				scheduleIds.sort().forEach(s => {
-					addSchedule(s);
-				});
+				scheduleIds
+						.map(i => Number.parseInt(i.substr('schedule'.length), 10))
+						.sort((a, b) => a-b)
+						.map(i => `schedule${i}`)
+						.forEach(s => {
+							addSchedule(s);
+						});
 			}
 
 			onChange(false);
@@ -59,7 +63,7 @@
 				let enabledText = translateWord(scheduleData.enabled ? 'true' : 'false');
 				let newRow = `
 					<tr>
-						<td>${scheduleId}</td>
+						<td>${adapter}.${instance}.${scheduleId}</td>
 						<td>${scheduleData.alias}</td>
 						<td>${scheduleData.actions.length}</td>
 						<td>${enabledText}</td>
@@ -72,7 +76,8 @@
 				$('#schedules').append(newRow);
 				$('.delete-schedule').on('click', function(){
 					$(this).parents('tr').remove();
-					let scheduleId = $(this).parents('tr').find('td').eq(0).text();
+					let scheduleId = $(this).parents('tr').find('td').eq(0)
+							.text().substr(`${adapter}.${instance}.`.length);
 					scheduleIds = scheduleIds.filter(i => i !== scheduleId);
 					g_onChange(true);
 				});
@@ -81,8 +86,7 @@
 		}
 
 		function getNextScheduleId() {
-			const pattern = /(?<=schedule)\d+/;
-			const mapped = scheduleIds.map(i => i.match(pattern)[0]);
+			const mapped = scheduleIds.map(i => i.substr(`schedule`.length));
 			const numbers = mapped
 					.map(s => Number.parseInt(s, 10))
 					.sort((a, b) => a-b);
@@ -118,13 +122,13 @@
 		<div class="table-values-div" style="height: calc(100% - 90px); overflow: auto">
 			<table class="centered highlight">
 				<thead>
-				<tr>
-					<th class="translate">scheduleId</th>
-					<th class="translate">name</th>
-					<th class="translate">action count</th>
-					<th class="translate">enabled</th>
-					<th class="translate" id="scheduleDelete" style="width: 30px"></th>
-				</tr>
+					<tr>
+						<th class="translate">scheduleId</th>
+						<th class="translate">name</th>
+						<th class="translate">action count</th>
+						<th class="translate">enabled</th>
+						<th class="translate" id="scheduleDelete" style="width: 30px"></th>
+					</tr>
 				</thead>
 				<tbody id="schedules">
 				</tbody>
