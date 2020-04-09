@@ -1,12 +1,13 @@
 import { BaseTrigger } from './BaseTrigger';
 import { Weekday } from './Weekday';
+import { Action } from '../actions/Action';
 
 export class TimeTrigger extends BaseTrigger {
 	private readonly hours: number;
 	private readonly minutes: number;
 
-	constructor(hour: number, minute: number, weekdays: Weekday[]) {
-		super(weekdays);
+	constructor(hour: number, minute: number, weekdays: Weekday[], action: Action) {
+		super(action, weekdays);
 		if (hour == undefined || hour < 0 || hour > 23) {
 			throw new Error('Hour must be in range 0-23.');
 		}

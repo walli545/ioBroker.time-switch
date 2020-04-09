@@ -1,6 +1,7 @@
 import { AstroTime } from './AstroTime';
 import { BaseTrigger } from './BaseTrigger';
 import { Weekday } from './Weekday';
+import { Action } from '../actions/Action';
 
 export class AstroTrigger extends BaseTrigger {
 	public static readonly MAX_SHIFT = 600;
@@ -9,8 +10,8 @@ export class AstroTrigger extends BaseTrigger {
 
 	private readonly shiftInMinutes: number;
 
-	constructor(astroTime: AstroTime, shiftInMinutes: number, weekdays: Weekday[]) {
-		super(weekdays);
+	constructor(astroTime: AstroTime, shiftInMinutes: number, weekdays: Weekday[], action: Action) {
+		super(action, weekdays);
 		if (astroTime == null) {
 			throw new Error('Astro time may not be null.');
 		}

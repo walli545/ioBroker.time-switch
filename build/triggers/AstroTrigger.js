@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseTrigger_1 = require("./BaseTrigger");
 class AstroTrigger extends BaseTrigger_1.BaseTrigger {
-    constructor(astroTime, shiftInMinutes, weekdays) {
-        super(weekdays);
+    constructor(astroTime, shiftInMinutes, weekdays, action) {
+        super(action, weekdays);
         if (astroTime == null) {
             throw new Error('Astro time may not be null.');
         }
