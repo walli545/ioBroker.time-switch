@@ -1,12 +1,12 @@
-import { SetStateValueActionSerializer } from './SetStateValueActionSerializer';
+import { SetStateValueActionSerializer } from '../../../src/serialization/SetStateValueActionSerializer';
 import * as TypeMoq from 'typemoq';
-import { StateService } from '../services/StateService';
-import { SetStateValueAction } from '../actions/SetStateValueAction';
-import { TimeTrigger } from '../triggers/TimeTrigger';
-import { TimeTriggerSerializer } from './TimeTriggerSerializer';
+import { StateService } from '../../../src/services/StateService';
+import { SetStateValueAction } from '../../../src/actions/SetStateValueAction';
+import { TimeTrigger } from '../../../src/triggers/TimeTrigger';
+import { TimeTriggerSerializer } from '../../../src/serialization/TimeTriggerSerializer';
 import { expect } from 'chai';
-import { Trigger } from '../triggers/Trigger';
-import { Weekday } from '../triggers/Weekday';
+import { Trigger } from '../../../src/triggers/Trigger';
+import { Weekday } from '../../../src/triggers/Weekday';
 
 describe('SetStateValueActionSerializer', () => {
 	const stateService = TypeMoq.Mock.ofType<StateService>();

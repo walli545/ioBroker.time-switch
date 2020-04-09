@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { TimeTrigger } from './TimeTrigger';
-import { Weekday } from './Weekday';
+import { TimeTrigger } from '../../../src/triggers/TimeTrigger';
+import { Weekday } from '../../../src/triggers/Weekday';
 
 describe('TimeTrigger', () => {
 	describe('ctor and getter', () => {

@@ -1,8 +1,8 @@
-import { SetStateValueAction } from './SetStateValueAction';
+import { SetStateValueAction } from '../../../src/actions/SetStateValueAction';
 import { expect } from 'chai';
 import * as TypeMoq from 'typemoq';
-import { Trigger } from '../triggers/Trigger';
-import { StateService } from '../services/StateService';
+import { Trigger } from '../../../src/triggers/Trigger';
+import { StateService } from '../../../src/services/StateService';
 
 describe('SetStateValueAction', () => {
 	describe('ctor', () => {

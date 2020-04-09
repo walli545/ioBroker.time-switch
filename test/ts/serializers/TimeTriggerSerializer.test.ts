@@ -1,6 +1,6 @@
-import { TimeTriggerSerializer } from './TimeTriggerSerializer';
-import { TimeTrigger } from '../triggers/TimeTrigger';
-import { Weekday } from '../triggers/Weekday';
+import { TimeTriggerSerializer } from '../../../src/serialization/TimeTriggerSerializer';
+import { TimeTrigger } from '../../../src/triggers/TimeTrigger';
+import { Weekday } from '../../../src/triggers/Weekday';
 import { expect } from 'chai';
 
 describe('TimeTriggerSerializer', () => {

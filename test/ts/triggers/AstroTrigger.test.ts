@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { AstroTime } from './AstroTime';
-import { AstroTrigger } from './AstroTrigger';
-import { Weekday } from './Weekday';
+import { AstroTime } from '../../../src/triggers/AstroTime';
+import { AstroTrigger } from '../../../src/triggers/AstroTrigger';
+import { Weekday } from '../../../src/triggers/Weekday';
 
 describe('AstroTrigger', () => {
 	describe('ctor and getter', () => {

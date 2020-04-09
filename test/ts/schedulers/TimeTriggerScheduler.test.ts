@@ -1,7 +1,7 @@
 import { fail } from 'assert';
-import { TimeTrigger } from '../triggers/TimeTrigger';
-import { Weekday } from '../triggers/Weekday';
-import { TimeTriggerScheduler } from './TimeTriggerScheduler';
+import { TimeTrigger } from '../../../src/triggers/TimeTrigger';
+import { Weekday } from '../../../src/triggers/Weekday';
+import { TimeTriggerScheduler } from '../../../src/scheduler/TimeTriggerScheduler';
 import { expect } from 'chai';
 
 describe('TimeTriggerScheduler', function() {
