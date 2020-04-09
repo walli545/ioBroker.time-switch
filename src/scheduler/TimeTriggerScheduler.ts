@@ -6,19 +6,17 @@ import { TriggerScheduler } from './TriggerScheduler';
 export class TimeTriggerScheduler extends TriggerScheduler {
 	private registered: [TimeTrigger, Job][] = [];
 
-	public register(trigger: TimeTrigger, onTrigger: () => void): void {
-		if (this.isRegistered(trigger)) {
+	public register(trigger: TimeTrigger): void {
+		if (this.getAssociatedJob(trigger)) {
 			throw new Error('Trigger is already registered.');
 		}
-		const newJob = scheduleJob(this.createRecurrenceRule(trigger), () => {
-			onTrigger();
-		});
+		const newJob = scheduleJob(this.createRecurrenceRule(trigger), trigger.getAction().execute);
 		this.registered.push([trigger, newJob]);
 	}
 
 	public unregister(trigger: TimeTrigger): void {
-		if (this.isRegistered(trigger)) {
-			const job = this.getAssociatedJob(trigger);
+		const job = this.getAssociatedJob(trigger)
+		if (job) {
 			cancelJob(job);
 			this.removeTrigger(trigger);
 		} else {
@@ -26,16 +24,12 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 		}
 	}
 
-	private isRegistered(trigger: TimeTrigger): boolean {
-		return this.registered.find(r => r[0] === trigger) != undefined;
-	}
-
-	private getAssociatedJob(trigger: TimeTrigger): Job {
+	private getAssociatedJob(trigger: TimeTrigger): Job | null {
 		const entry = this.registered.find(r => r[0] === trigger);
 		if (entry) {
 			return entry[1];
 		} else {
-			throw new Error('Trigger not found.');
+			return null;
 		}
 	}
 

@@ -7,18 +7,16 @@ class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         super(...arguments);
         this.registered = [];
     }
-    register(trigger, onTrigger) {
-        if (this.isRegistered(trigger)) {
+    register(trigger) {
+        if (this.getAssociatedJob(trigger)) {
             throw new Error('Trigger is already registered.');
         }
-        const newJob = node_schedule_1.scheduleJob(this.createRecurrenceRule(trigger), () => {
-            onTrigger();
-        });
+        const newJob = node_schedule_1.scheduleJob(this.createRecurrenceRule(trigger), trigger.getAction().execute);
         this.registered.push([trigger, newJob]);
     }
     unregister(trigger) {
-        if (this.isRegistered(trigger)) {
-            const job = this.getAssociatedJob(trigger);
+        const job = this.getAssociatedJob(trigger);
+        if (job) {
             node_schedule_1.cancelJob(job);
             this.removeTrigger(trigger);
         }
@@ -26,16 +24,13 @@ class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
             throw new Error('Trigger is not registered.');
         }
     }
-    isRegistered(trigger) {
-        return this.registered.find(r => r[0] === trigger) != undefined;
-    }
     getAssociatedJob(trigger) {
         const entry = this.registered.find(r => r[0] === trigger);
         if (entry) {
             return entry[1];
         }
         else {
-            throw new Error('Trigger not found.');
+            return null;
         }
     }
     removeTrigger(trigger) {
