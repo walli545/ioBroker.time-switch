@@ -7,15 +7,8 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 	private readonly offValue: T;
 	private readonly booleanValue: boolean;
 
-	constructor(
-		id: string,
-		idOfStateToSet: string,
-		onValue: T,
-		offValue: T,
-		booleanValue: boolean,
-		stateService: StateService,
-	) {
-		super(id, stateService);
+	constructor(idOfStateToSet: string, onValue: T, offValue: T, booleanValue: boolean, stateService: StateService) {
+		super(stateService);
 
 		if (idOfStateToSet == null || idOfStateToSet.length == 0) {
 			throw new Error('IdOfStateToSet may not be null or empty.');

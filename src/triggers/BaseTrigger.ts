@@ -5,14 +5,19 @@ import { Action } from '../actions/Action';
 export abstract class BaseTrigger implements Trigger {
 	private readonly weekdays: Weekday[];
 	private readonly action: Action;
+	private readonly id: string;
 
-	protected constructor(action: Action, weekdays: Weekday[]) {
+	protected constructor(id: string, action: Action, weekdays: Weekday[]) {
+		if (id == null) {
+			throw new Error('Id may not be null or undefined.');
+		}
 		if (action == null) {
 			throw new Error('Action may not be null or undefined.');
 		}
 		this.checkWeekdays(weekdays);
 		this.weekdays = weekdays;
 		this.action = action;
+		this.id = id;
 	}
 
 	public trigger(): void {
@@ -25,6 +30,10 @@ export abstract class BaseTrigger implements Trigger {
 
 	public getAction(): Action {
 		return this.action;
+	}
+
+	public getId(): string {
+		return this.id;
 	}
 
 	private checkWeekdays(weekdays: Weekday[]): void {

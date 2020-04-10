@@ -28,11 +28,6 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 		return this;
 	}
 
-	public setId(id: string): OnOffStateActionBuilder<T> {
-		super.setId(id);
-		return this;
-	}
-
 	public setStateService(stateService: StateService): OnOffStateActionBuilder<T> {
 		super.setStateService(stateService);
 		return this;
@@ -40,7 +35,6 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 
 	public build(): OnOffStateAction<T> {
 		return new OnOffStateAction<T>(
-			this.id,
 			this.idOfStateToSet,
 			this.onValue as any,
 			this.offValue as any,

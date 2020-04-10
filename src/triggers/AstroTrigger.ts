@@ -10,8 +10,8 @@ export class AstroTrigger extends BaseTrigger {
 
 	private readonly shiftInMinutes: number;
 
-	constructor(astroTime: AstroTime, shiftInMinutes: number, weekdays: Weekday[], action: Action) {
-		super(action, weekdays);
+	constructor(id: string, astroTime: AstroTime, shiftInMinutes: number, weekdays: Weekday[], action: Action) {
+		super(id, action, weekdays);
 		if (astroTime == null) {
 			throw new Error('Astro time may not be null.');
 		}

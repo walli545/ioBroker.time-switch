@@ -14,6 +14,7 @@ describe('TimeTrigger', () => {
 		it('throws when hour is undefined', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(undefined as any)
 					.setMinute(0)
 					.setWeekdays([Weekday.Monday])
@@ -25,6 +26,7 @@ describe('TimeTrigger', () => {
 		it('throws when hour is 24', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(24)
 					.setMinute(0)
 					.setWeekdays([Weekday.Monday])
@@ -36,6 +38,7 @@ describe('TimeTrigger', () => {
 		it('throws when hour is 30', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(30)
 					.setMinute(0)
 					.setWeekdays([Weekday.Monday])
@@ -47,6 +50,7 @@ describe('TimeTrigger', () => {
 		it('throws when hour is -1', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(-1)
 					.setMinute(0)
 					.setWeekdays([Weekday.Monday])
@@ -58,6 +62,7 @@ describe('TimeTrigger', () => {
 		it('throws when minute is undefined', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(0)
 					.setMinute(undefined as any)
 					.setWeekdays([Weekday.Monday])
@@ -69,6 +74,7 @@ describe('TimeTrigger', () => {
 		it('throws when minute is 60', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(0)
 					.setMinute(60)
 					.setWeekdays([Weekday.Monday])
@@ -80,6 +86,7 @@ describe('TimeTrigger', () => {
 		it('throws when minute is 120', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(0)
 					.setMinute(120)
 					.setWeekdays([Weekday.Monday])
@@ -91,6 +98,7 @@ describe('TimeTrigger', () => {
 		it('throws when minute is -1', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(0)
 					.setMinute(-1)
 					.setWeekdays([Weekday.Monday])
@@ -102,6 +110,7 @@ describe('TimeTrigger', () => {
 		it('throws when weekdays is null', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(24)
 					.setMinute(0)
 					.setWeekdays(null as any)
@@ -113,6 +122,7 @@ describe('TimeTrigger', () => {
 		it('throws when weekdays is undefined', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(0)
 					.setMinute(0)
 					.setWeekdays(undefined as any)
@@ -124,6 +134,7 @@ describe('TimeTrigger', () => {
 		it('throws when weekdays is empty', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(0)
 					.setMinute(0)
 					.setWeekdays([])
@@ -135,6 +146,7 @@ describe('TimeTrigger', () => {
 		it('throws when weekdays contains a duplicate', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(0)
 					.setMinute(0)
 					.setWeekdays([Weekday.Monday, Weekday.Monday])
@@ -146,6 +158,7 @@ describe('TimeTrigger', () => {
 		it('throws when action is undefined', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(0)
 					.setMinute(0)
 					.setWeekdays([Weekday.Monday])
@@ -157,6 +170,7 @@ describe('TimeTrigger', () => {
 		it('throws when action is null', () => {
 			expect(() =>
 				new TimeTriggerBuilder()
+					.setId('0')
 					.setHour(0)
 					.setMinute(0)
 					.setWeekdays([Weekday.Monday])
@@ -165,13 +179,39 @@ describe('TimeTrigger', () => {
 			).to.throw();
 		});
 
+		it('throws when id is undefined', () => {
+			expect(() =>
+				new TimeTriggerBuilder()
+					.setId(undefined as any)
+					.setHour(0)
+					.setMinute(0)
+					.setWeekdays([Weekday.Monday])
+					.setAction(dummyAction)
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when id is null', () => {
+			expect(() =>
+				new TimeTriggerBuilder()
+					.setId(null as any)
+					.setHour(0)
+					.setMinute(0)
+					.setWeekdays([Weekday.Monday])
+					.setAction(dummyAction)
+					.build(),
+			).to.throw();
+		});
+
 		it('creates with hour=0, minute=0, weekdays=[Monday], action=dummyAction', () => {
 			const have = new TimeTriggerBuilder()
+				.setId('0')
 				.setHour(0)
 				.setMinute(0)
 				.setWeekdays([Weekday.Monday])
 				.setAction(dummyAction)
 				.build();
+			expect(have.getId()).to.equal('0');
 			expect(have.getHour()).to.equal(0);
 			expect(have.getMinute()).to.equal(0);
 			expect(have.getWeekdays().length).to.equal(1);
@@ -181,6 +221,7 @@ describe('TimeTrigger', () => {
 
 		it('creates with hour=23, minute=59, weekdays=[all]', () => {
 			const have = new TimeTriggerBuilder()
+				.setId('1')
 				.setHour(23)
 				.setMinute(59)
 				.setWeekdays([
@@ -194,6 +235,7 @@ describe('TimeTrigger', () => {
 				])
 				.setAction(dummyAction)
 				.build();
+			expect(have.getId()).to.equal('1');
 			expect(have.getHour()).to.equal(23);
 			expect(have.getMinute()).to.equal(59);
 			expect(have.getWeekdays().length).to.equal(7);
@@ -202,11 +244,13 @@ describe('TimeTrigger', () => {
 
 		it('creates with hour=12, minute=30, weekdays=[Monday, Wednesday, Friday]', () => {
 			const have = new TimeTriggerBuilder()
+				.setId('0')
 				.setHour(12)
 				.setMinute(30)
 				.setWeekdays([Weekday.Monday, Weekday.Wednesday, Weekday.Friday])
 				.setAction(dummyAction)
 				.build();
+			expect(have.getId()).to.equal('0');
 			expect(have.getHour()).to.equal(12);
 			expect(have.getMinute()).to.equal(30);
 			expect(have.getWeekdays().length).to.equal(3);
@@ -225,6 +269,7 @@ describe('TimeTrigger', () => {
 			} as Action;
 
 			const trigger = new TimeTriggerBuilder()
+				.setId('0')
 				.setHour(12)
 				.setMinute(30)
 				.setWeekdays([Weekday.Monday])

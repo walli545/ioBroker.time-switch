@@ -4,12 +4,18 @@ import { TimeTrigger } from './TimeTrigger';
 
 export class TimeTriggerBuilder {
 	private action: Action | null = null;
+	private id = '0';
 	private hour = 0;
 	private minute = 0;
 	private weekdays: Weekday[] = [];
 
 	public setAction(action: Action): TimeTriggerBuilder {
 		this.action = action;
+		return this;
+	}
+
+	public setId(id: string): TimeTriggerBuilder {
+		this.id = id;
 		return this;
 	}
 
@@ -29,6 +35,6 @@ export class TimeTriggerBuilder {
 	}
 
 	public build(): TimeTrigger {
-		return new TimeTrigger(this.hour, this.minute, this.weekdays, (this.action as any) as Action);
+		return new TimeTrigger(this.id, this.hour, this.minute, this.weekdays, (this.action as any) as Action);
 	}
 }

@@ -5,56 +5,15 @@ import { OnOffStateActionBuilder } from '../../../src/actions/OnOffStateActionBu
 
 describe('OnOffStateAction', () => {
 	describe('ctor', () => {
-		const validId = 'action0';
 		const validStateId = 'state.0.to.trigger';
 		const validOnValue = 'ON';
 		const validOffValue = 'OFF';
 		const validBooleanValue = true;
 		const validStateService = TypeMoq.Mock.ofType<StateService>().object;
 
-		it('throws when id is null', () => {
-			expect(() =>
-				new OnOffStateActionBuilder()
-					.setId(null as any)
-					.setOnValue(validOnValue)
-					.setOffValue(validOffValue)
-					.setBooleanValue(validBooleanValue)
-					.setIdOfStateToSet(validStateId)
-					.setStateService(validStateService)
-					.build(),
-			).to.throw();
-		});
-
-		it('throws when id is undefined', () => {
-			expect(() =>
-				new OnOffStateActionBuilder()
-					.setId(undefined as any)
-					.setOnValue(validOnValue)
-					.setOffValue(validOffValue)
-					.setBooleanValue(validBooleanValue)
-					.setIdOfStateToSet(validStateId)
-					.setStateService(validStateService)
-					.build(),
-			).to.throw();
-		});
-
-		it('throws when id is empty', () => {
-			expect(() =>
-				new OnOffStateActionBuilder()
-					.setId('')
-					.setOnValue(validOnValue)
-					.setOffValue(validOffValue)
-					.setBooleanValue(validBooleanValue)
-					.setIdOfStateToSet(validStateId)
-					.setStateService(validStateService)
-					.build(),
-			).to.throw();
-		});
-
 		it('throws when idOfStateToSet is null', () => {
 			expect(() =>
 				new OnOffStateActionBuilder()
-					.setId(validId)
 					.setOnValue(validOnValue)
 					.setOffValue(validOffValue)
 					.setBooleanValue(validBooleanValue)
@@ -67,7 +26,6 @@ describe('OnOffStateAction', () => {
 		it('throws when idOfStateToSet is undefined', () => {
 			expect(() =>
 				new OnOffStateActionBuilder()
-					.setId(validId)
 					.setOnValue(validOnValue)
 					.setOffValue(validOffValue)
 					.setBooleanValue(validBooleanValue)
@@ -80,7 +38,6 @@ describe('OnOffStateAction', () => {
 		it('throws when idOfStateToSet is empty', () => {
 			expect(() =>
 				new OnOffStateActionBuilder()
-					.setId(validId)
 					.setOnValue(validOnValue)
 					.setOffValue(validOffValue)
 					.setBooleanValue(validBooleanValue)
@@ -93,7 +50,6 @@ describe('OnOffStateAction', () => {
 		it('throws when stateService is null', () => {
 			expect(() =>
 				new OnOffStateActionBuilder()
-					.setId(validId)
 					.setOnValue(validOnValue)
 					.setOffValue(validOffValue)
 					.setBooleanValue(validBooleanValue)
@@ -106,7 +62,6 @@ describe('OnOffStateAction', () => {
 		it('throws when stateService is undefined', () => {
 			expect(() =>
 				new OnOffStateActionBuilder()
-					.setId(validId)
 					.setOnValue(validOnValue)
 					.setOffValue(validOffValue)
 					.setBooleanValue(validBooleanValue)
@@ -119,7 +74,6 @@ describe('OnOffStateAction', () => {
 		it('throws when offValue is undefined', () => {
 			expect(() =>
 				new OnOffStateActionBuilder()
-					.setId(validId)
 					.setOnValue(validOnValue)
 					.setOffValue(undefined as any)
 					.setBooleanValue(validBooleanValue)
@@ -132,7 +86,6 @@ describe('OnOffStateAction', () => {
 		it('throws when onValue is undefined', () => {
 			expect(() =>
 				new OnOffStateActionBuilder()
-					.setId(validId)
 					.setOnValue(undefined as any)
 					.setOffValue(validOffValue)
 					.setBooleanValue(validBooleanValue)
@@ -145,7 +98,6 @@ describe('OnOffStateAction', () => {
 		it('throws when booleanValue is undefined', () => {
 			expect(() =>
 				new OnOffStateActionBuilder()
-					.setId(validId)
 					.setOnValue(validOnValue)
 					.setOffValue(validOffValue)
 					.setBooleanValue(undefined as any)
@@ -158,7 +110,6 @@ describe('OnOffStateAction', () => {
 		it('throws when booleanValue is null', () => {
 			expect(() =>
 				new OnOffStateActionBuilder()
-					.setId(validId)
 					.setOnValue(validOnValue)
 					.setOffValue(validOffValue)
 					.setBooleanValue(null as any)
@@ -171,7 +122,6 @@ describe('OnOffStateAction', () => {
 		it('should create with string values', () => {
 			const stateService = TypeMoq.Mock.ofType<StateService>();
 			const sut = new OnOffStateActionBuilder<string>()
-				.setId('id01')
 				.setOnValue('ON')
 				.setOffValue('OFF')
 				.setBooleanValue(true)
@@ -179,7 +129,6 @@ describe('OnOffStateAction', () => {
 				.setStateService(stateService.object)
 				.build();
 
-			expect(sut.getId()).to.equal('id01');
 			expect(sut.getIdOfStateToSet()).to.equal('id.of.state');
 			expect(sut.getOnValue()).to.equal('ON');
 			expect(sut.getOffValue()).to.equal('OFF');
@@ -189,7 +138,6 @@ describe('OnOffStateAction', () => {
 		it('should create with number values', () => {
 			const stateService = TypeMoq.Mock.ofType<StateService>();
 			const sut = new OnOffStateActionBuilder<number>()
-				.setId('id01')
 				.setOnValue(1)
 				.setOffValue(0)
 				.setBooleanValue(false)
@@ -197,7 +145,6 @@ describe('OnOffStateAction', () => {
 				.setStateService(stateService.object)
 				.build();
 
-			expect(sut.getId()).to.equal('id01');
 			expect(sut.getIdOfStateToSet()).to.equal('id.of.state');
 			expect(sut.getOnValue()).to.equal(1);
 			expect(sut.getOffValue()).to.equal(0);
@@ -207,7 +154,6 @@ describe('OnOffStateAction', () => {
 		it('should create with boolean value ', () => {
 			const stateService = TypeMoq.Mock.ofType<StateService>();
 			const sut = new OnOffStateActionBuilder<boolean>()
-				.setId('id01')
 				.setOnValue(true)
 				.setOffValue(false)
 				.setBooleanValue(true)
@@ -215,7 +161,6 @@ describe('OnOffStateAction', () => {
 				.setStateService(stateService.object)
 				.build();
 
-			expect(sut.getId()).to.equal('id01');
 			expect(sut.getIdOfStateToSet()).to.equal('id.of.state');
 			expect(sut.getOnValue()).to.be.true
 			expect(sut.getOffValue()).to.be.false;
@@ -225,7 +170,6 @@ describe('OnOffStateAction', () => {
 		it('should set onValue on execute', () => {
 			const stateService = TypeMoq.Mock.ofType<StateService>();
 			const sut = new OnOffStateActionBuilder<number>()
-				.setId('id01')
 				.setOnValue(1)
 				.setOffValue(0)
 				.setBooleanValue(true)
@@ -240,7 +184,6 @@ describe('OnOffStateAction', () => {
 		it('should set offValue on execute', () => {
 			const stateService = TypeMoq.Mock.ofType<StateService>();
 			const sut = new OnOffStateActionBuilder<number>()
-				.setId('id01')
 				.setOnValue(1)
 				.setOffValue(0)
 				.setBooleanValue(false)

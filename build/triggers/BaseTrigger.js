@@ -1,13 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class BaseTrigger {
-    constructor(action, weekdays) {
+    constructor(id, action, weekdays) {
+        if (id == null) {
+            throw new Error('Id may not be null or undefined.');
+        }
         if (action == null) {
             throw new Error('Action may not be null or undefined.');
         }
         this.checkWeekdays(weekdays);
         this.weekdays = weekdays;
         this.action = action;
+        this.id = id;
     }
     trigger() {
         this.getAction().execute();
@@ -17,6 +21,9 @@ class BaseTrigger {
     }
     getAction() {
         return this.action;
+    }
+    getId() {
+        return this.id;
     }
     checkWeekdays(weekdays) {
         if (weekdays == null) {
