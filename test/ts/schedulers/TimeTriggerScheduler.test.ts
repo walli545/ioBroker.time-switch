@@ -8,7 +8,6 @@ import { TimeTriggerBuilder } from '../../../src/triggers/TimeTriggerBuilder';
 
 describe('TimeTriggerScheduler', function() {
 	const dummyAction = {
-		getId: () => 'id01',
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		execute: () => {},
 	} as Action;
@@ -32,9 +31,8 @@ describe('TimeTriggerScheduler', function() {
 			const currentTime = new Date();
 			const inOneMinute = new Date(currentTime.getTime() + 60000);
 			const sut = new TimeTriggerScheduler();
-			let trigger: TimeTrigger|null = null;
+			let trigger: TimeTrigger | null = null;
 			const testAction = {
-				getId: () => 'id01',
 				execute: () => {
 					const triggeredDate = new Date();
 					expect(triggeredDate.getHours()).to.equal(inOneMinute.getHours());
@@ -42,7 +40,7 @@ describe('TimeTriggerScheduler', function() {
 					done();
 					sut.unregister(trigger as any);
 				},
-			} as Action
+			} as Action;
 			trigger = new TimeTriggerBuilder()
 				.setHour(inOneMinute.getHours())
 				.setMinute(inOneMinute.getMinutes())
@@ -70,7 +68,6 @@ describe('TimeTriggerScheduler', function() {
 			const inOneMinute = new Date(currentTime.getTime() + 60000);
 			const sut = new TimeTriggerScheduler();
 			const testAction = {
-				getId: () => 'id01',
 				execute: () => {
 					fail('Unregistered trigger should not be called');
 				},

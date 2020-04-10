@@ -6,7 +6,6 @@ import { Action } from '../../../src/actions/Action';
 describe('TimeTrigger', () => {
 	describe('ctor and getter', () => {
 		const dummyAction = {
-			getId: () => '0',
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			execute: () => {},
 		} as Action;
@@ -262,7 +261,6 @@ describe('TimeTrigger', () => {
 		it('triggers action', () => {
 			let executed = false;
 			const testAction = {
-				getId: () => '0',
 				execute: () => {
 					executed = true;
 				},
