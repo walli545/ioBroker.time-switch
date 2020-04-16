@@ -1,7 +1,7 @@
 /*
 	ioBroker.vis time-switch Widget-Set
 
-	version: "1.0.0"
+	version: "1.1.0"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 */
@@ -18,7 +18,7 @@ $.get('adapter/time-switch/words.js', function(script) {
 
 // export vis binds for widget
 vis.binds['time-switch'] = {
-	version: '1.0.0',
+	version: '1.1.0',
 	showVersion: showVersion,
 	createWidget: createWidget,
 	scheduleWidgets: [],

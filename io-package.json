@@ -1,7 +1,7 @@
 {
 	"common": {
 		"name": "time-switch",
-		"version": "1.0.0",
+		"version": "1.1.0",
 		"news": {
 			"1.0.0": {
 				"en": "initial release",
