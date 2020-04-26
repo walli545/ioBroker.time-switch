@@ -1,7 +1,7 @@
 import { TimeTrigger } from '../triggers/TimeTrigger';
+import { Trigger } from '../triggers/Trigger';
 import { BaseTriggerSerializer } from './BaseTriggerSerializer';
 import { TimeTriggerBuilder } from '../triggers/TimeTriggerBuilder';
-import { Trigger } from '../triggers/Trigger';
 
 export class TimeTriggerSerializer extends BaseTriggerSerializer {
 	public deserialize(stringToDeserialize: string): Trigger {

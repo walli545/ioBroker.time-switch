@@ -1,11 +1,11 @@
-import { Trigger } from './Trigger';
 import { Weekday } from './Weekday';
 import { Action } from '../actions/Action';
+import { DailyTrigger } from './DailyTrigger';
 
-export abstract class BaseTrigger implements Trigger {
+export abstract class BaseDailyTrigger implements DailyTrigger {
 	private readonly weekdays: Weekday[];
-	private readonly action: Action;
 	private readonly id: string;
+	private action: Action;
 
 	protected constructor(id: string, action: Action, weekdays: Weekday[]) {
 		if (id == null) {
@@ -30,6 +30,13 @@ export abstract class BaseTrigger implements Trigger {
 
 	public getAction(): Action {
 		return this.action;
+	}
+
+	public setAction(action: Action): void {
+		if (action == null) {
+			throw new Error('Action may not be null or undefined.');
+		}
+		this.action = action;
 	}
 
 	public getId(): string {

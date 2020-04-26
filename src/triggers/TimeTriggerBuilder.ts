@@ -1,8 +1,9 @@
 import { Weekday } from './Weekday';
 import { Action } from '../actions/Action';
 import { TimeTrigger } from './TimeTrigger';
+import { Builder } from '../Builder';
 
-export class TimeTriggerBuilder {
+export class TimeTriggerBuilder implements Builder<TimeTrigger> {
 	private action: Action | null = null;
 	private id = '0';
 	private hour = 0;

@@ -18,7 +18,7 @@ describe('TimeTriggerSerializer', () => {
 		.setOnValue('ON')
 		.setOffValue('OFF')
 		.setBooleanValue(true)
-		.setIdOfStateToSet('id.of.state')
+		.setIdsOfStatesToSet(['id.of.state1', 'id.of.state2'])
 		.setStateService(stateService.object)
 		.build();
 
@@ -55,7 +55,10 @@ describe('TimeTriggerSerializer', () => {
 		it('throws when objectToSerialize is no instance of TimeTrigger', () => {
 			const anotherTrigger = {
 				getId: () => '0',
-				getAction: () => onOffStateAction, // eslint-disable-next-line @typescript-eslint/no-empty-function
+				getAction: () => onOffStateAction,
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				setAction: () => {},
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
 				trigger: () => {},
 				getWeekdays: () => [Weekday.Monday],
 			} as Trigger;

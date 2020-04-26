@@ -1,9 +1,9 @@
 import { AstroTime } from './AstroTime';
-import { BaseTrigger } from './BaseTrigger';
+import { BaseDailyTrigger } from './BaseDailyTrigger';
 import { Weekday } from './Weekday';
 import { Action } from '../actions/Action';
 
-export class AstroTrigger extends BaseTrigger {
+export class AstroTrigger extends BaseDailyTrigger {
 	public static readonly MAX_SHIFT = 600;
 
 	private readonly astroTime: AstroTime;

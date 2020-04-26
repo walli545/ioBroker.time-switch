@@ -1,8 +1,8 @@
-import { BaseTrigger } from './BaseTrigger';
+import { BaseDailyTrigger } from './BaseDailyTrigger';
 import { Weekday } from './Weekday';
 import { Action } from '../actions/Action';
 
-export class TimeTrigger extends BaseTrigger {
+export class TimeTrigger extends BaseDailyTrigger {
 	private readonly hours: number;
 	private readonly minutes: number;
 
