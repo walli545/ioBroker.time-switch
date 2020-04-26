@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseTrigger_1 = require("./BaseTrigger");
-class AstroTrigger extends BaseTrigger_1.BaseTrigger {
+const BaseDailyTrigger_1 = require("./BaseDailyTrigger");
+class AstroTrigger extends BaseDailyTrigger_1.BaseDailyTrigger {
     constructor(id, astroTime, shiftInMinutes, weekdays, action) {
         super(id, action, weekdays);
         if (astroTime == null) {

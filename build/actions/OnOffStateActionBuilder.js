@@ -5,13 +5,13 @@ const OnOffStateAction_1 = require("./OnOffStateAction");
 class OnOffStateActionBuilder extends BaseStateActionBuilder_1.BaseStateActionBuilder {
     constructor() {
         super(...arguments);
-        this.idOfStateToSet = '';
+        this.idsOfStatesToSet = [];
         this.onValue = null;
         this.offValue = null;
         this.booleanValue = true;
     }
-    setIdOfStateToSet(idOfStateToSet) {
-        this.idOfStateToSet = idOfStateToSet;
+    setIdsOfStatesToSet(idsOfStatesToSet) {
+        this.idsOfStatesToSet = idsOfStatesToSet;
         return this;
     }
     setOnValue(onValue) {
@@ -31,7 +31,7 @@ class OnOffStateActionBuilder extends BaseStateActionBuilder_1.BaseStateActionBu
         return this;
     }
     build() {
-        return new OnOffStateAction_1.OnOffStateAction(this.idOfStateToSet, this.onValue, this.offValue, this.booleanValue, this.stateService);
+        return new OnOffStateAction_1.OnOffStateAction(this.idsOfStatesToSet, this.onValue, this.offValue, this.booleanValue, this.stateService);
     }
 }
 exports.OnOffStateActionBuilder = OnOffStateActionBuilder;

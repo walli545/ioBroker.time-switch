@@ -10,3 +10,12 @@ var Weekday;
     Weekday[Weekday["Friday"] = 5] = "Friday";
     Weekday[Weekday["Saturday"] = 6] = "Saturday";
 })(Weekday = exports.Weekday || (exports.Weekday = {}));
+exports.AllWeekdays = [
+    Weekday.Monday,
+    Weekday.Tuesday,
+    Weekday.Wednesday,
+    Weekday.Thursday,
+    Weekday.Friday,
+    Weekday.Saturday,
+    Weekday.Sunday,
+];

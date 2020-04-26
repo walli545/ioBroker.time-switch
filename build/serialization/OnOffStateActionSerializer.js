@@ -19,7 +19,7 @@ class OnOffStateActionSerializer {
             .setOffValue(json.offValue)
             .setOnValue(json.onValue)
             .setBooleanValue(json.booleanValue)
-            .setIdOfStateToSet(json.idOfStateToSet)
+            .setIdsOfStatesToSet(json.idsOfStatesToSet)
             .build();
     }
     serialize(objectToSerialize) {
@@ -33,7 +33,7 @@ class OnOffStateActionSerializer {
                 onValue: objectToSerialize.getOnValue(),
                 offValue: objectToSerialize.getOffValue(),
                 booleanValue: objectToSerialize.getBooleanValue(),
-                idOfStateToSet: objectToSerialize.getIdOfStateToSet(),
+                idsOfStatesToSet: objectToSerialize.getIdsOfStatesToSet(),
             });
         }
         else {
