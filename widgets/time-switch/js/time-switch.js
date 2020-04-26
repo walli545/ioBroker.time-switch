@@ -57,32 +57,32 @@ function createOnOffWidget(widgetId, view, data, style) {
 
 function validateOnOffWidgetSettings(widgetElement, data) {
 	if (!data.dataId) {
-		showWarningInWidget(widgetElement, 'Please set dataOID to use the widget!');
+		showWarningInWidget(widgetElement, 'Select a schedule data id to use the widget!');
 		return false;
 	}
 	if (!(data.dataId.startsWith('time-switch.0.onoff') && data.dataId.endsWith('data'))) {
 		showWarningInWidget(
 			widgetElement,
-			"Please selcect a valida dataOid! E.g. with pattern 'time-switch.0.onoff.*.data'",
+			"Select a valid schedule data id (with pattern 'time-switch.0.onoff.*.data')!",
 		);
 		return false;
 	}
 	if (!data.stateId1) {
-		showWarningInWidget(widgetElement, 'Please set at least one stateOID to use the widget!');
+		showWarningInWidget(widgetElement, 'Set at least one switched state id to use the widget!');
 		return false;
 	}
 	if (data.valueType === 'number') {
 		if (Number.isNaN(Number.parseFloat(data.onValue))) {
-			showWarningInWidget(widgetElement, 'Please enter a valid number for onValue when valueType is number!');
+			showWarningInWidget(widgetElement, 'Enter a valid number for switched on value when type is number!');
 			return false;
 		}
 		if (Number.isNaN(Number.parseFloat(data.offValue))) {
-			showWarningInWidget(widgetElement, 'Please enter a valid number for offValue when valueType is number');
+			showWarningInWidget(widgetElement, 'Enter a valid number for switched off value when type is number!');
 			return false;
 		}
 	} else if (data.valueType === 'string') {
 		if (data.onValue === '' || data.offValue === '') {
-			showWarningInWidget(widgetElement, 'On/Offvalue cannot be empty when valueType is string');
+			showWarningInWidget(widgetElement, 'On/Offvalue cannot be empty when type is string');
 			return false;
 		}
 	}
