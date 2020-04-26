@@ -33,16 +33,21 @@
 	width: 100%;
 }
 
+.view .header .trigger {
+	flex-grow: 3;
+	margin-left: 20px;
+}
+
 .edit .header {
 	position: relative;
 	float: right;
 }
 
-#container-switched-value {
+.container.edit .action {
 	margin-left: 10px;
 }
 
-#container-switched-time {
+.container.edit .trigger {
 	margin: 10px;
 }
 
@@ -59,7 +64,6 @@
 }
 
 .button.edit {
-	margin-left: calc(100% - 256px);
 }
 
 .button.delete {
@@ -68,13 +72,4 @@
 
 .button.cancel {
 	margin-left: 10px;
-}
-
-/* Text */
-
-.value-to-set {
-	text-align: center;
-	font-size: 2em;
-	font-weight: bold;
-	width: 65px;
 }
