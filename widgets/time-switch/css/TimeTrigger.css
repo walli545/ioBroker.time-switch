@@ -1,9 +1,7 @@
 .time {
-	text-align: center;
-	margin-left: 40px;
+	text-align: left;
 	font-size: 2em;
 	font-weight: bold;
-	width: 85px;
 }
 
 input:invalid {

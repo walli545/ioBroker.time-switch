@@ -10,13 +10,13 @@
 		}
 
 		static get observedAttributes() {
-			return ['hour', 'minute', 'edit'];
+			return ['data', 'edit'];
 		}
 
 		connectedCallback() {}
 
 		attributeChangedCallback(attr, oldValue, newValue) {
-			if (attr === 'hour' || attr === 'minute') {
+			if (attr === 'data') {
 				this.onTimeChanged();
 			} else if (attr === 'edit') {
 				this.onEditChange();
@@ -24,19 +24,23 @@
 		}
 
 		get hour() {
-			return this.getAttribute('hour');
+			return JSON.parse(this.getAttribute('data')).hour;
 		}
 
 		set hour(val) {
-			this.setAttribute('hour', val);
+			const data = JSON.parse(this.getAttribute('data'));
+			data.hour = val;
+			this.setAttribute('data', JSON.stringify(data));
 		}
 
 		get minute() {
-			return this.getAttribute('minute');
+			return JSON.parse(this.getAttribute('data')).minute;
 		}
 
 		set minute(val) {
-			this.setAttribute('minute', val);
+			const data = JSON.parse(this.getAttribute('data'));
+			data.minute = val;
+			this.setAttribute('data', JSON.stringify(data));
 		}
 
 		get edit() {
