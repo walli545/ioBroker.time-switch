@@ -44,8 +44,17 @@ In the widget the schedule can be disabled temporarily and the switched state ca
 
 - Translations for schedule widget
 - Astro actions (switch on sunrise, etc.)
+- Conditional actions
+- Switching for device groups
+- Switching of arbitrary values
 
 ## Changelog
+
+### 1.1.0
+* (walli545) 
+    * New option to hide switched oid in widget (#20)
+    * Fixed admin page not working on Firefox (#18)
+    * Showing full schedule oid in admin page (e.g. time-switch.0.schedule0 instead of schedule0).
 
 ### 1.0.0
 * (walli545) initial release, features:

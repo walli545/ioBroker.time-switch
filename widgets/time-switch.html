@@ -1,7 +1,7 @@
 <!--
 	ioBroker.vis time-switch Widget-Set
 
-	version: "1.0.0"
+	version: "1.1.0"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 -->
@@ -18,8 +18,7 @@
 <script src="widgets/time-switch/js/Weekdays.js"></script>
 <script src="widgets/time-switch/js/OnOffStateAction.js"></script>
 <script type="module" src="widgets/time-switch/js/time-switch.js"></script>
-
-<!-- the full description of format in settings-vis-attrs can be found here:
+<!-- the full description of format in data-vis-attrs can be found here:
 	https://github.com/ioBroker/ioBroker.vis/blob/master/www/js/visEditInspect.js#L39
 
 	----------------------------------------------------------
@@ -31,7 +30,7 @@
 		"type" and "class" are always the same. "id" is unique and must start with "tplSETNAME" and ends with widget name. Use camel-case for it.
 
 	----------------------------------------------------------
-	settings-vis-attrs - divided with semicolon the list of attributes, like attr1/id;attr2/color
+	data-vis-attrs - divided with semicolon the list of attributes, like attr1/id;attr2/color
 		Full format of one attribute is: attr_name(start-end)[default_value]/type,idFilter/onChangeFunc
 			attr_name - the name of the attribute, e.g. "myID"
 			start-end - creates automatically attributes from attr_namestart to attr_nameend, like "myID(1-3)" creates myID1, myID2, myID3
@@ -61,11 +60,11 @@
 				If type is "id", you can define filer for "Select ID Dialog", like "myID/id,level.temperature".
 				Additionally you can define callback(onChangeFunc), which will be called if this attribute was changed by user for different purposes: validate entry, fill other attributes, ...
 
-		You can define additional settings-vis-attrs line: settings-vis-attrs0, settings-vis-attrs1. Anyway settings-vis-attrs must be there. You may not skip numbers.
-		E.g. in "settings-vis-attrs="A;" settings-vis-attrs1="B" attribute B will be not parsed.
+		You can define additional data-vis-attrs line: data-vis-attrs0, data-vis-attrs1. Anyway data-vis-attrs must be there. You may not skip numbers.
+		E.g. in "data-vis-attrs="A;" data-vis-attrs1="B" attribute B will be not parsed.
 
 	--------------------------------------------------------
-	settings-vis-type
+	data-vis-type
 		Help information for user. Used for search.
 		You can define more than one type divided by comma.
 		There are following common types, but you can use your own specific types:
@@ -78,25 +77,25 @@
 			...
 
 	--------------------------------------------------------
-	settings-vis-set
+	data-vis-set
 		Name of the widget set. Must be equal to the name of this HTML file
 
 	--------------------------------------------------------
-	settings-vis-prev
+	data-vis-prev
 		Html code used as preview of this widget. If widget is complex you can just use image as preview:
-		settings-vis-prev='<img src="widgets/hqwidgets/img/prev/Prev_tplTime-switchShowInstance.png"></img>'
+		data-vis-prev='<img src="widgets/hqwidgets/img/prev/Prev_tplTime-switchShowInstance.png"></img>'
 		Of course the image must exist.
 
 	--------------------------------------------------------
-	settings-vis-name
+	data-vis-name
 		Readable name of widget shown in vis editor.
 
 	--------------------------------------------------------
-	settings-vis-beta="true"
+	data-vis-beta="true"
 		Shows "BETA" symbol in vis editor by preview
 
 	--------------------------------------------------------
-	settings-vis-update-style="true"
+	data-vis-update-style="true"
 		Call redraw of widget if some of the CSS styles in editor for this widget was changed
 
 	You can read about Magic tags here: http://canjs.com/guides/EJS.html
