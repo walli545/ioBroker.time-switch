@@ -2,17 +2,21 @@ import { StateService } from '../services/StateService';
 import { BaseStateAction } from './BaseStateAction';
 
 export class OnOffStateAction<T extends string | number | boolean> extends BaseStateAction {
-	private readonly idOfStateToSet: string;
+	private idsOfStatesToSet: string[];
 	private readonly onValue: T;
 	private readonly offValue: T;
 	private readonly booleanValue: boolean;
 
-	constructor(idOfStateToSet: string, onValue: T, offValue: T, booleanValue: boolean, stateService: StateService) {
+	constructor(
+		idsOfStatesToSet: string[],
+		onValue: T,
+		offValue: T,
+		booleanValue: boolean,
+		stateService: StateService,
+	) {
 		super(stateService);
 
-		if (idOfStateToSet == null || idOfStateToSet.length == 0) {
-			throw new Error('IdOfStateToSet may not be null or empty.');
-		}
+		this.checkIdsOfStates(idsOfStatesToSet);
 		if (onValue == undefined) {
 			throw new Error('OnValue may not be undefined.');
 		}
@@ -23,14 +27,19 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 			throw new Error('ValueToSet may not be null or undefined.');
 		}
 
-		this.idOfStateToSet = idOfStateToSet;
+		this.idsOfStatesToSet = idsOfStatesToSet;
 		this.onValue = onValue;
 		this.offValue = offValue;
 		this.booleanValue = booleanValue;
 	}
 
-	public getIdOfStateToSet(): string {
-		return this.idOfStateToSet;
+	public getIdsOfStatesToSet(): string[] {
+		return this.idsOfStatesToSet;
+	}
+
+	public setIdsOfStatesToSet(idsOfStatesToSet: string[]) {
+		this.checkIdsOfStates(idsOfStatesToSet);
+		this.idsOfStatesToSet = idsOfStatesToSet;
 	}
 
 	public getOnValue(): T {
@@ -46,7 +55,45 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 	}
 
 	public execute(): void {
-		const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue()
-		this.getStateService().setForeignState(this.getIdOfStateToSet(), valueToUse);
+		const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
+		this.getIdsOfStatesToSet().forEach(id => {
+			this.getStateService().setForeignState(id, valueToUse);
+		});
+	}
+
+	public toBooleanValueType(): OnOffStateAction<boolean> {
+		return new OnOffStateAction(
+			this.getIdsOfStatesToSet(),
+			true,
+			false,
+			this.getBooleanValue(),
+			this.getStateService(),
+		);
+	}
+
+	public toStringValueType(onValue: string, offValue: string): OnOffStateAction<string> {
+		return new OnOffStateAction(
+			this.getIdsOfStatesToSet(),
+			onValue,
+			offValue,
+			this.getBooleanValue(),
+			this.getStateService(),
+		);
+	}
+
+	public toNumberValueType(onValue: number, offValue: number): OnOffStateAction<number> {
+		return new OnOffStateAction(
+			this.getIdsOfStatesToSet(),
+			onValue,
+			offValue,
+			this.getBooleanValue(),
+			this.getStateService(),
+		);
+	}
+
+	private checkIdsOfStates(ids: string[]): void {
+		if (ids == null || ids.length == 0 || ids.includes('')) {
+			throw new Error('IdsOfStatesToSet may not be null or empty.');
+		}
 	}
 }

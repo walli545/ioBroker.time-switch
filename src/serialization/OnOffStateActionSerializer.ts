@@ -24,7 +24,7 @@ export class OnOffStateActionSerializer implements Serializer<Action> {
 			.setOffValue(json.offValue)
 			.setOnValue(json.onValue)
 			.setBooleanValue(json.booleanValue)
-			.setIdOfStateToSet(json.idOfStateToSet)
+			.setIdsOfStatesToSet(json.idsOfStatesToSet)
 			.build();
 	}
 
@@ -39,7 +39,7 @@ export class OnOffStateActionSerializer implements Serializer<Action> {
 				onValue: objectToSerialize.getOnValue(),
 				offValue: objectToSerialize.getOffValue(),
 				booleanValue: objectToSerialize.getBooleanValue(),
-				idOfStateToSet: objectToSerialize.getIdOfStateToSet(),
+				idsOfStatesToSet: objectToSerialize.getIdsOfStatesToSet(),
 			});
 		} else {
 			throw new Error('objectToSerialize must be of type OnOffStateAction.');

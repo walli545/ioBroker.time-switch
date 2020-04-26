@@ -3,13 +3,13 @@ import { OnOffStateAction } from './OnOffStateAction';
 import { StateService } from '../services/StateService';
 
 export class OnOffStateActionBuilder<T extends string | number | boolean> extends BaseStateActionBuilder {
-	private idOfStateToSet = '';
+	private idsOfStatesToSet: string[] = [];
 	private onValue: T | null = null;
 	private offValue: T | null = null;
 	private booleanValue = true;
 
-	public setIdOfStateToSet(idOfStateToSet: string): OnOffStateActionBuilder<T> {
-		this.idOfStateToSet = idOfStateToSet;
+	public setIdsOfStatesToSet(idsOfStatesToSet: string[]): OnOffStateActionBuilder<T> {
+		this.idsOfStatesToSet = idsOfStatesToSet;
 		return this;
 	}
 
@@ -35,7 +35,7 @@ export class OnOffStateActionBuilder<T extends string | number | boolean> extend
 
 	public build(): OnOffStateAction<T> {
 		return new OnOffStateAction<T>(
-			this.idOfStateToSet,
+			this.idsOfStatesToSet,
 			this.onValue as any,
 			this.offValue as any,
 			this.booleanValue,

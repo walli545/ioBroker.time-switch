@@ -36,13 +36,13 @@ describe('OnOffStateActionSerializer', () => {
 				.setOnValue('ON')
 				.setOffValue('OFF')
 				.setBooleanValue(true)
-				.setIdOfStateToSet('id.of.state')
+				.setIdsOfStatesToSet(['id.of.state'])
 				.build();
 			const serialized = sut.serialize(action);
 			const json = JSON.parse(serialized);
 			expect(json.type).to.equal(OnOffStateAction.prototype.constructor.name);
 			expect(json.valueType).to.equal('string');
-			expect(json.idOfStateToSet).to.equal('id.of.state');
+			expect(json.idsOfStatesToSet).to.deep.equal(['id.of.state']);
 			expect(json.onValue).to.equal('ON');
 			expect(json.offValue).to.equal('OFF');
 			expect(json.booleanValue).to.be.true;
@@ -55,13 +55,13 @@ describe('OnOffStateActionSerializer', () => {
 				.setOnValue(1)
 				.setOffValue(0)
 				.setBooleanValue(false)
-				.setIdOfStateToSet('id.of.state')
+				.setIdsOfStatesToSet(['id.of.state'])
 				.build();
 			const serialized = sut.serialize(action);
 			const json = JSON.parse(serialized);
 			expect(json.type).to.equal(OnOffStateAction.prototype.constructor.name);
 			expect(json.valueType).to.equal('number');
-			expect(json.idOfStateToSet).to.equal('id.of.state');
+			expect(json.idsOfStatesToSet).to.deep.equal(['id.of.state']);
 			expect(json.onValue).to.equal(1);
 			expect(json.offValue).to.equal(0);
 			expect(json.booleanValue).to.be.false;
@@ -74,13 +74,13 @@ describe('OnOffStateActionSerializer', () => {
 				.setOnValue(true)
 				.setOffValue(false)
 				.setBooleanValue(true)
-				.setIdOfStateToSet('id.of.state')
+				.setIdsOfStatesToSet(['id.of.state'])
 				.build();
 			const serialized = sut.serialize(action);
 			const json = JSON.parse(serialized);
 			expect(json.type).to.equal(OnOffStateAction.prototype.constructor.name);
 			expect(json.valueType).to.equal('boolean');
-			expect(json.idOfStateToSet).to.equal('id.of.state');
+			expect(json.idsOfStatesToSet).to.deep.equal(['id.of.state']);
 			expect(json.onValue).to.be.true;
 			expect(json.offValue).to.be.false;
 			expect(json.booleanValue).to.be.true;
@@ -93,7 +93,7 @@ describe('OnOffStateActionSerializer', () => {
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"valueType": "object",
-				"idOfStateToSet": "id.of.state",
+				"idsOfStatesToSet": ["id.of.state"],
 				"onValue": "ON",
 				"offValue": "OFF",
 				"booleanValue": true
@@ -106,7 +106,7 @@ describe('OnOffStateActionSerializer', () => {
 			const serialized = `{
 				"type": "SomeWrongType",
 				"valueType": "string",
-				"idOfStateToSet": "id.of.state",
+				"idsOfStatesToSet": ["id.of.state"],
 				"onValue": "ON",
 				"offValue": "OFF",
 				"booleanValue": true
@@ -118,7 +118,7 @@ describe('OnOffStateActionSerializer', () => {
 			const sut = new OnOffStateActionSerializer(stateService.object);
 			const serialized = `{
 				"type": "${sut.getType()}",
-				"idOfStateToSet": "id.of.state",
+				"idsOfStatesToSet": ["id.of.state"],
 				"onValue": "ON",
 				"offValue": "OFF",
 				"booleanValue": true
@@ -130,7 +130,7 @@ describe('OnOffStateActionSerializer', () => {
 			const sut = new OnOffStateActionSerializer(stateService.object);
 			const serialized = `{
 				"valueType": "boolean",
-				"idOfStateToSet": "id.of.state",
+				"idsOfStatesToSet": ["id.of.state"],
 				"onValue": "ON",
 				"offValue": "OFF",
 				"booleanValue": true
@@ -143,14 +143,14 @@ describe('OnOffStateActionSerializer', () => {
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"valueType": "string",
-				"idOfStateToSet": "id.of.state",
+				"idsOfStatesToSet": ["id.of.state"],
 				"onValue": "ON",
 				"offValue": "OFF",
 				"booleanValue": true
 			}`;
 			const deserialized = sut.deserialize(serialized);
 			if (deserialized instanceof OnOffStateAction) {
-				expect(deserialized.getIdOfStateToSet()).to.equal('id.of.state');
+				expect(deserialized.getIdsOfStatesToSet()).to.deep.equal(['id.of.state']);
 				expect(deserialized.getOnValue()).to.equal('ON');
 				expect(deserialized.getOffValue()).to.equal('OFF');
 				expect(deserialized.getBooleanValue()).to.be.true;
@@ -164,14 +164,14 @@ describe('OnOffStateActionSerializer', () => {
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"valueType": "number",
-				"idOfStateToSet": "id.of.state",
+				"idsOfStatesToSet": ["id.of.state"],
 				"onValue": 1,
 				"offValue": 0,
 				"booleanValue": false
 			}`;
 			const deserialized = sut.deserialize(serialized);
 			if (deserialized instanceof OnOffStateAction) {
-				expect(deserialized.getIdOfStateToSet()).to.equal('id.of.state');
+				expect(deserialized.getIdsOfStatesToSet()).to.deep.equal(['id.of.state']);
 				expect(deserialized.getOnValue()).to.equal(1);
 				expect(deserialized.getOffValue()).to.equal(0);
 				expect(deserialized.getBooleanValue()).to.be.false;
@@ -185,14 +185,14 @@ describe('OnOffStateActionSerializer', () => {
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"valueType": "boolean",
-				"idOfStateToSet": "id.of.state",
+				"idsOfStatesToSet": ["id.of.state"],
 				"onValue": true,
 				"offValue": false,
 				"booleanValue": true
 			}`;
 			const deserialized = sut.deserialize(serialized);
 			if (deserialized instanceof OnOffStateAction) {
-				expect(deserialized.getIdOfStateToSet()).to.equal('id.of.state');
+				expect(deserialized.getIdsOfStatesToSet()).to.deep.equal(['id.of.state']);
 				expect(deserialized.getOnValue()).to.be.true;
 				expect(deserialized.getOffValue()).to.be.false;
 				expect(deserialized.getBooleanValue()).to.be.true;
@@ -206,7 +206,7 @@ describe('OnOffStateActionSerializer', () => {
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"valueType": "boolean",
-				"idOfStateToSet": "id.of.state",
+				"idsOfStatesToSet": ["id.of.state"],
 				"onValue": true,
 				"offValue": false,
 				"booleanValue": true
