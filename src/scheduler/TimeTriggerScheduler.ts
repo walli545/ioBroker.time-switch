@@ -10,7 +10,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 		if (this.getAssociatedJob(trigger)) {
 			throw new Error('Trigger is already registered.');
 		}
-		const newJob = scheduleJob(this.createRecurrenceRule(trigger), trigger.getAction().execute);
+		const newJob = scheduleJob(this.createRecurrenceRule(trigger), () => trigger.getAction().execute());
 		this.registered.push([trigger, newJob]);
 	}
 
@@ -22,6 +22,14 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 		} else {
 			throw new Error('Trigger is not registered.');
 		}
+	}
+
+	public getRegistered(): TimeTrigger[] {
+		return this.registered.map(r => r[0]);
+	}
+
+	public forType(): string {
+		return TimeTrigger.prototype.constructor.name;
 	}
 
 	private getAssociatedJob(trigger: TimeTrigger): Job | null {
