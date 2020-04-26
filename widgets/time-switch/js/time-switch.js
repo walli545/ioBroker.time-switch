@@ -8,7 +8,7 @@
 'use strict';
 
 // add translations for edit mode
-$.get('adapter/time-switch/words.js', function(script) {
+$.get('../time-switch.admin/words.js', function(script) {
 	let translation = script.substring(script.indexOf('{'), script.length);
 	translation = translation.substring(0, translation.lastIndexOf(';'));
 	$.extend(systemDictionary, JSON.parse(translation));
