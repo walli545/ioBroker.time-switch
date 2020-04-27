@@ -123,13 +123,10 @@
 			if (this.settings.showManualSwitch) {
 				const stateIds = this.getStateIdsFromSettings(this.settings);
 				if (stateIds.length === 1) {
+					this.manualToggle = this.convertToBooleanForManual(vis.states[`${stateIds[0]}.val`]);
 					this.shadowRoot.querySelector('.manual-container.single').style.display = null;
-					vis.states.bind(`${stateIds[0]}.val`, (e, newVal) => {
-						let val = newVal;
-						if (this.settings.valueType !== 'boolean') {
-							val = newVal.toString() === this.settings.onValue.toString();
-						}
-						this.manualToggle = val;
+					vis.states.bind(`${stateIds[0]}.val`, (_, v) => {
+						this.manualToggle = this.convertToBooleanForManual(v);
 					});
 				} else {
 					this.shadowRoot.querySelector('.manual-container.multiple').style.display = null;
@@ -250,6 +247,13 @@
 				}
 			}
 			return ids;
+		}
+
+		convertToBooleanForManual(val) {
+			if (this.settings.valueType !== 'boolean') {
+				val = val.toString() === this.settings.onValue.toString();
+			}
+			return val;
 		}
 
 		createShadowRoot() {
