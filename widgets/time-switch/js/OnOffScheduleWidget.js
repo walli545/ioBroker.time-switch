@@ -1,12 +1,10 @@
 (async () => {
 	class OnOffScheduleWidget extends HTMLElement {
-		shadowRoot;
-		currentTriggers;
-		settings;
-
 		constructor() {
 			super();
-			this.createShadowRoot();
+			this.sr = this.createShadowRoot();
+			this.settings = null;
+			this.currentTriggers = [];
 		}
 
 		static get observedAttributes() {
@@ -14,16 +12,16 @@
 		}
 
 		connectedCallback() {
-			this.shadowRoot.querySelector('.button.add').addEventListener('click', this.addTimeTrigger.bind(this));
-			this.shadowRoot.querySelector('.button.edit').addEventListener('click', this.onEditNameClick.bind(this));
-			this.shadowRoot.querySelector('.button.save').addEventListener('click', this.onSaveNameClick.bind(this));
-			this.shadowRoot.querySelector('button#manual-off').addEventListener('click', this.onManualClick.bind(this));
-			this.shadowRoot.querySelector('button#manual-on').addEventListener('click', this.onManualClick.bind(this));
-			this.shadowRoot.querySelector('#enabled').addEventListener('click', () => {
+			this.sr.querySelector('.button.add').addEventListener('click', this.addTimeTrigger.bind(this));
+			this.sr.querySelector('.button.edit').addEventListener('click', this.onEditNameClick.bind(this));
+			this.sr.querySelector('.button.save').addEventListener('click', this.onSaveNameClick.bind(this));
+			this.sr.querySelector('button#manual-off').addEventListener('click', this.onManualClick.bind(this));
+			this.sr.querySelector('button#manual-on').addEventListener('click', this.onManualClick.bind(this));
+			this.sr.querySelector('#enabled').addEventListener('click', () => {
 				this.enabled = !this.enabled;
 			});
-			this.shadowRoot.querySelector('#manual').addEventListener('click', () => {
-				const toggle = this.shadowRoot.querySelector('#manual');
+			this.sr.querySelector('#manual').addEventListener('click', () => {
+				const toggle = this.sr.querySelector('#manual');
 				toggle.classList.toggle('checked');
 				this.onManualClick({
 					target: { id: toggle.classList.contains('checked') ? 'manual-on' : 'manual-off' },
@@ -42,16 +40,16 @@
 		}
 
 		set name(val) {
-			this.shadowRoot.querySelector('.heading .view h1').textContent = val;
-			this.shadowRoot.querySelector('.heading .edit input').value = val;
+			this.sr.querySelector('.heading .view h1').textContent = val;
+			this.sr.querySelector('.heading .edit input').value = val;
 		}
 
 		get enabled() {
-			return this.shadowRoot.querySelector('#enabled').classList.contains('checked');
+			return this.sr.querySelector('#enabled').classList.contains('checked');
 		}
 
 		set enabled(val) {
-			const toggle = this.shadowRoot.querySelector('#enabled');
+			const toggle = this.sr.querySelector('#enabled');
 			if (val) {
 				toggle.classList.add('checked');
 				vis.binds['time-switch'].sendMessage('enable-schedule', this.settings.dataId);
@@ -62,7 +60,7 @@
 		}
 
 		set manualToggle(val) {
-			const toggle = this.shadowRoot.querySelector('#manual');
+			const toggle = this.sr.querySelector('#manual');
 			if (val) {
 				toggle.classList.add('checked');
 			} else {
@@ -72,7 +70,7 @@
 
 		set triggers(triggers) {
 			this.currentTriggers = triggers;
-			const oldTriggers = this.shadowRoot.querySelector('.triggers');
+			const oldTriggers = this.sr.querySelector('.triggers');
 			while (oldTriggers.firstChild) {
 				oldTriggers.removeChild(oldTriggers.firstChild);
 			}
@@ -84,17 +82,17 @@
 				element.setAttribute('id', t.id);
 				element.addEventListener('delete', e => this.onTriggerDelete(e.detail.id));
 				element.addEventListener('update', e => this.onTriggerUpdate(e.detail.trigger));
-				this.shadowRoot.querySelector(`.triggers`).appendChild(element);
+				this.sr.querySelector(`.triggers`).appendChild(element);
 			});
 		}
 
 		set nameEditMode(isEdit) {
 			if (isEdit) {
-				this.shadowRoot.querySelector('.heading div.edit').style.display = null;
-				this.shadowRoot.querySelector('.heading div.view').style.display = 'none';
+				this.sr.querySelector('.heading div.edit').style.display = null;
+				this.sr.querySelector('.heading div.view').style.display = 'none';
 			} else {
-				this.shadowRoot.querySelector('.heading div.edit').style.display = 'none';
-				this.shadowRoot.querySelector('.heading div.view').style.display = null;
+				this.sr.querySelector('.heading div.edit').style.display = 'none';
+				this.sr.querySelector('.heading div.view').style.display = null;
 			}
 		}
 
@@ -103,7 +101,7 @@
 			const newSettings = vis.widgets[this.widgetId].data;
 			this.settings = newSettings;
 			if (newSettings.showId && newSettings.statesCount === '1') {
-				this.shadowRoot.querySelector('#switched-oid').textContent = newSettings.stateId1;
+				this.sr.querySelector('#switched-oid').textContent = newSettings.stateId1;
 			}
 
 			const oldSettings = vis.binds['time-switch'].onOffScheduleWidgets[this.widgetId];
@@ -124,12 +122,12 @@
 				const stateIds = this.getStateIdsFromSettings(this.settings);
 				if (stateIds.length === 1) {
 					this.manualToggle = this.convertToBooleanForManual(vis.states[`${stateIds[0]}.val`]);
-					this.shadowRoot.querySelector('.manual-container.single').style.display = null;
+					this.sr.querySelector('.manual-container.single').style.display = null;
 					vis.states.bind(`${stateIds[0]}.val`, (_, v) => {
 						this.manualToggle = this.convertToBooleanForManual(v);
 					});
 				} else {
-					this.shadowRoot.querySelector('.manual-container.multiple').style.display = null;
+					this.sr.querySelector('.manual-container.multiple').style.display = null;
 				}
 			}
 		}
@@ -144,7 +142,7 @@
 		}
 
 		onSaveNameClick() {
-			const newName = this.shadowRoot.querySelector('.heading .edit input').value;
+			const newName = this.sr.querySelector('.heading .edit input').value;
 			vis.binds['time-switch'].sendMessage('change-name', {
 				dataId: this.settings.dataId,
 				name: newName,
@@ -298,7 +296,7 @@
 					<div class="triggers">
 				</div>
 			`;
-			this.shadowRoot = shadowRoot;
+			return shadowRoot;
 		}
 	}
 	customElements.define('app-on-off-schedule-widget', OnOffScheduleWidget);

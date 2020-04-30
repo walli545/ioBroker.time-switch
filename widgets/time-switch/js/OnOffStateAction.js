@@ -1,15 +1,13 @@
 (async () => {
 	class OnOffStateAction extends HTMLElement {
-		shadowRoot;
-
 		constructor() {
 			super();
-			this.createShadowRoot();
+			this.sr = this.createShadowRoot();
 		}
 
 		connectedCallback() {
-			this.shadowRoot.querySelector('#radio-on').addEventListener('input', this.onValueInput.bind(this));
-			this.shadowRoot.querySelector('#radio-off').addEventListener('input', this.onValueInput.bind(this));
+			this.sr.querySelector('#radio-on').addEventListener('input', this.onValueInput.bind(this));
+			this.sr.querySelector('#radio-off').addEventListener('input', this.onValueInput.bind(this));
 		}
 
 		static get observedAttributes() {
@@ -46,22 +44,22 @@
 		onValueChanged() {
 			const newValue = this.value;
 			const text = newValue ? 'ON' : 'OFF';
-			this.shadowRoot.querySelector('.view .value').textContent = text;
-			this.shadowRoot.querySelector(`#radio-${newValue ? 'on' : 'off'}`).checked = true;
+			this.sr.querySelector('.view .value').textContent = text;
+			this.sr.querySelector(`#radio-${newValue ? 'on' : 'off'}`).checked = true;
 		}
 
 		onEditChange() {
 			if (this.edit) {
-				this.shadowRoot.querySelector('.container.edit').style.display = null;
-				this.shadowRoot.querySelector('.container.view').style.display = 'none';
+				this.sr.querySelector('.container.edit').style.display = null;
+				this.sr.querySelector('.container.view').style.display = 'none';
 			} else {
-				this.shadowRoot.querySelector('.container.edit').style.display = 'none';
-				this.shadowRoot.querySelector('.container.view').style.display = null;
+				this.sr.querySelector('.container.edit').style.display = 'none';
+				this.sr.querySelector('.container.view').style.display = null;
 			}
 		}
 
 		onValueInput() {
-			this.value = this.shadowRoot.querySelector('#radio-on').checked;
+			this.value = this.sr.querySelector('#radio-on').checked;
 		}
 
 		createShadowRoot() {
@@ -83,7 +81,7 @@
 					</div>
 				</div>
 			`;
-			this.shadowRoot = shadowRoot;
+			return shadowRoot;
 		}
 	}
 

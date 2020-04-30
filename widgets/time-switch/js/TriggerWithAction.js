@@ -1,12 +1,10 @@
 (async () => {
 	class TriggerWithAction extends HTMLElement {
-		shadowRoot;
-		validationErrors = [];
-		triedSaving = false;
-
 		constructor() {
 			super();
-			this.createShadowRoot();
+			this.sr = this.createShadowRoot();
+			this.validationErrors = [];
+			this.triedSaving = false;
 		}
 
 		static get observedAttributes() {
@@ -15,10 +13,10 @@
 
 		connectedCallback() {
 			this.triedSaving = false;
-			this.shadowRoot.querySelector('.button.delete').addEventListener('click', this.onDeleteClick.bind(this));
-			this.shadowRoot.querySelector('.button.cancel').addEventListener('click', this.toggleEdit.bind(this));
-			this.shadowRoot.querySelector('.button.edit').addEventListener('click', this.toggleEdit.bind(this));
-			this.shadowRoot.querySelector('.button.save').addEventListener('click', this.onSaveClick.bind(this));
+			this.sr.querySelector('.button.delete').addEventListener('click', this.onDeleteClick.bind(this));
+			this.sr.querySelector('.button.cancel').addEventListener('click', this.toggleEdit.bind(this));
+			this.sr.querySelector('.button.edit').addEventListener('click', this.toggleEdit.bind(this));
+			this.sr.querySelector('.button.save').addEventListener('click', this.onSaveClick.bind(this));
 		}
 
 		attributeChangedCallback(attr, oldValue, newValue) {
@@ -50,16 +48,16 @@
 
 		onEditChange() {
 			if (this.edit) {
-				this.shadowRoot.querySelector('.container.edit').style.display = null;
-				this.shadowRoot.querySelector('.container.view').style.display = 'none';
+				this.sr.querySelector('.container.edit').style.display = null;
+				this.sr.querySelector('.container.view').style.display = 'none';
 			} else {
-				this.shadowRoot.querySelector('.container.edit').style.display = 'none';
-				this.shadowRoot.querySelector('.container.view').style.display = null;
+				this.sr.querySelector('.container.edit').style.display = 'none';
+				this.sr.querySelector('.container.view').style.display = null;
 			}
 		}
 
 		onDeleteClick() {
-			this.shadowRoot.dispatchEvent(
+			this.sr.dispatchEvent(
 				new CustomEvent('delete', {
 					detail: { id: this.trigger.id },
 					composed: true,
@@ -82,10 +80,10 @@
 				errors = errors.concat(errorsAction);
 			}
 			this.validationErrors = errors;
-			this.shadowRoot.querySelector('.validation-errors-container').style.display =
+			this.sr.querySelector('.validation-errors-container').style.display =
 				errors.length === 0 ? 'none' : null;
 
-			const validationErrorsList = this.shadowRoot.querySelector('#validation-errors');
+			const validationErrorsList = this.sr.querySelector('#validation-errors');
 			while (validationErrorsList.firstChild) {
 				validationErrorsList.removeChild(validationErrorsList.firstChild);
 			}
@@ -100,12 +98,12 @@
 			this.updateValidationErrors();
 			if (this.validationErrors.length === 0) {
 				const selectedWeekdays = JSON.parse(
-					this.shadowRoot.querySelector('.edit app-weekdays').getAttribute('selected'),
+					this.sr.querySelector('.edit app-weekdays').getAttribute('selected'),
 				);
 				const newTrigger = JSON.parse(this.getTriggerElement(true).getAttribute('data'));
 				newTrigger.weekdays = selectedWeekdays;
 				newTrigger.action = JSON.parse(this.getActionElement(true).getAttribute('data'));
-				this.shadowRoot.dispatchEvent(
+				this.sr.dispatchEvent(
 					new CustomEvent('update', {
 						detail: {
 							trigger: newTrigger,
@@ -155,43 +153,43 @@
 						<app-weekdays edit="true"></app-weekdays>
 					</div>
 				`;
-			this.shadowRoot = shadowRoot;
+			return  shadowRoot;
 		}
 
 		getActionElement(edit) {
 			const newAction = this.action;
 			const elementName = this.getElementNameForActionType(newAction.type);
-			return this.shadowRoot.querySelector(`.container.${edit ? 'edit' : 'view'} .action ${elementName}`);
+			return this.sr.querySelector(`.container.${edit ? 'edit' : 'view'} .action ${elementName}`);
 		}
 
 		getTriggerElement(edit) {
 			const newTrigger = this.trigger;
 			const elementName = this.getElementNameForTriggerType(newTrigger.type);
-			return this.shadowRoot.querySelector(`.container.${edit ? 'edit' : 'view'} .trigger ${elementName}`);
+			return this.sr.querySelector(`.container.${edit ? 'edit' : 'view'} .trigger ${elementName}`);
 		}
 
 		getWeekdaysElement() {
-			return this.shadowRoot.querySelector('.edit app-weekdays');
+			return this.sr.querySelector('.edit app-weekdays');
 		}
 
 		onTriggerChange() {
 			const newTrigger = this.trigger;
 			const elementName = this.getElementNameForTriggerType(newTrigger.type);
-			let triggerView = this.shadowRoot.querySelector(`.container.view .trigger ${elementName}`);
+			let triggerView = this.sr.querySelector(`.container.view .trigger ${elementName}`);
 			if (!triggerView) {
 				triggerView = document.createElement(elementName);
 				triggerView.setAttribute('edit', 'false');
-				this.shadowRoot.querySelector('.container.view .trigger').appendChild(triggerView);
+				this.sr.querySelector('.container.view .trigger').appendChild(triggerView);
 			}
-			let triggerEdit = this.shadowRoot.querySelector(`.container.edit .trigger ${elementName}`);
+			let triggerEdit = this.sr.querySelector(`.container.edit .trigger ${elementName}`);
 			if (!triggerEdit) {
 				triggerEdit = document.createElement(elementName);
 				triggerEdit.setAttribute('edit', 'true');
-				this.shadowRoot.querySelector('.container.edit .trigger').appendChild(triggerEdit);
+				this.sr.querySelector('.container.edit .trigger').appendChild(triggerEdit);
 			}
 			triggerView.setAttribute('data', JSON.stringify(newTrigger));
 			triggerEdit.setAttribute('data', JSON.stringify(newTrigger));
-			this.shadowRoot.querySelectorAll('app-weekdays').forEach(w => {
+			this.sr.querySelectorAll('app-weekdays').forEach(w => {
 				w.setAttribute('selected', JSON.stringify(newTrigger.weekdays));
 			});
 		}
@@ -199,17 +197,17 @@
 		onActionChange() {
 			const newAction = this.action;
 			const elementName = this.getElementNameForActionType(newAction.type);
-			let actionView = this.shadowRoot.querySelector(`.container.view .action ${elementName}`);
+			let actionView = this.sr.querySelector(`.container.view .action ${elementName}`);
 			if (!actionView) {
 				actionView = document.createElement(elementName);
 				actionView.setAttribute('edit', 'false');
-				this.shadowRoot.querySelector('.container.view .action').appendChild(actionView);
+				this.sr.querySelector('.container.view .action').appendChild(actionView);
 			}
-			let actionEdit = this.shadowRoot.querySelector(`.container.edit .action ${elementName}`);
+			let actionEdit = this.sr.querySelector(`.container.edit .action ${elementName}`);
 			if (!actionEdit) {
 				actionEdit = document.createElement(elementName);
 				actionEdit.setAttribute('edit', 'true');
-				this.shadowRoot.querySelector('.container.edit .action').appendChild(actionEdit);
+				this.sr.querySelector('.container.edit .action').appendChild(actionEdit);
 			}
 			actionView.setAttribute('data', JSON.stringify(newAction));
 			actionEdit.setAttribute('data', JSON.stringify(newAction));

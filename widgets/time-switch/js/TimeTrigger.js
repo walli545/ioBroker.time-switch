@@ -1,12 +1,10 @@
 (async () => {
 	class TimeTrigger extends HTMLElement {
-		shadowRoot;
-
 		constructor() {
 			super();
-			this.createShadowRoot();
-			this.shadowRoot.querySelector('input.hour').addEventListener('input', this.onHourInput.bind(this));
-			this.shadowRoot.querySelector('input.minute').addEventListener('input', this.onMinuteInput.bind(this));
+			this.sr = this.createShadowRoot();
+			this.sr.querySelector('input.hour').addEventListener('input', this.onHourInput.bind(this));
+			this.sr.querySelector('input.minute').addEventListener('input', this.onMinuteInput.bind(this));
 		}
 
 		static get observedAttributes() {
@@ -61,31 +59,31 @@
 		}
 
 		onTimeChanged() {
-			this.shadowRoot.querySelector('input.hour').value = this.hour;
-			this.shadowRoot.querySelector('input.minute').value = this.minute;
+			this.sr.querySelector('input.hour').value = this.hour;
+			this.sr.querySelector('input.minute').value = this.minute;
 			const hour = String(this.hour).padStart(2, '0');
 			const minute = String(this.minute).padStart(2, '0');
-			this.shadowRoot.querySelector('.time').textContent = `${hour}:${minute}`;
+			this.sr.querySelector('.time').textContent = `${hour}:${minute}`;
 			this.verify();
 		}
 
 		onEditChange() {
 			if (this.edit) {
-				this.shadowRoot.querySelector('.container.edit').style.display = null;
-				this.shadowRoot.querySelector('.container.view').style.display = 'none';
+				this.sr.querySelector('.container.edit').style.display = null;
+				this.sr.querySelector('.container.view').style.display = 'none';
 			} else {
-				this.shadowRoot.querySelector('.container.edit').style.display = 'none';
-				this.shadowRoot.querySelector('.container.view').style.display = null;
+				this.sr.querySelector('.container.edit').style.display = 'none';
+				this.sr.querySelector('.container.view').style.display = null;
 			}
 		}
 
 		onHourInput() {
-			this.hour = +this.shadowRoot.querySelector('input.hour').value;
+			this.hour = +this.sr.querySelector('input.hour').value;
 			this.verify();
 		}
 
 		onMinuteInput() {
-			this.minute = +this.shadowRoot.querySelector('input.minute').value;
+			this.minute = +this.sr.querySelector('input.minute').value;
 			this.verify();
 		}
 
@@ -100,7 +98,7 @@
 				errors.push('Minute must be >= 0 and <= 59');
 			}
 			this.errors = errors;
-			this.shadowRoot.dispatchEvent(new CustomEvent('errors', { composed: true }));
+			this.sr.dispatchEvent(new CustomEvent('errors', { composed: true }));
 		}
 
 		createShadowRoot() {
@@ -116,7 +114,7 @@
                     <input type="number" class="minute" min="0" max="59" step="1" required>
 				</div>
 			`;
-			this.shadowRoot = shadowRoot;
+			return shadowRoot;
 		}
 	}
 
