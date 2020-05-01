@@ -122,11 +122,14 @@ class TimeSwitch extends utils.Adapter {
 	}
 
 	private async onScheduleChange(id: string, scheduleString: string): Promise<void> {
-		this.log.debug('onScheduleChange: ' + scheduleString);
+		this.log.debug('onScheduleChange: ' + scheduleString + ' ' + id);
+		this.log.debug('scheduler found: ' + this.scheduleToScheduler.get(id));
 		this.scheduleToScheduler.get(id)?.unregisterAll();
 		const schedule = JSON.parse(scheduleString);
 		if ((await this.getStateAsync(id.replace('data', 'enabled')))?.val) {
 			this.log.debug('is enabled');
+			this.log.debug('triggers: ' + schedule.triggers);
+			this.log.debug('triggers.map: ' + schedule.triggers?.map);
 			const triggers = schedule.triggers.map((t: any) => this.triggerSerializer.deserialize(JSON.stringify(t)));
 			this.log.debug(`triggers length: ${triggers.length}`);
 			triggers.forEach((t: Trigger) => {
@@ -179,7 +182,9 @@ class TimeSwitch extends utils.Adapter {
 					await this.onScheduleChange(id, state.val);
 				} else if (id.endsWith('enabled')) {
 					this.log.debug('is enabled id');
-					await this.onScheduleChange(id.replace('enabled', 'data'), state.val);
+					const dataId = id.replace('enabled', 'data');
+					const scheduleData = (await this.getStateAsync(dataId))?.val;
+					await this.onScheduleChange(dataId, scheduleData);
 				}
 			}
 		} else {

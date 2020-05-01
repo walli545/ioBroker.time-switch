@@ -117,13 +117,16 @@ class TimeSwitch extends utils.Adapter {
         });
     }
     onScheduleChange(id, scheduleString) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            this.log.debug('onScheduleChange: ' + scheduleString);
+            this.log.debug('onScheduleChange: ' + scheduleString + ' ' + id);
+            this.log.debug('scheduler found: ' + this.scheduleToScheduler.get(id));
             (_a = this.scheduleToScheduler.get(id)) === null || _a === void 0 ? void 0 : _a.unregisterAll();
             const schedule = JSON.parse(scheduleString);
             if ((_b = (yield this.getStateAsync(id.replace('data', 'enabled')))) === null || _b === void 0 ? void 0 : _b.val) {
                 this.log.debug('is enabled');
+                this.log.debug('triggers: ' + schedule.triggers);
+                this.log.debug('triggers.map: ' + ((_c = schedule.triggers) === null || _c === void 0 ? void 0 : _c.map));
                 const triggers = schedule.triggers.map((t) => this.triggerSerializer.deserialize(JSON.stringify(t)));
                 this.log.debug(`triggers length: ${triggers.length}`);
                 triggers.forEach((t) => {
@@ -170,6 +173,7 @@ class TimeSwitch extends utils.Adapter {
      * Is called if a subscribed state changes
      */
     onStateChange(id, state) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             if (state) {
                 // The state was changed
@@ -181,7 +185,9 @@ class TimeSwitch extends utils.Adapter {
                     }
                     else if (id.endsWith('enabled')) {
                         this.log.debug('is enabled id');
-                        yield this.onScheduleChange(id.replace('enabled', 'data'), state.val);
+                        const dataId = id.replace('enabled', 'data');
+                        const scheduleData = (_a = (yield this.getStateAsync(dataId))) === null || _a === void 0 ? void 0 : _a.val;
+                        yield this.onScheduleChange(dataId, scheduleData);
                     }
                 }
             }
