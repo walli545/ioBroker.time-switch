@@ -58,6 +58,10 @@ systemDictionary = {
 		"en": "string",
 		"de": "Zeichenkette"
 	},
+	"number": {
+		"en": "number",
+		"de": "Zahl"
+	},
 	"onValue": {
 		"en": "Value for on",
 		"de": "Wert für an"
