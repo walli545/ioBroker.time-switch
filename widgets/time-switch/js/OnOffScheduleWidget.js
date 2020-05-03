@@ -103,11 +103,10 @@
 			if (newSettings.showId && newSettings.statesCount === '1') {
 				this.sr.querySelector('#switched-oid').textContent = newSettings.stateId1;
 			}
-
 			const oldSettings = vis.binds['time-switch'].onOffScheduleWidgets[this.widgetId];
-			if (oldSettings) {
-				this.detectSettingsChanges(oldSettings, newSettings);
-			}
+			console.log('old settings');
+			console.log(oldSettings);
+			this.detectSettingsChanges(oldSettings, newSettings);
 			this.updateStoredSettings(newSettings);
 
 			this.onScheduleDataChange(JSON.parse(vis.states[`${this.settings.dataId}.val`]));
@@ -205,21 +204,27 @@
 		}
 
 		detectSettingsChanges(oldSettings, newSettings) {
+			console.log('new settings');
+			console.log(newSettings);
 			const newStateIds = this.getStateIdsFromSettings(newSettings);
 			if (
+				!oldSettings ||
 				newStateIds.length !== oldSettings.stateIds.length ||
 				newStateIds.some((value, index) => value !== oldSettings.stateIds[index])
 			) {
+				console.log('sending change switched oids');
 				vis.binds['time-switch'].sendMessage('change-switched-ids', {
 					dataId: newSettings.dataId,
 					stateIds: newStateIds,
 				});
 			}
 			if (
+				!oldSettings ||
 				oldSettings.onValue !== newSettings.onValue ||
 				oldSettings.offValue !== newSettings.offValue ||
 				oldSettings.valueType !== newSettings.valueType
 			) {
+				console.log('sending change switched values');
 				vis.binds['time-switch'].sendMessage('change-switched-values', {
 					dataId: newSettings.dataId,
 					valueType: newSettings.valueType,

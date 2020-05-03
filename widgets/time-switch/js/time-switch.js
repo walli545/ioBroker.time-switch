@@ -83,7 +83,7 @@ function validateOnOffWidgetSettings(widgetElement, data) {
 			return false;
 		}
 	} else if (data.valueType === 'string') {
-		if (data.onValue === '' || data.offValue === '') {
+		if (data.onValue === undefined || data.offValue === undefined) {
 			showWarningInWidget(widgetElement, 'On/Offvalue cannot be empty when type is string');
 			return false;
 		}
