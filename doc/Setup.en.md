@@ -1,5 +1,6 @@
-[Für die deutsche Version, clicke hier](doc/Setup.de.md)
-[Go back to README](README.md)
+[Deutsche Version](Setup.de.md)
+
+[Go back to README](../README.md)
 
 # How to setup a on/off schedule
 
