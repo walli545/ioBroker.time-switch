@@ -23,12 +23,12 @@
 		}
 
 		get value() {
-			return JSON.parse(this.getAttribute('data')).booleanValue;
+			return JSON.parse(this.getAttribute('data')).name === 'On';
 		}
 
 		set value(val) {
 			const data = JSON.parse(this.getAttribute('data'));
-			data.booleanValue = val;
+			data.name = val ? 'On' : 'Off';
 			this.setAttribute('data', JSON.stringify(data));
 		}
 

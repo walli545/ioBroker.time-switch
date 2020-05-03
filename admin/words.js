@@ -22,9 +22,9 @@ systemDictionary = {
 		"en": "Alias",
 		"de": "Alias"
 	},
-	"Add schedule": {
-		"en": "Add schedule",
-		"de": "Schaltplan hinzufügen"
+	"Add On/Off schedule": {
+		"en": "Add On/Off schedule",
+		"de": "An/Aus Schaltplan hinzufügen"
 	},
 	"enabled": {
 		"en": "Enabled",
@@ -57,6 +57,10 @@ systemDictionary = {
 	"string": {
 		"en": "string",
 		"de": "Zeichenkette"
+	},
+	"number": {
+		"en": "number",
+		"de": "Zahl"
 	},
 	"onValue": {
 		"en": "Value for on",

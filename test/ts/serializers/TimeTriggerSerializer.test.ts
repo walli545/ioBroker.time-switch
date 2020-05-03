@@ -10,10 +10,14 @@ import { OnOffStateActionBuilder } from '../../../src/actions/OnOffStateActionBu
 import { Trigger } from '../../../src/triggers/Trigger';
 import { fail } from 'assert';
 import { OnOffStateAction } from '../../../src/actions/OnOffStateAction';
+import { UniversalSerializer } from '../../../src/serialization/UniversalSerializer';
+import { Action } from '../../../src/actions/Action';
 
 describe('TimeTriggerSerializer', () => {
 	const stateService = TypeMoq.Mock.ofType<StateService>();
 	const onOffStateActionSerializer = new OnOffStateActionSerializer(stateService.object);
+	const actionSerializer = new UniversalSerializer<Action>([onOffStateActionSerializer]);
+
 	const onOffStateAction = new OnOffStateActionBuilder()
 		.setOnValue('ON')
 		.setOffValue('OFF')
@@ -24,7 +28,7 @@ describe('TimeTriggerSerializer', () => {
 
 	describe('serialize', () => {
 		it('should serialize with OnOffStateAction', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const trigger = new TimeTriggerBuilder()
 				.setHour(12)
 				.setMinute(30)
@@ -43,12 +47,12 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when objectToSerialize is null', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			expect(() => sut.serialize(null as any)).to.throw();
 		});
 
 		it('throws when objectToSerialize is undefined', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			expect(() => sut.serialize(undefined as any)).to.throw();
 		});
 
@@ -62,12 +66,12 @@ describe('TimeTriggerSerializer', () => {
 				trigger: () => {},
 				getWeekdays: () => [Weekday.Monday],
 			} as Trigger;
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			expect(() => sut.serialize(anotherTrigger)).to.throw();
 		});
 
 		it('throws when no serializer for action was found', () => {
-			const sut = new TimeTriggerSerializer([]);
+			const sut = new TimeTriggerSerializer(new UniversalSerializer<Action>([]));
 			const trigger = new TimeTriggerBuilder()
 				.setHour(12)
 				.setMinute(30)
@@ -80,7 +84,7 @@ describe('TimeTriggerSerializer', () => {
 
 	describe('deserialize', () => {
 		it('should deserialize with OnOffStateAction', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"id": "0",
@@ -112,7 +116,7 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when type is not time', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `{
 				"type": "somewrongtype",
 				"id": "0",
@@ -125,19 +129,19 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when stringToDeserialize is empty', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = ``;
 			expect(() => sut.deserialize(serialized)).to.throw();
 		});
 
 		it('throws when stringToDeserialize is invalid json', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `abc`;
 			expect(() => sut.deserialize(serialized)).to.throw();
 		});
 
 		it('throws when property type is missing', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `{
 				"id": "0",
 				"hour": 5,
@@ -149,7 +153,7 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when property hour is missing', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"id": "0",
@@ -161,7 +165,7 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when property minute is missing', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"id": "0",
@@ -173,7 +177,7 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when property weekdays is missing', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"id": "0",
@@ -185,7 +189,7 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when property id is missing', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"hour": 5,
@@ -197,7 +201,7 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when property action is missing', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"id": "0",
@@ -209,7 +213,7 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when action could not be deserialized', () => {
-			const sut = new TimeTriggerSerializer([onOffStateActionSerializer]);
+			const sut = new TimeTriggerSerializer(actionSerializer);
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"id": "0",
@@ -222,7 +226,7 @@ describe('TimeTriggerSerializer', () => {
 		});
 
 		it('throws when no serializer for action was found', () => {
-			const sut = new TimeTriggerSerializer([]);
+			const sut = new TimeTriggerSerializer(new UniversalSerializer<Action>([]));
 			const serialized = `{
 				"type": "${sut.getType()}",
 				"id": "0",
