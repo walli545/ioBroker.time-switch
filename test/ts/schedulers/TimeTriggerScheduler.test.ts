@@ -1,3 +1,4 @@
+import * as TypeMoq from 'typemoq';
 import { fail } from 'assert';
 import { TimeTrigger } from '../../../src/triggers/TimeTrigger';
 import { Weekday } from '../../../src/triggers/Weekday';
@@ -5,16 +6,22 @@ import { TimeTriggerScheduler } from '../../../src/scheduler/TimeTriggerSchedule
 import { expect } from 'chai';
 import { Action } from '../../../src/actions/Action';
 import { TimeTriggerBuilder } from '../../../src/triggers/TimeTriggerBuilder';
+import { LoggingService } from '../../../src/services/LoggingService';
 
 describe('TimeTriggerScheduler', function() {
 	const dummyAction = {
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		execute: () => {},
 	} as Action;
+	const logger = TypeMoq.Mock.ofType<LoggingService>().object;
+
+	it('forType is TimeTrigger', () => {
+		expect(new TimeTriggerScheduler().forType()).to.equal(TimeTrigger.prototype.constructor.name);
+	});
 
 	describe('register', function() {
 		it('throws on registering same trigger twice', () => {
-			const sut = new TimeTriggerScheduler();
+			const sut = new TimeTriggerScheduler(logger);
 			const trigger = new TimeTriggerBuilder()
 				.setHour(12)
 				.setMinute(30)
@@ -30,7 +37,7 @@ describe('TimeTriggerScheduler', function() {
 		it('should trigger on time', done => {
 			const currentTime = new Date();
 			const inOneMinute = new Date(currentTime.getTime() + 60000);
-			const sut = new TimeTriggerScheduler();
+			const sut = new TimeTriggerScheduler(logger);
 			let trigger: TimeTrigger | null = null;
 			const testAction = {
 				execute: () => {
@@ -48,6 +55,7 @@ describe('TimeTriggerScheduler', function() {
 				.setAction(testAction)
 				.build();
 			sut.register(trigger);
+			expect(sut.getRegistered()).to.deep.equal([trigger]);
 		}).timeout(70000);
 	});
 

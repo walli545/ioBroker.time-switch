@@ -15,13 +15,13 @@ const utils = require("@iobroker/adapter-core");
 const IoBrokerStateService_1 = require("./services/IoBrokerStateService");
 const TimeTriggerScheduler_1 = require("./scheduler/TimeTriggerScheduler");
 const TimeTriggerSerializer_1 = require("./serialization/TimeTriggerSerializer");
-const OnOffStateActionSerializer_1 = require("./serialization/OnOffStateActionSerializer");
 const UniversalTriggerScheduler_1 = require("./scheduler/UniversalTriggerScheduler");
-const OnOffStateActionBuilder_1 = require("./actions/OnOffStateActionBuilder");
 const UniversalSerializer_1 = require("./serialization/UniversalSerializer");
-const OnOffScheduleSerializer_1 = require("./serialization/OnOffScheduleSerializer");
-const MessageService_1 = require("./services/MessageService");
 const IoBrokerLoggingService_1 = require("./services/IoBrokerLoggingService");
+const MessageService_1 = require("./services/MessageService");
+const OnOffStateActionSerializer_1 = require("./serialization/OnOffStateActionSerializer");
+const OnOffStateActionBuilder_1 = require("./actions/OnOffStateActionBuilder");
+const OnOffScheduleSerializer_1 = require("./serialization/OnOffScheduleSerializer");
 class TimeSwitch extends utils.Adapter {
     constructor(options = {}) {
         super(Object.assign(Object.assign({}, options), { name: 'time-switch' }));
@@ -222,10 +222,10 @@ class TimeSwitch extends utils.Adapter {
         return __awaiter(this, void 0, void 0, function* () {
             this.log.debug('onScheduleChange: ' + scheduleString + ' ' + id);
             this.log.debug('schedule found: ' + this.scheduleIdToSchedule.get(id));
-            (_a = this.scheduleIdToSchedule.get(id)) === null || _a === void 0 ? void 0 : _a.removeAllTriggers();
             const schedule = this.createNewOnOffScheduleSerializer().deserialize(scheduleString);
             const enabledState = yield this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
             if (enabledState) {
+                (_a = this.scheduleIdToSchedule.get(id)) === null || _a === void 0 ? void 0 : _a.removeAllTriggers();
                 schedule.setEnabled(enabledState.val);
                 this.scheduleIdToSchedule.set(id, schedule);
             }
@@ -235,7 +235,7 @@ class TimeSwitch extends utils.Adapter {
         });
     }
     createNewOnOffScheduleSerializer() {
-        return new OnOffScheduleSerializer_1.OnOffScheduleSerializer(new UniversalTriggerScheduler_1.UniversalTriggerScheduler([new TimeTriggerScheduler_1.TimeTriggerScheduler()]), this.actionSerializer, this.triggerSerializer);
+        return new OnOffScheduleSerializer_1.OnOffScheduleSerializer(new UniversalTriggerScheduler_1.UniversalTriggerScheduler([new TimeTriggerScheduler_1.TimeTriggerScheduler(this.loggingService)]), this.actionSerializer, this.triggerSerializer);
     }
 }
 exports.TimeSwitch = TimeSwitch;

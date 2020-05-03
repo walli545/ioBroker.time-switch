@@ -2,15 +2,26 @@ import { cancelJob, Job, RecurrenceRule, scheduleJob } from 'node-schedule';
 import { TimeTrigger } from '../triggers/TimeTrigger';
 import { Trigger } from '../triggers/Trigger';
 import { TriggerScheduler } from './TriggerScheduler';
+import { LoggingService } from '../services/LoggingService';
 
 export class TimeTriggerScheduler extends TriggerScheduler {
+	constructor(private logger?: LoggingService) {
+		super();
+	}
+
 	private registered: [TimeTrigger, Job][] = [];
 
 	public register(trigger: TimeTrigger): void {
 		if (this.getAssociatedJob(trigger)) {
 			throw new Error('Trigger is already registered.');
 		}
-		const newJob = scheduleJob(this.createRecurrenceRule(trigger), () => trigger.getAction().execute());
+		this.logger?.logDebug(
+			`Scheduling trigger at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`,
+		);
+		const newJob = scheduleJob(this.createRecurrenceRule(trigger), () => {
+			this.logger?.logDebug(`Executing trigger with id ${trigger.getId()}`);
+			trigger.getAction().execute();
+		});
 		this.registered.push([trigger, newJob]);
 	}
 

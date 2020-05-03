@@ -4,15 +4,22 @@ const node_schedule_1 = require("node-schedule");
 const TimeTrigger_1 = require("../triggers/TimeTrigger");
 const TriggerScheduler_1 = require("./TriggerScheduler");
 class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
-    constructor() {
-        super(...arguments);
+    constructor(logger) {
+        super();
+        this.logger = logger;
         this.registered = [];
     }
     register(trigger) {
+        var _a;
         if (this.getAssociatedJob(trigger)) {
             throw new Error('Trigger is already registered.');
         }
-        const newJob = node_schedule_1.scheduleJob(this.createRecurrenceRule(trigger), () => trigger.getAction().execute());
+        (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Scheduling trigger at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`);
+        const newJob = node_schedule_1.scheduleJob(this.createRecurrenceRule(trigger), () => {
+            var _a;
+            (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Executing trigger with id ${trigger.getId()}`);
+            trigger.getAction().execute();
+        });
         this.registered.push([trigger, newJob]);
     }
     unregister(trigger) {

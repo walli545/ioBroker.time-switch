@@ -232,10 +232,10 @@ export class TimeSwitch extends utils.Adapter {
 	private async onScheduleChange(id: string, scheduleString: string): Promise<void> {
 		this.log.debug('onScheduleChange: ' + scheduleString + ' ' + id);
 		this.log.debug('schedule found: ' + this.scheduleIdToSchedule.get(id));
-		this.scheduleIdToSchedule.get(id)?.removeAllTriggers();
 		const schedule = this.createNewOnOffScheduleSerializer().deserialize(scheduleString);
 		const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
 		if (enabledState) {
+			this.scheduleIdToSchedule.get(id)?.removeAllTriggers();
 			schedule.setEnabled(enabledState.val);
 			this.scheduleIdToSchedule.set(id, schedule);
 		} else {
@@ -245,7 +245,7 @@ export class TimeSwitch extends utils.Adapter {
 
 	private createNewOnOffScheduleSerializer(): OnOffScheduleSerializer {
 		return new OnOffScheduleSerializer(
-			new UniversalTriggerScheduler([new TimeTriggerScheduler()]),
+			new UniversalTriggerScheduler([new TimeTriggerScheduler(this.loggingService)]),
 			this.actionSerializer,
 			this.triggerSerializer,
 		);
