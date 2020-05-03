@@ -52,10 +52,10 @@
 			const toggle = this.sr.querySelector('#enabled');
 			if (val) {
 				toggle.classList.add('checked');
-				vis.binds['time-switch'].sendMessage('enable-schedule', this.settings.dataId);
+				vis.binds['time-switch'].sendMessage('enable-schedule', { dataId: this.settings.dataId});
 			} else {
 				toggle.classList.remove('checked');
-				vis.binds['time-switch'].sendMessage('disable-schedule', this.settings.dataId);
+				vis.binds['time-switch'].sendMessage('disable-schedule', { dataId: this.settings.dataId});
 			}
 		}
 
@@ -166,7 +166,7 @@
 		onTriggerDelete(triggerId) {
 			vis.binds['time-switch'].sendMessage('delete-trigger', {
 				dataId: this.settings.dataId,
-				id: triggerId,
+				triggerId: triggerId,
 			});
 		}
 
