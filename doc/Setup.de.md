@@ -7,12 +7,13 @@
   1. Adapter installieren und eine Instanz anlegen (eine Instanz kann mehrere Zeitpläne verwalten)
   2. Öffnen der Instanzeinstellungen (Werkzeugschlüssel neben Play/Pause) und anlegen eines Zeitplans mit klick auf 
    "An/Aus Schaltplan hinzufügen". 
-   Nun die neu Schaltplandaten Id des neu angelegten Schaltplans merken, diese wird später im VIS Editor benötigt.
-    
-   Im den Instanzeinstellungen können nur neue Zeitpläne angelegt und gelöscht werden, außerdem werden noch
-   grundlegende Infos zu den Zeitplänen angezeigt (Name, Anzahl Trigger, Aktiv).
-    
-   Anschließend speichern und die Einstellungen verlassen.
+  
+     Nun die neu Schaltplandaten Id des neu angelegten Schaltplans merken, diese wird später im VIS Editor benötigt.
+  
+     Im den Instanzeinstellungen können nur neue Zeitpläne angelegt und gelöscht werden, außerdem werden noch
+     grundlegende Infos zu den Zeitplänen angezeigt (Name, Anzahl Trigger, Aktiv).
+  
+     Anschließend speichern und die Einstellungen verlassen.
   3. Öffnen des views im VIS Editor, in dem das Widget angezeigt werden soll.
   
      Anlegen eines neuen Widgets vom Typ "Schedule (On/Off)", dieses kann unter der Kategorie "time-switch" gefunden
