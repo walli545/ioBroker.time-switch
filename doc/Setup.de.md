@@ -41,7 +41,7 @@
       
   5. Alle anderen Interaktionen erfolgen nun mit dem VIS View.
   
-    - Ändern des Schaltplannamens
-    - Temporäres deaktivieren des automatischen Schaltens
-    - Manuelles Schalten
-    - Anlegen/Bearbeiten/Löschen von Triggern
+     -  Ändern des Schaltplannamens
+     -  Temporäres deaktivieren des automatischen Schaltens
+     -  Manuelles Schalten
+     -  Anlegen/Bearbeiten/Löschen von Triggern
