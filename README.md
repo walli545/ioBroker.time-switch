@@ -23,6 +23,7 @@ In the widget the schedule can be disabled temporarily and the switched state ca
 ## Setup
 
 [Setup instructions (english)](doc/Setup.en.md)
+
 [Einrichten des Adapters (deutsch)](doc/Setup.de.md)
      
 ## Possible features in the future
