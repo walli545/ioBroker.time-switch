@@ -30,8 +30,8 @@ declare global {
 
 export class TimeSwitch extends utils.Adapter {
 	private scheduleIdToSchedule: Map<string, Schedule> = new Map<string, Schedule>();
-	private stateService = new IoBrokerStateService(this);
 	private loggingService = new IoBrokerLoggingService(this);
+	private stateService = new IoBrokerStateService(this, this.loggingService);
 
 	private actionSerializer = new UniversalSerializer<Action>([new OnOffStateActionSerializer(this.stateService)]);
 	private triggerSerializer = new UniversalSerializer<Trigger>([new TimeTriggerSerializer(this.actionSerializer)]);

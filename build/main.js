@@ -26,8 +26,8 @@ class TimeSwitch extends utils.Adapter {
     constructor(options = {}) {
         super(Object.assign(Object.assign({}, options), { name: 'time-switch' }));
         this.scheduleIdToSchedule = new Map();
-        this.stateService = new IoBrokerStateService_1.IoBrokerStateService(this);
         this.loggingService = new IoBrokerLoggingService_1.IoBrokerLoggingService(this);
+        this.stateService = new IoBrokerStateService_1.IoBrokerStateService(this, this.loggingService);
         this.actionSerializer = new UniversalSerializer_1.UniversalSerializer([new OnOffStateActionSerializer_1.OnOffStateActionSerializer(this.stateService)]);
         this.triggerSerializer = new UniversalSerializer_1.UniversalSerializer([new TimeTriggerSerializer_1.TimeTriggerSerializer(this.actionSerializer)]);
         this.messageService = new MessageService_1.MessageService(this.stateService, this.loggingService, this.scheduleIdToSchedule, this.triggerSerializer, this.actionSerializer, this.createNewOnOffScheduleSerializer());
