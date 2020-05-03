@@ -1,10 +1,11 @@
+import * as TypeMoq from 'typemoq';
 import { expect } from 'chai';
 import { Weekday } from '../../../src/triggers/Weekday';
 import { TimeTriggerBuilder } from '../../../src/triggers/TimeTriggerBuilder';
 import { Action } from '../../../src/actions/Action';
 
 describe('TimeTrigger', () => {
-	describe('ctor and getter', () => {
+	describe('ctor, getter and setter', () => {
 		const dummyAction = {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			execute: () => {},
@@ -254,6 +255,42 @@ describe('TimeTrigger', () => {
 			expect(have.getMinute()).to.equal(30);
 			expect(have.getWeekdays().length).to.equal(3);
 			expect(have.getAction()).to.equal(dummyAction);
+		});
+
+		it('sets another action', () => {
+			const sut = new TimeTriggerBuilder()
+				.setId('0')
+				.setHour(0)
+				.setMinute(0)
+				.setWeekdays([Weekday.Monday])
+				.setAction(dummyAction)
+				.build();
+			const newAction = TypeMoq.Mock.ofType<Action>().object;
+			sut.setAction(newAction);
+			expect(sut.getAction()).not.to.equal(dummyAction);
+			expect(sut.getAction()).to.equal(newAction);
+		});
+
+		it('setAction throws on undefined', () => {
+			const sut = new TimeTriggerBuilder()
+				.setId('0')
+				.setHour(0)
+				.setMinute(0)
+				.setWeekdays([Weekday.Monday])
+				.setAction(dummyAction)
+				.build();
+			expect(() => sut.setAction(undefined as any)).to.throw();
+		});
+
+		it('setAction throws on null', () => {
+			const sut = new TimeTriggerBuilder()
+				.setId('0')
+				.setHour(0)
+				.setMinute(0)
+				.setWeekdays([Weekday.Monday])
+				.setAction(dummyAction)
+				.build();
+			expect(() => sut.setAction(null as any)).to.throw();
 		});
 	});
 
