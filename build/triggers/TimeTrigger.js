@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseTrigger_1 = require("./BaseTrigger");
-class TimeTrigger extends BaseTrigger_1.BaseTrigger {
-    constructor(hour, minute, weekdays) {
-        super(weekdays);
+const BaseDailyTrigger_1 = require("./BaseDailyTrigger");
+class TimeTrigger extends BaseDailyTrigger_1.BaseDailyTrigger {
+    constructor(id, hour, minute, weekdays, action) {
+        super(id, action, weekdays);
         if (hour == undefined || hour < 0 || hour > 23) {
             throw new Error('Hour must be in range 0-23.');
         }

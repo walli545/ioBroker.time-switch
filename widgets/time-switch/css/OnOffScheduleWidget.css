@@ -1,0 +1,72 @@
+.widget {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.button {
+    cursor: pointer;
+    filter: invert(1);
+    align-self: center;
+}
+
+.md-switch-container {
+    margin: 10px;
+}
+
+#switched-oid {
+    color: #a5a5a5;
+    margin-bottom: 10px;
+}
+
+.heading div {
+    display: flex;
+}
+
+.heading .view h1 {
+    margin-bottom: 5px;
+    margin-top: 0px;
+    width: calc(100% - 30px);
+}
+
+.heading .edit input {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-right: 10px;
+    width: calc(100% - 30px);
+}
+
+#add img {
+    float: right;
+}
+
+.triggers {
+    overflow-y: scroll;
+    padding-right: 5px;
+}
+.triggers::-webkit-scrollbar-track
+{
+    border-radius: 10px;
+}
+
+.triggers::-webkit-scrollbar
+{
+    width: 4px;
+    background-color: #424242;
+}
+
+.triggers::-webkit-scrollbar-thumb
+{
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+button.material-button{
+    margin: 10px;
+    width: 100px;
+}
+
+.manual-container.multiple p {
+    margin-bottom: 5px;
+}

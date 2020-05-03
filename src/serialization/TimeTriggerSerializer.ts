@@ -1,26 +1,42 @@
 import { TimeTrigger } from '../triggers/TimeTrigger';
-import { Serializer } from './Serializer';
+import { Trigger } from '../triggers/Trigger';
+import { BaseTriggerSerializer } from './BaseTriggerSerializer';
+import { TimeTriggerBuilder } from '../triggers/TimeTriggerBuilder';
 
-export class TimeTriggerSerializer implements Serializer<TimeTrigger> {
-	public static readonly TYPE = 'time';
-
-	public deserialize(stringToDeserialize: string): TimeTrigger {
+export class TimeTriggerSerializer extends BaseTriggerSerializer {
+	public deserialize(stringToDeserialize: string): Trigger {
 		const json = JSON.parse(stringToDeserialize);
-		if (json.type !== TimeTriggerSerializer.TYPE) {
-			throw new Error('Type must be time.');
+		if (json.type !== this.getType()) {
+			throw new Error(`Can not deserialize object of type ${json.type}`);
 		}
-		return new TimeTrigger(json.hour, json.minute, json.weekdays);
+		return new TimeTriggerBuilder()
+			.setAction(this.deserializeAction(JSON.stringify(json.action)))
+			.setHour(json.hour)
+			.setMinute(json.minute)
+			.setWeekdays(json.weekdays)
+			.setId(json.id)
+			.build();
 	}
 
-	public serialize(objectToSerialize: TimeTrigger): string {
-		if (!objectToSerialize) {
+	public serialize(objectToSerialize: Trigger): string {
+		if (objectToSerialize == null) {
 			throw new Error('objectToSerialize may not be null or undefined.');
 		}
-		return JSON.stringify({
-			type: TimeTriggerSerializer.TYPE,
-			hour: objectToSerialize.getHour(),
-			minute: objectToSerialize.getMinute(),
-			weekdays: objectToSerialize.getWeekdays(),
-		});
+		if (objectToSerialize instanceof TimeTrigger) {
+			return JSON.stringify({
+				type: this.getType(),
+				hour: objectToSerialize.getHour(),
+				minute: objectToSerialize.getMinute(),
+				weekdays: objectToSerialize.getWeekdays(),
+				id: objectToSerialize.getId(),
+				action: JSON.parse(this.serializeAction(objectToSerialize.getAction())),
+			});
+		} else {
+			throw new Error('objectToSerialize must be of type TimeTrigger.');
+		}
+	}
+
+	getType(): string {
+		return TimeTrigger.prototype.constructor.name;
 	}
 }

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { IoBrokerStateService } from './IoBrokerStateService';
+import { IoBrokerStateService } from '../../../src/services/IoBrokerStateService';
 import * as TypeMoq from 'typemoq';
 
 describe('IoBrokerStateService', () => {

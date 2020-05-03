@@ -1,11 +1,9 @@
 (async () => {
 	class Weekdays extends HTMLElement {
-		shadowRoot;
-		WEEKDAYS = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
-
 		constructor() {
 			super();
-			this.createShadowRoot();
+			this.sr = this.createShadowRoot();
+			this.WEEKDAYS = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
 			this.addWeekdayElements();
 		}
 
@@ -49,7 +47,7 @@
 		}
 
 		onSelectedChange() {
-			this.shadowRoot.querySelectorAll('.view span').forEach((e, i) => {
+			this.sr.querySelectorAll('.view span').forEach((e, i) => {
 				const correctIndex = i % 7 === 6 ? 0 : i + 1;
 				if (this.selected.indexOf(correctIndex) !== -1) {
 					e.classList.add('active');
@@ -57,7 +55,7 @@
 					e.classList.remove('active');
 				}
 			});
-			this.shadowRoot.querySelectorAll('.edit label input').forEach((c, i) => {
+			this.sr.querySelectorAll('.edit label input').forEach((c, i) => {
 				const correctIndex = i % 7 === 6 ? 0 : i + 1;
 				c.checked = this.selected.indexOf(correctIndex) !== -1;
 			});
@@ -66,17 +64,17 @@
 
 		onEditChange() {
 			if (this.edit) {
-				this.shadowRoot.querySelector('.container.edit').style.display = null;
-				this.shadowRoot.querySelector('.container.view').style.display = 'none';
+				this.sr.querySelector('.container.edit').style.display = null;
+				this.sr.querySelector('.container.view').style.display = 'none';
 			} else {
-				this.shadowRoot.querySelector('.container.edit').style.display = 'none';
-				this.shadowRoot.querySelector('.container.view').style.display = null;
+				this.sr.querySelector('.container.edit').style.display = 'none';
+				this.sr.querySelector('.container.view').style.display = null;
 			}
 		}
 
 		onWeekdayClick() {
 			const selected = [];
-			this.shadowRoot.querySelectorAll('.edit label input').forEach((c, i) => {
+			this.sr.querySelectorAll('.edit label input').forEach((c, i) => {
 				if (c.checked) {
 					selected.push(i % 7 === 6 ? 0 : i + 1);
 				}
@@ -90,7 +88,7 @@
 				errors.push('One or more weekdays must be selected');
 			}
 			this.errors = errors;
-			this.shadowRoot.dispatchEvent(new CustomEvent('errors', { composed: true }));
+			this.sr.dispatchEvent(new CustomEvent('errors', { composed: true }));
 		}
 
 		createShadowRoot() {
@@ -103,15 +101,15 @@
 				<div class="container edit" style="display: none">
 				</div>
 			`;
-			this.shadowRoot = shadowRoot;
+			return  shadowRoot;
 		}
 
 		addWeekdayElements() {
-			if (!this.shadowRoot.querySelector('.container.edit span')) {
+			if (!this.sr.querySelector('.container.edit span')) {
 				this.WEEKDAYS.forEach(day => {
 					const span = document.createElement('span');
 					span.textContent = ` ${day} `;
-					this.shadowRoot.querySelector('.container.view').appendChild(span);
+					this.sr.querySelector('.container.view').appendChild(span);
 
 					const label = document.createElement('label');
 					label.classList.add('pure-material-checkbox');
@@ -122,7 +120,7 @@
 					text.textContent = `${day}`;
 					label.appendChild(input);
 					label.appendChild(text);
-					this.shadowRoot.querySelector('.container.edit').appendChild(label);
+					this.sr.querySelector('.container.edit').appendChild(label);
 				});
 			}
 		}
