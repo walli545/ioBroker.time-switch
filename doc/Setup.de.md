@@ -1,5 +1,6 @@
-[For english version, click here](doc/Setup.en.md)
-[Zurück zum README](README.md)
+[English version](Setup.en.md)
+
+[Zurück zum README](../README.md)
 
 # An/Aus Schaltplan einrichten
 
