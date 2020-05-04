@@ -3,8 +3,7 @@
 		constructor() {
 			super();
 			this.sr = this.createShadowRoot();
-			this.sr.querySelector('input.hour').addEventListener('input', this.onHourInput.bind(this));
-			this.sr.querySelector('input.minute').addEventListener('input', this.onMinuteInput.bind(this));
+			this.sr.querySelector('input#time').addEventListener('input', this.onTimeInput.bind(this));
 		}
 
 		static get observedAttributes() {
@@ -59,12 +58,11 @@
 		}
 
 		onTimeChanged() {
-			this.sr.querySelector('input.hour').value = this.hour;
-			this.sr.querySelector('input.minute').value = this.minute;
-			const hour = String(this.hour).padStart(2, '0');
-			const minute = String(this.minute).padStart(2, '0');
-			this.sr.querySelector('.time').textContent = `${hour}:${minute}`;
-			this.verify();
+			const hour = this.hour.toString().padStart(2, '0');
+			const minute = this.minute.toString().padStart(2, '0');
+			const formattedTime = `${hour}:${minute}`;
+			this.sr.querySelector('input#time').value = formattedTime;
+			this.sr.querySelector('.time').textContent = formattedTime;
 		}
 
 		onEditChange() {
@@ -77,27 +75,16 @@
 			}
 		}
 
-		onHourInput() {
-			this.hour = +this.sr.querySelector('input.hour').value;
-			this.verify();
-		}
-
-		onMinuteInput() {
-			this.minute = +this.sr.querySelector('input.minute').value;
-			this.verify();
-		}
-
-		verify() {
-			const errors = [];
-			const hour = Number.parseInt(this.hour, 10);
-			const minute = Number.parseInt(this.minute, 10);
-			if (Number.isNaN(hour) || hour < 0 || hour > 23) {
-				errors.push('Hour must be >= 0 and <= 23');
+		onTimeInput() {
+			const value = this.sr.querySelector('input#time').value;
+			if (value === '') {
+				this.errors = ['No time selected'];
+			} else {
+				this.errors = [];
+				const split = value.split(':');
+				this.hour = Number.parseInt(split[0], 10);
+				this.minute = Number.parseInt(split[1], 10);
 			}
-			if (Number.isNaN(minute) || minute < 0 || minute > 59) {
-				errors.push('Minute must be >= 0 and <= 59');
-			}
-			this.errors = errors;
 			this.sr.dispatchEvent(new CustomEvent('errors', { composed: true }));
 		}
 
@@ -109,9 +96,7 @@
 						<div class="time"></div>
 				</div>
 				<div class="container edit" style="display: none">
-                    <input type="number" class="hour" min="0" max="23" step="1" required>
-                    <span>:</span>
-                    <input type="number" class="minute" min="0" max="59" step="1" required>
+                    <input type="time" id="time" required/>
 				</div>
 			`;
 			return shadowRoot;
