@@ -5,10 +5,10 @@
 [![Downloads](https://img.shields.io/npm/dm/iobroker.time-switch.svg)](https://www.npmjs.com/package/iobroker.time-switch)
 [![Dependency Status](https://img.shields.io/david/walli545/iobroker.time-switch.svg)](https://david-dm.org/walli545/iobroker.time-switch)
 [![Known Vulnerabilities](https://snyk.io/test/github/walli545/ioBroker.time-switch/badge.svg)](https://snyk.io/test/github/walli545/ioBroker.time-switch)
+[![Travis-CI](http://img.shields.io/travis/walli545/ioBroker.time-switch/master.svg)](https://travis-ci.org/walli545/ioBroker.time-switch)
 
 [![NPM](https://nodei.co/npm/iobroker.time-switch.png?downloads=true)](https://nodei.co/npm/iobroker.time-switch/)
 
-**Tests:**: [![Travis-CI](http://img.shields.io/travis/walli545/ioBroker.time-switch/master.svg)](https://travis-ci.org/walli545/ioBroker.time-switch)
 
 ## time-switch adapter for ioBroker
 
@@ -22,9 +22,7 @@ In the widget the schedule can be disabled temporarily and the switched state ca
 
 ## Setup
 
-[Setup instructions (english)](doc/Setup.en.md)
-
-[Einrichten des Adapters (deutsch)](doc/Setup.de.md)
+For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.time-switch/wiki) (German instructions available also).
      
 ## Possible features in the future
 
