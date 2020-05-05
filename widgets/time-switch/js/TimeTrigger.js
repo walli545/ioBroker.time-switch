@@ -3,8 +3,9 @@
 		constructor() {
 			super();
 			this.sr = this.createShadowRoot();
-			this.sr.querySelector('input.hour').addEventListener('input', this.onHourInput.bind(this));
-			this.sr.querySelector('input.minute').addEventListener('input', this.onMinuteInput.bind(this));
+			this.hour = 0;
+			this.minute = 0;
+			this.sr.querySelector('input#time').addEventListener('input', this.onTimeInput.bind(this));
 		}
 
 		static get observedAttributes() {
@@ -13,31 +14,19 @@
 
 		connectedCallback() {}
 
-		attributeChangedCallback(attr, oldValue, newValue) {
+		attributeChangedCallback(attr) {
 			if (attr === 'data') {
-				this.onTimeChanged();
+				this.onDataChanged();
 			} else if (attr === 'edit') {
 				this.onEditChange();
 			}
 		}
 
-		get hour() {
-			return JSON.parse(this.getAttribute('data')).hour;
+		get data() {
+			return JSON.parse(this.getAttribute('data'));
 		}
 
-		set hour(val) {
-			const data = JSON.parse(this.getAttribute('data'));
-			data.hour = val;
-			this.setAttribute('data', JSON.stringify(data));
-		}
-
-		get minute() {
-			return JSON.parse(this.getAttribute('data')).minute;
-		}
-
-		set minute(val) {
-			const data = JSON.parse(this.getAttribute('data'));
-			data.minute = val;
+		set data(data) {
 			this.setAttribute('data', JSON.stringify(data));
 		}
 
@@ -51,20 +40,33 @@
 		}
 
 		set errors(value) {
+			const oldErrors = this.errors;
 			if (value.length === 0) {
 				this.removeAttribute('errors');
 			} else {
 				this.setAttribute('errors', JSON.stringify(value));
 			}
+
+			if (oldErrors.length !== value.length) {
+				this.sr.dispatchEvent(new CustomEvent('errors', { composed: true }));
+			}
 		}
 
-		onTimeChanged() {
-			this.sr.querySelector('input.hour').value = this.hour;
-			this.sr.querySelector('input.minute').value = this.minute;
-			const hour = String(this.hour).padStart(2, '0');
-			const minute = String(this.minute).padStart(2, '0');
-			this.sr.querySelector('.time').textContent = `${hour}:${minute}`;
-			this.verify();
+		get errors() {
+			const errors = this.getAttribute('errors');
+			return errors ? JSON.parse(errors) : [];
+		}
+
+		onDataChanged() {
+			if (this.data.hour !== this.hour || this.data.minute !== this.minute) {
+				this.hour = this.data.hour;
+				this.minute = this.data.minute;
+				const hour = this.hour.toString().padStart(2, '0');
+				const minute = this.minute.toString().padStart(2, '0');
+				const formattedTime = `${hour}:${minute}`;
+				this.sr.querySelector('.time').textContent = formattedTime;
+				this.sr.querySelector('input#time').value = formattedTime;
+			}
 		}
 
 		onEditChange() {
@@ -77,28 +79,20 @@
 			}
 		}
 
-		onHourInput() {
-			this.hour = +this.sr.querySelector('input.hour').value;
-			this.verify();
-		}
-
-		onMinuteInput() {
-			this.minute = +this.sr.querySelector('input.minute').value;
-			this.verify();
-		}
-
-		verify() {
-			const errors = [];
-			const hour = Number.parseInt(this.hour, 10);
-			const minute = Number.parseInt(this.minute, 10);
-			if (Number.isNaN(hour) || hour < 0 || hour > 23) {
-				errors.push('Hour must be >= 0 and <= 23');
+		onTimeInput() {
+			const value = this.sr.querySelector('input#time').value;
+			if (value === '') {
+				this.errors = ['No time selected'];
+			} else {
+				this.errors = [];
+				const split = value.split(':');
+				this.hour = Number.parseInt(split[0], 10);
+				this.minute = Number.parseInt(split[1], 10);
+				const data = this.data;
+				data.hour = this.hour;
+				data.minute = this.minute;
+				this.data = data;
 			}
-			if (Number.isNaN(minute) || minute < 0 || minute > 59) {
-				errors.push('Minute must be >= 0 and <= 59');
-			}
-			this.errors = errors;
-			this.sr.dispatchEvent(new CustomEvent('errors', { composed: true }));
 		}
 
 		createShadowRoot() {
@@ -109,9 +103,7 @@
 						<div class="time"></div>
 				</div>
 				<div class="container edit" style="display: none">
-                    <input type="number" class="hour" min="0" max="23" step="1" required>
-                    <span>:</span>
-                    <input type="number" class="minute" min="0" max="59" step="1" required>
+                    <input type="time" id="time" required/>
 				</div>
 			`;
 			return shadowRoot;
