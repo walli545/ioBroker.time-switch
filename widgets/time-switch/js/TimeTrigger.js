@@ -3,8 +3,8 @@
 		constructor() {
 			super();
 			this.sr = this.createShadowRoot();
-			this.hour = 0;
-			this.minute = 0;
+			this.hour = -1;
+			this.minute = -1;
 			this.sr.querySelector('input#time').addEventListener('input', this.onTimeInput.bind(this));
 		}
 
