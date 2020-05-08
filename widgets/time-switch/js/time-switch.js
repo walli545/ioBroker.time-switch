@@ -12,8 +12,8 @@ const iobSystemDic = systemDictionary;
 $.get('../time-switch.admin/words.js', function(script) {
 	let translation = script.substring(script.indexOf('{'), script.length);
 	translation = translation.substring(0, translation.lastIndexOf(';'));
-	$.extend(systemDictionary, JSON.parse(translation));
 	$.extend(systemDictionary, iobSystemDic);
+	$.extend(systemDictionary, JSON.parse(translation));
 });
 
 // export vis binds for widget
@@ -59,32 +59,29 @@ function createOnOffWidget(widgetId, view, data, style) {
 
 function validateOnOffWidgetSettings(widgetElement, data) {
 	if (!data.dataId) {
-		showWarningInWidget(widgetElement, 'Select a schedule data id to use the widget!');
+		showWarningInWidget(widgetElement, 'needToSelectDataId');
 		return false;
 	}
 	if (!(data.dataId.startsWith('time-switch.0.onoff') && data.dataId.endsWith('data'))) {
-		showWarningInWidget(
-			widgetElement,
-			"Select a valid schedule data id (with pattern 'time-switch.0.onoff.*.data')!",
-		);
+		showWarningInWidget(widgetElement, 'needToSelectValidDataId');
 		return false;
 	}
 	if (!data.stateId1) {
-		showWarningInWidget(widgetElement, 'Set at least one switched state id to use the widget!');
+		showWarningInWidget(widgetElement, 'needToSelectStateId');
 		return false;
 	}
 	if (data.valueType === 'number') {
 		if (Number.isNaN(Number.parseFloat(data.onValue))) {
-			showWarningInWidget(widgetElement, 'Enter a valid number for switched on value when type is number!');
+			showWarningInWidget(widgetElement, 'needToEnterValidNumberOn');
 			return false;
 		}
 		if (Number.isNaN(Number.parseFloat(data.offValue))) {
-			showWarningInWidget(widgetElement, 'Enter a valid number for switched off value when type is number!');
+			showWarningInWidget(widgetElement, 'needToEnterValidNumberOff');
 			return false;
 		}
 	} else if (data.valueType === 'string') {
-		if (data.onValue === undefined || data.offValue === undefined) {
-			showWarningInWidget(widgetElement, 'On/Offvalue cannot be empty when type is string');
+		if (data.onValue === undefined || data.offValue === undefined || data.onValue === '' || data.offValue === '') {
+			showWarningInWidget(widgetElement, 'needToEnterValidStringValue');
 			return false;
 		}
 	}
@@ -93,7 +90,7 @@ function validateOnOffWidgetSettings(widgetElement, data) {
 
 function showWarningInWidget(widgetElement, warning) {
 	const p = document.createElement('p');
-	p.textContent = warning;
+	p.textContent = translateWord(warning);
 	while (widgetElement.firstChild) {
 		widgetElement.removeChild(widgetElement.firstChild);
 	}

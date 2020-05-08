@@ -3,7 +3,10 @@
 		constructor() {
 			super();
 			this.sr = this.createShadowRoot();
-			this.WEEKDAYS = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+			this.weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(s =>
+				translateWord(s),
+			);
+			this.weekdaysShort = this.weekdays.map(s => s.substr(0, 2).toUpperCase());
 			this.addWeekdayElements();
 		}
 
@@ -101,16 +104,18 @@
 				<div class="container edit" style="display: none">
 				</div>
 			`;
-			return  shadowRoot;
+			return shadowRoot;
 		}
 
 		addWeekdayElements() {
 			if (!this.sr.querySelector('.container.edit span')) {
-				this.WEEKDAYS.forEach(day => {
+				this.weekdaysShort.forEach(day => {
 					const span = document.createElement('span');
 					span.textContent = ` ${day} `;
 					this.sr.querySelector('.container.view').appendChild(span);
+				});
 
+				this.weekdays.forEach(day => {
 					const label = document.createElement('label');
 					label.classList.add('pure-material-checkbox');
 					const input = document.createElement('input');
