@@ -269,11 +269,13 @@
 					<div class="heading">
 						<div class="view">
 							<h1></h1>
-							<img class="button edit" src="widgets/time-switch/img/edit-24px.svg" width="28px" height="28px"/>
+							<img class="button edit" src="widgets/time-switch/img/edit-24px.svg" width="28px" 
+								height="28px" title="${translateWord('editName')}"/>
 						</div>
 						<div class="edit" style="display: none;">
 							<input type="text">
-							<img class="button save" src="widgets/time-switch/img/save-24px.svg" width="28px" height="28px"/>
+							<img class="button save" src="widgets/time-switch/img/save-24px.svg" width="28px"
+								height="28px"title="${translateWord('saveName')}"/>
 						</div>
 					</div>
 					<div id="switched-oid"></div>
@@ -281,22 +283,23 @@
 					<div id="enabled" class="md-switch-container">
 						<div class="md-switch-track"></div>
 						<div class="md-switch-handle"></div>
-						<div class="md-switch-label">Automatic switching enabled</div>
+						<div class="md-switch-label">${translateWord('automaticSwitchingEnabled')}</div>
 					</div>
 					<div class="manual-container multiple" style="display: none;">
-						<p>Manual switching</p>
-						<button class="material-button" id="manual-on">All on</button>
-						<button class="material-button" id="manual-off">All off</button>
+						<p>${translateWord('manualSwitching')}</p>
+						<button class="material-button" id="manual-on">${translateWord('allOn')}</button>
+						<button class="material-button" id="manual-off">${translateWord('allOff')}</button>
 					</div>
 					<div class="manual-container single" style="display: none;">
 						<div id="manual" class="md-switch-container">
 							<div class="md-switch-track"></div>
 							<div class="md-switch-handle"></div>
-							<div class="md-switch-label">Current value</div>
+							<div class="md-switch-label">${translateWord('currentValue')}</div>
 						</div>
 					</div>
 					<div id="add">
-						<img class="button add" src="widgets/time-switch/img/add-24px.svg" width="28px" height="28px"/>
+						<img class="button add" src="widgets/time-switch/img/add-24px.svg" width="28px"
+							height="28px" title="${translateWord('addTrigger')}"/>
 					</div>
 					<div class="triggers">
 				</div>

@@ -1,75 +1,96 @@
 {
-	"common": {
-		"name": "time-switch",
-		"version": "1.1.0",
-		"news": {
-			"1.0.0": {
-				"en": "initial release",
-				"de": "Erstveröffentlichung",
-				"ru": "Начальная версия",
-				"pt": "lançamento inicial",
-				"nl": "Eerste uitgave",
-				"fr": "Première version",
-				"it": "Versione iniziale",
-				"es": "Versión inicial",
-				"pl": "Pierwsze wydanie",
-				"zh-cn": "首次出版"
-			}
-		},
-		"title": "time-switch",
-		"titleLang": {
-			"en": "time-switch",
-			"de": "Zeitschaltuhr",
-			"ru": "реле времени",
-			"pt": "mudança de tempo",
-			"nl": "tijdschakelaar",
-			"fr": "interrupteur horaire",
-			"it": "tempo-interruttore",
-			"es": "interruptor de tiempo",
-			"pl": "zmiana czasu",
-			"zh-cn": "定时开关"
-		},
-		"desc": {
-			"en": "Time based switching of devices",
-			"de": "Zeitbasiertes Schalten von Geräten",
-			"ru": "Переключение устройств по времени",
-			"pt": "Troca de dispositivos com base no tempo",
-			"nl": "Tijdgebaseerd schakelen van apparaten",
-			"fr": "Commutation temporelle des appareils",
-			"it": "Commutazione dei dispositivi basata sul tempo",
-			"es": "Cambio de dispositivos basado en el tiempo",
-			"pl": "Czasowe przełączanie urządzeń",
-			"zh-cn": "基于时间的设备切换"
-		},
-		"authors": ["walli545 <walli5446@gmail.com>"],
-		"keywords": ["ioBroker", "template", "Smart Home", "home automation"],
-		"license": "MIT",
-		"platform": "Javascript/Node.js",
-		"main": "build/main.js",
-		"icon": "time-switch.png",
-		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/walli545/ioBroker.time-switch/master/admin/time-switch.png",
-		"readme": "https://github.com/walli545/ioBroker.time-switch/blob/master/README.md",
-		"loglevel": "info",
-		"restartAdapters": ["vis"],
-		"mode": "daemon",
-		"singleton": true,
-		"type": "date-and-time",
-		"compact": true,
-		"materialize": true,
-		"messagebox": true,
-		"dependencies": [
-			{
-				"js-controller": ">=1.4.2"
-			},
-			"vis"
-		]
-	},
-	"native": {
-		"schedules": {
-			"onOff": []
-		}
-	},
-	"objects": [],
-	"instanceObjects": []
+    "common": {
+        "name": "time-switch",
+        "version": "1.1.0",
+        "news": {
+            "1.1.0": {
+                "en": "Option to hide switched state id in widget, fixed admin not working on Firefox.",
+                "de": "Option zum Ausblenden der ID des geschaltenen States im Widget. Die Admin Seite funktioniert nun unter Firefox.",
+                "ru": "Возможность скрыть идентификатор переключенного состояния в виджете, исправлена ​​ошибка, из-за которой админ не работал в Firefox.",
+                "pt": "Opção para ocultar o ID do estado alternado no widget, o administrador fixo não funciona no Firefox.",
+                "nl": "Optie om de geschakelde status-id in de widget te verbergen, vaste beheerder werkt niet in Firefox.",
+                "fr": "Option pour masquer l'ID d'état commuté dans le widget, l'administrateur fixe ne fonctionne pas sur Firefox.",
+                "it": "Opzione per nascondere l'ID stato commutato nel widget, amministratore fisso non funzionante su Firefox.",
+                "es": "Opción para ocultar la identificación del estado cambiado en el widget, el administrador fijo no funciona en Firefox.",
+                "pl": "Opcja ukrywania przełączonego identyfikatora stanu w widżecie, naprawiony administrator nie działający w przeglądarce Firefox.",
+                "zh-cn": "隐藏小部件中切换状态ID的选项，已修复管理员在Firefox上不起作用。"
+            },
+            "1.0.0": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "time-switch",
+        "titleLang": {
+            "en": "time-switch",
+            "de": "Zeitschaltuhr",
+            "ru": "реле времени",
+            "pt": "mudança de tempo",
+            "nl": "tijdschakelaar",
+            "fr": "interrupteur horaire",
+            "it": "tempo-interruttore",
+            "es": "interruptor de tiempo",
+            "pl": "zmiana czasu",
+            "zh-cn": "定时开关"
+        },
+        "desc": {
+            "en": "Time based switching of devices",
+            "de": "Zeitbasiertes Schalten von Geräten",
+            "ru": "Переключение устройств по времени",
+            "pt": "Troca de dispositivos com base no tempo",
+            "nl": "Tijdgebaseerd schakelen van apparaten",
+            "fr": "Commutation temporelle des appareils",
+            "it": "Commutazione dei dispositivi basata sul tempo",
+            "es": "Cambio de dispositivos basado en el tiempo",
+            "pl": "Czasowe przełączanie urządzeń",
+            "zh-cn": "基于时间的设备切换"
+        },
+        "authors": [
+            "walli545 <walli5446@gmail.com>"
+        ],
+        "keywords": [
+            "ioBroker",
+            "template",
+            "Smart Home",
+            "home automation"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "build/main.js",
+        "icon": "time-switch.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/walli545/ioBroker.time-switch/master/admin/time-switch.png",
+        "readme": "https://github.com/walli545/ioBroker.time-switch/blob/master/README.md",
+        "loglevel": "info",
+        "restartAdapters": [
+            "vis"
+        ],
+        "mode": "daemon",
+        "singleton": true,
+        "type": "date-and-time",
+        "compact": true,
+        "materialize": true,
+        "messagebox": true,
+        "dependencies": [
+            {
+                "js-controller": ">=1.4.2"
+            },
+            "vis"
+        ]
+    },
+    "native": {
+        "schedules": {
+            "onOff": []
+        }
+    },
+    "objects": [],
+    "instanceObjects": []
 }

@@ -55,7 +55,7 @@
 				} else {
 					scheduleData = {triggers: [], name: ''};
 				}
-				// let enabledText = translateWord(scheduleData.enabled ? 'true' : 'false');
+
 				let newRow = `
 					<tr id="${id}">
 						<td id="">time-switch.0.onoff.${id}.data</td>
@@ -63,13 +63,14 @@
 						<td>${scheduleData.triggers.length}</td>
 						<td class="translate">false</td>
 						<td>
-							<a class="delete-schedule values-buttons btn-floating btn-small waves-effect waves-light red"><i class="material-icons" title="Remove schedule">delete</i></a>
+							<a class="delete-schedule values-buttons btn-floating btn-small waves-effect waves-light red"><i class="material-icons" title="${translateWord('removeSchedule')}">delete</i></a>
 						</td>
 					</tr>
 				`;
 				socket.emit('getState', `${adapter}.${instance}.onoff.${id}.enabled`, (error, state) => {
 					if(state) {
-						$(`#schedules tr#${id}`).children('td').eq(3).text(state.val);
+						let enabledText = translateWord(state.val ? 'true' : 'false');
+						$(`#schedules tr#${id}`).children('td').eq(3).text(enabledText);
 					}
 				});
 
