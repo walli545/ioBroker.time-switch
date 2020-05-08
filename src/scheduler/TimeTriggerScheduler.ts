@@ -26,7 +26,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 	}
 
 	public unregister(trigger: TimeTrigger): void {
-		const job = this.getAssociatedJob(trigger)
+		const job = this.getAssociatedJob(trigger);
 		if (job) {
 			cancelJob(job);
 			this.removeTrigger(trigger);

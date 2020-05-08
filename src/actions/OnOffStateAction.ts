@@ -37,7 +37,7 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 		return this.idsOfStatesToSet;
 	}
 
-	public setIdsOfStatesToSet(idsOfStatesToSet: string[]) {
+	public setIdsOfStatesToSet(idsOfStatesToSet: string[]): void {
 		this.checkIdsOfStates(idsOfStatesToSet);
 		this.idsOfStatesToSet = idsOfStatesToSet;
 	}

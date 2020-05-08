@@ -44,7 +44,7 @@ export abstract class Schedule {
 		return this.triggers;
 	}
 
-	public addTrigger(trigger: Trigger) {
+	public addTrigger(trigger: Trigger): void {
 		if (this.findTriggerById(trigger.getId())) {
 			throw new Error(`Cannot add trigger, trigger id ${trigger.getId()} exists already`);
 		} else {
@@ -55,7 +55,7 @@ export abstract class Schedule {
 		}
 	}
 
-	public updateTrigger(trigger: Trigger) {
+	public updateTrigger(trigger: Trigger): void {
 		const index = this.getTriggers().findIndex(t => t.getId() === trigger.getId());
 		if (index == -1) {
 			throw new Error(`Cannot update trigger, trigger id ${trigger.getId()} not found`);
@@ -68,7 +68,7 @@ export abstract class Schedule {
 		}
 	}
 
-	public removeTrigger(triggerId: string) {
+	public removeTrigger(triggerId: string): void {
 		const trigger = this.triggers.find(t => t.getId() === triggerId);
 		if (trigger) {
 			this.removeTriggerAndUnregister(trigger);
@@ -77,21 +77,21 @@ export abstract class Schedule {
 		}
 	}
 
-	public removeAllTriggers() {
+	public removeAllTriggers(): void {
 		if (this.isEnabled()) {
 			this.triggerScheduler.unregisterAll();
 		}
 		this.triggers = [];
 	}
 
-	private removeTriggerAndUnregister(trigger: Trigger) {
+	private removeTriggerAndUnregister(trigger: Trigger): void {
 		if (this.isEnabled()) {
 			this.triggerScheduler.unregister(trigger);
 		}
 		this.triggers = this.triggers.filter(t => t.getId() !== trigger.getId());
 	}
 
-	private findTriggerById(id: string) {
+	private findTriggerById(id: string): Trigger | undefined {
 		return this.getTriggers().find(t => t.getId() === id);
 	}
 }

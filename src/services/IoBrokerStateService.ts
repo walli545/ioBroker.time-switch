@@ -22,7 +22,7 @@ export class IoBrokerStateService implements StateService {
 		if (id == null || id.length === 0) {
 			throw new Error('id may not be null or empty.');
 		}
-		this.logger?.logDebug(`Setting state ${id} with value ${value?.toString()}`)
+		this.logger?.logDebug(`Setting state ${id} with value ${value?.toString()}`);
 		this.adapter.setForeignState(id, value, false);
 	}
 }
