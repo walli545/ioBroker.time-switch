@@ -14,6 +14,7 @@ import { Schedule } from './schedules/Schedule';
 import { OnOffStateActionSerializer } from './serialization/OnOffStateActionSerializer';
 import { OnOffStateActionBuilder } from './actions/OnOffStateActionBuilder';
 import { OnOffScheduleSerializer } from './serialization/OnOffScheduleSerializer';
+import { cancelJob, scheduleJob } from 'node-schedule';
 
 // Augment the adapter.config object with the actual types
 declare global {
@@ -245,7 +246,7 @@ export class TimeSwitch extends utils.Adapter {
 
 	private createNewOnOffScheduleSerializer(): OnOffScheduleSerializer {
 		return new OnOffScheduleSerializer(
-			new UniversalTriggerScheduler([new TimeTriggerScheduler(this.loggingService)]),
+			new UniversalTriggerScheduler([new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService)]),
 			this.actionSerializer,
 			this.triggerSerializer,
 		);

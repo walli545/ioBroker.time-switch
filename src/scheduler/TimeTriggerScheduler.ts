@@ -1,11 +1,15 @@
-import { cancelJob, Job, RecurrenceRule, scheduleJob } from 'node-schedule';
+import { Job, JobCallback, RecurrenceRule } from 'node-schedule';
 import { TimeTrigger } from '../triggers/TimeTrigger';
 import { Trigger } from '../triggers/Trigger';
 import { TriggerScheduler } from './TriggerScheduler';
 import { LoggingService } from '../services/LoggingService';
 
 export class TimeTriggerScheduler extends TriggerScheduler {
-	constructor(private logger?: LoggingService) {
+	constructor(
+		private scheduleJob: (rule: RecurrenceRule, callback: JobCallback) => Job,
+		private cancelJob: (job: Job) => boolean,
+		private logger?: LoggingService,
+	) {
 		super();
 	}
 
@@ -18,7 +22,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 		this.logger?.logDebug(
 			`Scheduling trigger at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`,
 		);
-		const newJob = scheduleJob(this.createRecurrenceRule(trigger), () => {
+		const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
 			this.logger?.logDebug(`Executing trigger with id ${trigger.getId()}`);
 			trigger.getAction().execute();
 		});
@@ -28,7 +32,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 	public unregister(trigger: TimeTrigger): void {
 		const job = this.getAssociatedJob(trigger);
 		if (job) {
-			cancelJob(job);
+			this.cancelJob(job);
 			this.removeTrigger(trigger);
 		} else {
 			throw new Error('Trigger is not registered.');
