@@ -34,6 +34,18 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
 
 ## Changelog
 
+### 2.0.0
+**Attention**: Due to breaking changes in the schedule data structure, schedules created with versions 1.x are not compatible with 2.x.
+
+*Before upgrading, remove all schedules in the instance settings and remove widgets in vis.*
+* (walli545)
+    * Value type can now be configured, this enables switching of real booleans and numbers (#19)
+    * Added a new state for each schedule to disable/enable automatic switching (#24)
+    * Added option to hide current value switch in widget (#23)
+    * Switching of multiple states with one schedule. This allows the creation of groups for devices of the same type.
+    * Added translations to widget (#35)
+    * Fixed widget not working on Safari and fully browser
+
 ### 1.1.0
 * (walli545) 
     * New option to hide switched oid in widget (#20)

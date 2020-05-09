@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "time-switch",
-        "version": "1.1.0",
+        "version": "2.0.0",
         "news": {
+            "2.0.0": {
+                "en": "Breaking changes, Groups, configuration of switched value type, fixed widget not working on Safari",
+                "de": "Breaking changes, Gruppen, Konfiguration des geschaltenen Wert-Typs, Widget funktioniert nun in Safari",
+                "ru": "Внесение изменений, группы, конфигурация типа переключаемого значения, исправленный виджет не работает в Safari",
+                "pt": "Alterações recentes, Grupos, configuração do tipo de valor comutado, widget fixo não funciona no Safari",
+                "nl": "Brekende wijzigingen, groepen, configuratie van het type geschakelde waarde, vaste widget werkt niet op Safari",
+                "fr": "Changements de rupture, groupes, configuration du type de valeur commutée, widget fixe ne fonctionnant pas sur Safari",
+                "it": "Ultime modifiche, gruppi, configurazione del tipo di valore commutato, widget fisso non funzionante su Safari",
+                "es": "Cambios de última hora, Grupos, configuración de tipo de valor cambiado, widget fijo que no funciona en Safari",
+                "pl": "Łamanie zmian, grupy, konfiguracja typu przełączanej wartości, naprawiony widget nie działa w przeglądarce Safari",
+                "zh-cn": "重大更改，组，切换值类型的配置，固定的小部件无法在Safari上运行"
+            },
             "1.1.0": {
                 "en": "Option to hide switched state id in widget, fixed admin not working on Firefox.",
                 "de": "Option zum Ausblenden der ID des geschaltenen States im Widget. Die Admin Seite funktioniert nun unter Firefox.",
