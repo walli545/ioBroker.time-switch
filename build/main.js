@@ -22,6 +22,7 @@ const MessageService_1 = require("./services/MessageService");
 const OnOffStateActionSerializer_1 = require("./serialization/OnOffStateActionSerializer");
 const OnOffStateActionBuilder_1 = require("./actions/OnOffStateActionBuilder");
 const OnOffScheduleSerializer_1 = require("./serialization/OnOffScheduleSerializer");
+const node_schedule_1 = require("node-schedule");
 class TimeSwitch extends utils.Adapter {
     constructor(options = {}) {
         super(Object.assign(Object.assign({}, options), { name: 'time-switch' }));
@@ -235,7 +236,7 @@ class TimeSwitch extends utils.Adapter {
         });
     }
     createNewOnOffScheduleSerializer() {
-        return new OnOffScheduleSerializer_1.OnOffScheduleSerializer(new UniversalTriggerScheduler_1.UniversalTriggerScheduler([new TimeTriggerScheduler_1.TimeTriggerScheduler(this.loggingService)]), this.actionSerializer, this.triggerSerializer);
+        return new OnOffScheduleSerializer_1.OnOffScheduleSerializer(new UniversalTriggerScheduler_1.UniversalTriggerScheduler([new TimeTriggerScheduler_1.TimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService)]), this.actionSerializer, this.triggerSerializer);
     }
 }
 exports.TimeSwitch = TimeSwitch;
