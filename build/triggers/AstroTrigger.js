@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseTrigger_1 = require("./BaseTrigger");
-class AstroTrigger extends BaseTrigger_1.BaseTrigger {
-    constructor(astroTime, shiftInMinutes, weekdays) {
-        super(weekdays);
+const BaseDailyTrigger_1 = require("./BaseDailyTrigger");
+class AstroTrigger extends BaseDailyTrigger_1.BaseDailyTrigger {
+    constructor(id, astroTime, shiftInMinutes, weekdays, action) {
+        super(id, action, weekdays);
         if (astroTime == null) {
             throw new Error('Astro time may not be null.');
         }

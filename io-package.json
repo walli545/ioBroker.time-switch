@@ -1,72 +1,108 @@
 {
-	"common": {
-		"name": "time-switch",
-		"version": "1.1.0",
-		"news": {
-			"1.0.0": {
-				"en": "initial release",
-				"de": "Erstveröffentlichung",
-				"ru": "Начальная версия",
-				"pt": "lançamento inicial",
-				"nl": "Eerste uitgave",
-				"fr": "Première version",
-				"it": "Versione iniziale",
-				"es": "Versión inicial",
-				"pl": "Pierwsze wydanie",
-				"zh-cn": "首次出版"
-			}
-		},
-		"title": "time-switch",
-		"titleLang": {
-			"en": "time-switch",
-			"de": "Zeitschaltuhr",
-			"ru": "реле времени",
-			"pt": "mudança de tempo",
-			"nl": "tijdschakelaar",
-			"fr": "interrupteur horaire",
-			"it": "tempo-interruttore",
-			"es": "interruptor de tiempo",
-			"pl": "zmiana czasu",
-			"zh-cn": "定时开关"
-		},
-		"desc": {
-			"en": "Time based switching of devices",
-			"de": "Zeitbasiertes Schalten von Geräten",
-			"ru": "Переключение устройств по времени",
-			"pt": "Troca de dispositivos com base no tempo",
-			"nl": "Tijdgebaseerd schakelen van apparaten",
-			"fr": "Commutation temporelle des appareils",
-			"it": "Commutazione dei dispositivi basata sul tempo",
-			"es": "Cambio de dispositivos basado en el tiempo",
-			"pl": "Czasowe przełączanie urządzeń",
-			"zh-cn": "基于时间的设备切换"
-		},
-		"authors": ["walli545 <walli5446@gmail.com>"],
-		"keywords": ["ioBroker", "template", "Smart Home", "home automation"],
-		"license": "MIT",
-		"platform": "Javascript/Node.js",
-		"main": "build/main.js",
-		"icon": "time-switch.png",
-		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/walli545/ioBroker.time-switch/master/admin/time-switch.png",
-		"readme": "https://github.com/walli545/ioBroker.time-switch/blob/master/README.md",
-		"loglevel": "info",
-		"restartAdapters": ["vis"],
-		"mode": "daemon",
-		"singleton": true,
-		"type": "date-and-time",
-		"compact": true,
-		"materialize": true,
-		"dependencies": [
-			{
-				"js-controller": ">=1.4.2"
-			},
-			"vis"
-		]
-	},
-	"native": {
-		"schedules": []
-	},
-	"objects": [],
-	"instanceObjects": []
+    "common": {
+        "name": "time-switch",
+        "version": "2.0.0",
+        "news": {
+            "2.0.0": {
+                "en": "Breaking changes, Groups, configuration of switched value type, fixed widget not working on Safari",
+                "de": "Breaking changes, Gruppen, Konfiguration des geschaltenen Wert-Typs, Widget funktioniert nun in Safari",
+                "ru": "Внесение изменений, группы, конфигурация типа переключаемого значения, исправленный виджет не работает в Safari",
+                "pt": "Alterações recentes, Grupos, configuração do tipo de valor comutado, widget fixo não funciona no Safari",
+                "nl": "Brekende wijzigingen, groepen, configuratie van het type geschakelde waarde, vaste widget werkt niet op Safari",
+                "fr": "Changements de rupture, groupes, configuration du type de valeur commutée, widget fixe ne fonctionnant pas sur Safari",
+                "it": "Ultime modifiche, gruppi, configurazione del tipo di valore commutato, widget fisso non funzionante su Safari",
+                "es": "Cambios de última hora, Grupos, configuración de tipo de valor cambiado, widget fijo que no funciona en Safari",
+                "pl": "Łamanie zmian, grupy, konfiguracja typu przełączanej wartości, naprawiony widget nie działa w przeglądarce Safari",
+                "zh-cn": "重大更改，组，切换值类型的配置，固定的小部件无法在Safari上运行"
+            },
+            "1.1.0": {
+                "en": "Option to hide switched state id in widget, fixed admin not working on Firefox.",
+                "de": "Option zum Ausblenden der ID des geschaltenen States im Widget. Die Admin Seite funktioniert nun unter Firefox.",
+                "ru": "Возможность скрыть идентификатор переключенного состояния в виджете, исправлена ​​ошибка, из-за которой админ не работал в Firefox.",
+                "pt": "Opção para ocultar o ID do estado alternado no widget, o administrador fixo não funciona no Firefox.",
+                "nl": "Optie om de geschakelde status-id in de widget te verbergen, vaste beheerder werkt niet in Firefox.",
+                "fr": "Option pour masquer l'ID d'état commuté dans le widget, l'administrateur fixe ne fonctionne pas sur Firefox.",
+                "it": "Opzione per nascondere l'ID stato commutato nel widget, amministratore fisso non funzionante su Firefox.",
+                "es": "Opción para ocultar la identificación del estado cambiado en el widget, el administrador fijo no funciona en Firefox.",
+                "pl": "Opcja ukrywania przełączonego identyfikatora stanu w widżecie, naprawiony administrator nie działający w przeglądarce Firefox.",
+                "zh-cn": "隐藏小部件中切换状态ID的选项，已修复管理员在Firefox上不起作用。"
+            },
+            "1.0.0": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "time-switch",
+        "titleLang": {
+            "en": "time-switch",
+            "de": "Zeitschaltuhr",
+            "ru": "реле времени",
+            "pt": "mudança de tempo",
+            "nl": "tijdschakelaar",
+            "fr": "interrupteur horaire",
+            "it": "tempo-interruttore",
+            "es": "interruptor de tiempo",
+            "pl": "zmiana czasu",
+            "zh-cn": "定时开关"
+        },
+        "desc": {
+            "en": "Time based switching of devices",
+            "de": "Zeitbasiertes Schalten von Geräten",
+            "ru": "Переключение устройств по времени",
+            "pt": "Troca de dispositivos com base no tempo",
+            "nl": "Tijdgebaseerd schakelen van apparaten",
+            "fr": "Commutation temporelle des appareils",
+            "it": "Commutazione dei dispositivi basata sul tempo",
+            "es": "Cambio de dispositivos basado en el tiempo",
+            "pl": "Czasowe przełączanie urządzeń",
+            "zh-cn": "基于时间的设备切换"
+        },
+        "authors": [
+            "walli545 <walli5446@gmail.com>"
+        ],
+        "keywords": [
+            "ioBroker",
+            "template",
+            "Smart Home",
+            "home automation"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "build/main.js",
+        "icon": "time-switch.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/walli545/ioBroker.time-switch/master/admin/time-switch.png",
+        "readme": "https://github.com/walli545/ioBroker.time-switch/blob/master/README.md",
+        "loglevel": "info",
+        "restartAdapters": [
+            "vis"
+        ],
+        "mode": "daemon",
+        "singleton": true,
+        "type": "date-and-time",
+        "compact": true,
+        "materialize": true,
+        "messagebox": true,
+        "dependencies": [
+            {
+                "js-controller": ">=1.4.2"
+            },
+            "vis"
+        ]
+    },
+    "native": {
+        "schedules": {
+            "onOff": []
+        }
+    },
+    "objects": [],
+    "instanceObjects": []
 }

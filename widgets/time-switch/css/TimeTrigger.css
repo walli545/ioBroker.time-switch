@@ -1,9 +1,7 @@
 .time {
-	text-align: center;
-	margin-left: 40px;
+	text-align: left;
 	font-size: 2em;
 	font-weight: bold;
-	width: 85px;
 }
 
 input:invalid {
@@ -12,5 +10,5 @@ input:invalid {
 
 input {
 	font-size: 1.2rem;
-	width: 40px;
+	width: 150px;
 }

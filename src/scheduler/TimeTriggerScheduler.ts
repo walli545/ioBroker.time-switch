@@ -1,41 +1,58 @@
-import { cancelJob, Job, RecurrenceRule, scheduleJob } from 'node-schedule';
+import { Job, JobCallback, RecurrenceRule } from 'node-schedule';
 import { TimeTrigger } from '../triggers/TimeTrigger';
 import { Trigger } from '../triggers/Trigger';
 import { TriggerScheduler } from './TriggerScheduler';
+import { LoggingService } from '../services/LoggingService';
 
 export class TimeTriggerScheduler extends TriggerScheduler {
+	constructor(
+		private scheduleJob: (rule: RecurrenceRule, callback: JobCallback) => Job,
+		private cancelJob: (job: Job) => boolean,
+		private logger?: LoggingService,
+	) {
+		super();
+	}
+
 	private registered: [TimeTrigger, Job][] = [];
 
-	public register(trigger: TimeTrigger, onTrigger: () => void): void {
-		if (this.isRegistered(trigger)) {
+	public register(trigger: TimeTrigger): void {
+		if (this.getAssociatedJob(trigger)) {
 			throw new Error('Trigger is already registered.');
 		}
-		const newJob = scheduleJob(this.createRecurrenceRule(trigger), () => {
-			onTrigger();
+		this.logger?.logDebug(
+			`Scheduling trigger at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`,
+		);
+		const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
+			this.logger?.logDebug(`Executing trigger with id ${trigger.getId()}`);
+			trigger.getAction().execute();
 		});
 		this.registered.push([trigger, newJob]);
 	}
 
 	public unregister(trigger: TimeTrigger): void {
-		if (this.isRegistered(trigger)) {
-			const job = this.getAssociatedJob(trigger);
-			cancelJob(job);
+		const job = this.getAssociatedJob(trigger);
+		if (job) {
+			this.cancelJob(job);
 			this.removeTrigger(trigger);
 		} else {
 			throw new Error('Trigger is not registered.');
 		}
 	}
 
-	private isRegistered(trigger: TimeTrigger): boolean {
-		return this.registered.find(r => r[0] === trigger) != undefined;
+	public getRegistered(): TimeTrigger[] {
+		return this.registered.map(r => r[0]);
 	}
 
-	private getAssociatedJob(trigger: TimeTrigger): Job {
+	public forType(): string {
+		return TimeTrigger.prototype.constructor.name;
+	}
+
+	private getAssociatedJob(trigger: TimeTrigger): Job | null {
 		const entry = this.registered.find(r => r[0] === trigger);
 		if (entry) {
 			return entry[1];
 		} else {
-			throw new Error('Trigger not found.');
+			return null;
 		}
 	}
 

@@ -1,16 +1,17 @@
 import { AstroTime } from './AstroTime';
-import { BaseTrigger } from './BaseTrigger';
+import { BaseDailyTrigger } from './BaseDailyTrigger';
 import { Weekday } from './Weekday';
+import { Action } from '../actions/Action';
 
-export class AstroTrigger extends BaseTrigger {
+export class AstroTrigger extends BaseDailyTrigger {
 	public static readonly MAX_SHIFT = 600;
 
 	private readonly astroTime: AstroTime;
 
 	private readonly shiftInMinutes: number;
 
-	constructor(astroTime: AstroTime, shiftInMinutes: number, weekdays: Weekday[]) {
-		super(weekdays);
+	constructor(id: string, astroTime: AstroTime, shiftInMinutes: number, weekdays: Weekday[], action: Action) {
+		super(id, action, weekdays);
 		if (astroTime == null) {
 			throw new Error('Astro time may not be null.');
 		}

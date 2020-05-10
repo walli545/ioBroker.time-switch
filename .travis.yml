@@ -5,7 +5,7 @@ os:
 
 language: node_js
 node_js:
-  - '8'
+  - 'node'
   - '10'
   - '12'
 
@@ -26,8 +26,11 @@ before_script:
   - 'if [[ $NPMVERSION == 5 ]]; then npm install -g npm; fi'
   - npm -v
 script:
+  - npm run lint
   - npm run test:package
+  - nyc --reporter=lcov npm run test:ts
   - npm run test:unit
-  - npm run test:ts
   - export DEBUG=testing:*
   - npm run test:integration
+
+after_success: codecov
