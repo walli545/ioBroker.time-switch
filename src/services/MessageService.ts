@@ -32,7 +32,7 @@ export class MessageService {
 		}
 		this.currentMessage = message;
 		const data: any = message.message;
-		this.logger.logInfo(`Received ${message.command}`);
+		this.logger.logDebug(`Received ${message.command}`);
 		this.logger.logDebug(JSON.stringify(message.message));
 		const schedule = this.scheduleIdToSchedule.get(data.dataId);
 		if (!schedule) {
@@ -73,7 +73,7 @@ export class MessageService {
 		} else {
 			throw new Error('Cannot update schedule state after message, not serializer found for schedule');
 		}
-		this.logger.logInfo('Finished message ' + message.command);
+		this.logger.logDebug('Finished message ' + message.command);
 		this.currentMessage = null;
 	}
 
