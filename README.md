@@ -3,6 +3,7 @@
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.time-switch.svg)](https://www.npmjs.com/package/iobroker.time-switch)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.time-switch.svg)](https://www.npmjs.com/package/iobroker.time-switch)
+[![Installs](https://camo.githubusercontent.com/5d62363be94ae20ae8302ef5dc2f3c533268742d/687474703a2f2f696f62726f6b65722e6c6976652f6261646765732f74696d652d7377697463682d696e7374616c6c65642e737667)]()
 [![Dependency Status](https://img.shields.io/david/walli545/iobroker.time-switch.svg)](https://david-dm.org/walli545/iobroker.time-switch)
 [![Known Vulnerabilities](https://snyk.io/test/github/walli545/ioBroker.time-switch/badge.svg)](https://snyk.io/test/github/walli545/ioBroker.time-switch)
 [![Travis-CI](http://img.shields.io/travis/walli545/ioBroker.time-switch/master.svg)](https://travis-ci.org/walli545/ioBroker.time-switch)
