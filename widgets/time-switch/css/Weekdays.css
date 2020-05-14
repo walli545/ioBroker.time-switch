@@ -1,6 +1,6 @@
 .view {
 	display: block;
-	color: rgb(93, 93, 93);
+	color: var(--ts-widget-weekdays-disabled-fg-color, rgb(93, 93, 93));
 	width: 100%;
 	margin-top: 20px;
 }
@@ -17,7 +17,7 @@
 }
 
 .view span.active {
-	color: white;
+	color: var(--ts-widget-fg-color, #ffffff);
 }
 
 .edit {

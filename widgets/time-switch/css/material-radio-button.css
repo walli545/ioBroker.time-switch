@@ -27,7 +27,7 @@
     display: none;
 }
 .md-radio input[type="radio"]:checked + label:before {
-    border-color: #337ab7;
+    border-color: var(--ts-widget-primary-color, #337ab7);
     animation: ripple 0.2s linear forwards;
 }
 .md-radio input[type="radio"]:checked + label:after {
@@ -62,5 +62,5 @@
     width: 10px;
     height: 10px;
     transform: scale(0);
-    background: #337ab7;
+    background: var(--ts-widget-primary-color, #337ab7);
 }

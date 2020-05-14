@@ -1,13 +1,17 @@
 .widget {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    height: calc(100% - 20px);
+    font-family: var(--ts-widget-font-family, 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system);
+    background-color: var(--ts-widget-bg-color, #424242);
+    color: var(--ts-widget-fg-color, white);
 }
 
 .button {
     cursor: pointer;
-    filter: invert(1);
+    filter: var(--ts-widget-img-btn-filter, invert(1));
     align-self: center;
 }
 
@@ -16,7 +20,7 @@
 }
 
 #switched-oid {
-    color: #a5a5a5;
+    color: var(--ts-widget-oid-fg-color, #a5a5a5);
     margin-bottom: 10px;
 }
 
@@ -53,13 +57,13 @@
 .triggers::-webkit-scrollbar
 {
     width: 4px;
-    background-color: #424242;
+    background-color: var(--ts-widget-bg-color, #424242);
 }
 
 .triggers::-webkit-scrollbar-thumb
 {
     border-radius: 4px;
-    background-color: #fff;
+    background-color: var(--ts-widget-fg-color, white);
 }
 
 button.material-button{

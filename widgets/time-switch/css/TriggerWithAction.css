@@ -11,13 +11,12 @@
 }
 
 .container {
-	background: #272727;
+	background: var(--ts-widget-trigger-bg-color, #272727);
 	border-radius: 3px;
 	padding: 10px 20px 10px 20px;
 	margin-top: 10px;
 	display: block;
 	align-items: center;
-	font-family: var(--pure-material-font, 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system);
 }
 
 .validation-errors-container {
@@ -54,7 +53,7 @@
 /* Buttons */
 
 .button {
-	filter: invert(1);
+	filter:  var(--ts-widget-img-btn-filter, invert(1));
 	align-self: center;
 	cursor: pointer;
 }
