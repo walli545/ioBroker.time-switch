@@ -155,6 +155,12 @@ class TimeSwitch extends utils.Adapter {
     //------------------------------------------------------------------------------------------------------------------
     fixStateStructure(statesInSettings) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!statesInSettings) {
+                statesInSettings = { onOff: [] };
+            }
+            if (!statesInSettings.onOff) {
+                statesInSettings.onOff = [];
+            }
             const prefix = `time-switch.${this.instance}.`;
             const currentStates = yield this.getStatesAsync(`${prefix}*.data`);
             for (const fullId in currentStates) {

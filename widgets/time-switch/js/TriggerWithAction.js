@@ -134,25 +134,25 @@
 							<div class="action"></div>
 							<div class="trigger"></div>
 							<img class="button edit" src="widgets/time-switch/img/edit-24px.svg" width="28px"
-								height="28px" title="${translateWord('editTrigger')}"/>
+								height="28px" title="${vis.binds['time-switch'].translate('editTrigger')}"/>
 							<img class="button delete" src="widgets/time-switch/img/delete-24px.svg" width="28px"
-								height="28px" title="${translateWord('removeTrigger')}"/>
+								height="28px" title="${vis.binds['time-switch'].translate('removeTrigger')}"/>
 						</div>
 						<app-weekdays edit="false"></app-weekdays>
 					</div>
 					<div class="container edit" style="display: none">
 						<div class="header">
 							<img class="button save" src="widgets/time-switch/img/save-24px.svg" width="28px"
-								height="28px" title="${translateWord('saveChanges')}"/>
+								height="28px" title="${vis.binds['time-switch'].translate('saveChanges')}"/>
 							<img class="button cancel" src="widgets/time-switch/img/cancel-24px.svg" width="28px"
-								height="28px" title="${translateWord('cancelEdit')}"/>
+								height="28px" title="${vis.binds['time-switch'].translate('cancelEdit')}"/>
 						</div>
 						<div class="validation-errors-container" style="display: none;">
 							<ul id="validation-errors"></ul>
 						</div>
-						<div>${translateWord('switchedValue')}</div>
+						<div>${vis.binds['time-switch'].translate('switchedValue')}</div>
 						<div class="action"></div>
-						<div>${translateWord('trigger')}</div>
+						<div>${vis.binds['time-switch'].translate('trigger')}</div>
 						<div class="trigger"></div>
 						<app-weekdays edit="true"></app-weekdays>
 					</div>

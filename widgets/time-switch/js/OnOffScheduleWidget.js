@@ -270,12 +270,12 @@
 						<div class="view">
 							<h1></h1>
 							<img class="button edit" src="widgets/time-switch/img/edit-24px.svg" width="28px" 
-								height="28px" title="${translateWord('editName')}"/>
+								height="28px" title="${vis.binds['time-switch'].translate('editName')}"/>
 						</div>
 						<div class="edit" style="display: none;">
 							<input type="text">
 							<img class="button save" src="widgets/time-switch/img/save-24px.svg" width="28px"
-								height="28px"title="${translateWord('saveName')}"/>
+								height="28px"title="${vis.binds['time-switch'].translate('saveName')}"/>
 						</div>
 					</div>
 					<div id="switched-oid"></div>
@@ -283,23 +283,23 @@
 					<div id="enabled" class="md-switch-container">
 						<div class="md-switch-track"></div>
 						<div class="md-switch-handle"></div>
-						<div class="md-switch-label">${translateWord('automaticSwitchingEnabled')}</div>
+						<div class="md-switch-label">${vis.binds['time-switch'].translate('automaticSwitchingEnabled')}</div>
 					</div>
 					<div class="manual-container multiple" style="display: none;">
-						<p>${translateWord('manualSwitching')}</p>
-						<button class="material-button" id="manual-on">${translateWord('allOn')}</button>
-						<button class="material-button" id="manual-off">${translateWord('allOff')}</button>
+						<p>${vis.binds['time-switch'].translate('manualSwitching')}</p>
+						<button class="material-button" id="manual-on">${vis.binds['time-switch'].translate('allOn')}</button>
+						<button class="material-button" id="manual-off">${vis.binds['time-switch'].translate('allOff')}</button>
 					</div>
 					<div class="manual-container single" style="display: none;">
 						<div id="manual" class="md-switch-container">
 							<div class="md-switch-track"></div>
 							<div class="md-switch-handle"></div>
-							<div class="md-switch-label">${translateWord('currentValue')}</div>
+							<div class="md-switch-label">${vis.binds['time-switch'].translate('currentValue')}</div>
 						</div>
 					</div>
 					<div id="add">
 						<img class="button add" src="widgets/time-switch/img/add-24px.svg" width="28px"
-							height="28px" title="${translateWord('addTrigger')}"/>
+							height="28px" title="${vis.binds['time-switch'].translate('addTrigger')}"/>
 					</div>
 					<div class="triggers">
 				</div>
