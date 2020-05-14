@@ -170,6 +170,12 @@ export class TimeSwitch extends utils.Adapter {
 	//------------------------------------------------------------------------------------------------------------------
 
 	private async fixStateStructure(statesInSettings: { onOff: number[] }): Promise<void> {
+		if (!statesInSettings) {
+			statesInSettings = { onOff: [] };
+		}
+		if (!statesInSettings.onOff) {
+			statesInSettings.onOff = [];
+		}
 		const prefix = `time-switch.${this.instance}.`;
 		const currentStates = await this.getStatesAsync(`${prefix}*.data`);
 		for (const fullId in currentStates) {
