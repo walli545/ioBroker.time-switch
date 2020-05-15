@@ -29,6 +29,8 @@
 }
 
 .heading .view h1 {
+    font-size: var(--ts-widget-name-font-size, 2em);
+    color: var(--ts-widget-name-fg-color, --ts-widget-oid-fg-color);
     margin-bottom: 5px;
     margin-top: 0px;
     width: calc(100% - 30px);

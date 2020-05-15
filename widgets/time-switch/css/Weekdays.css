@@ -17,7 +17,7 @@
 }
 
 .view span.active {
-	color: var(--ts-widget-fg-color, #ffffff);
+	color: var(--ts-widget-weekdays-enabled-fg-color, #ffffff);
 }
 
 .edit {
