@@ -13,9 +13,6 @@ class BaseDailyTrigger {
         this.action = action;
         this.id = id;
     }
-    trigger() {
-        this.getAction().execute();
-    }
     getWeekdays() {
         return this.weekdays;
     }
