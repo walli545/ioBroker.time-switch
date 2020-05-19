@@ -9,7 +9,7 @@
 	font-weight: 500;
 	margin-left: 3px;
 	margin-right: 3px;
-	font-size: 23px;
+	font-size: var(--ts-widget-weekdays-font-size, 23px);
 }
 
 .view span:first-child {

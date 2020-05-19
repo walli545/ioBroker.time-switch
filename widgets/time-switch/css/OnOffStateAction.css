@@ -1,6 +1,7 @@
 .value {
     text-align: center;
-    font-size: 2em;
+    color: var(--ts-widget-switched-value-fg-color, --ts-widget-fg-color);
+    font-size: var(--ts-widget-switched-value-font-size, 2em);
     font-weight: bold;
     width: 65px;
 }

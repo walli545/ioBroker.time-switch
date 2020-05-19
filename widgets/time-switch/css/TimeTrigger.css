@@ -1,6 +1,7 @@
 .time {
 	text-align: left;
-	font-size: 2em;
+	color: var(--ts-widget-switched-time-fg-color, --ts-widget-fg-color);
+	font-size: var(--ts-widget-switched-time-font-size, 2em);
 	font-weight: bold;
 }
 

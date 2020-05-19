@@ -22,6 +22,7 @@
 #switched-oid {
     color: var(--ts-widget-oid-fg-color, #a5a5a5);
     margin-bottom: 10px;
+    font-size: var(--ts-widget-oid-font-size, --ts-widget-font-size);
 }
 
 .heading div {
