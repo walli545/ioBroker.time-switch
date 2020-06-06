@@ -34,6 +34,42 @@ describe('AstroTrigger', () => {
 			).to.throw();
 		});
 
+		it('throws when astroTime is undefined', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(undefined as any)
+					.setShift(0)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when shift is null', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.Sunset)
+					.setShift(null as any)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when shift is undefined', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.Sunset)
+					.setShift(undefined as any)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
 		it('throws when shift is 121', () => {
 			expect(() =>
 				new AstroTriggerBuilder()
