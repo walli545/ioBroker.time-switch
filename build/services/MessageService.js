@@ -28,7 +28,7 @@ class MessageService {
     handleMessage(message) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.currentMessage) {
-                setTimeout(() => this.handleMessage(message), 500);
+                setTimeout(() => this.handleMessage(message), 50);
                 return;
             }
             this.currentMessage = message;

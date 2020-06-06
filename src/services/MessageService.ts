@@ -27,7 +27,7 @@ export class MessageService {
 
 	public async handleMessage(message: ioBroker.Message): Promise<void> {
 		if (this.currentMessage) {
-			setTimeout(() => this.handleMessage(message), 500);
+			setTimeout(() => this.handleMessage(message), 50);
 			return;
 		}
 		this.currentMessage = message;
