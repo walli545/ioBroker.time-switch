@@ -16,7 +16,7 @@ class Schedule {
                 this.getTriggers().forEach(t => this.triggerScheduler.register(t));
             }
             else {
-                this.triggerScheduler.unregisterAll();
+                this.triggerScheduler.destroy();
             }
             this.enabled = enabled;
         }
@@ -69,9 +69,9 @@ class Schedule {
             throw new Error(`Cannot delete trigger, trigger id ${triggerId} not found`);
         }
     }
-    removeAllTriggers() {
+    destroy() {
         if (this.isEnabled()) {
-            this.triggerScheduler.unregisterAll();
+            this.triggerScheduler.destroy();
         }
         this.triggers = [];
     }

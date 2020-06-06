@@ -27,7 +27,7 @@ describe('TimeTriggerScheduler', function() {
 	});
 
 	it('forType is TimeTrigger', () => {
-		expect(sut.forType()).to.equal(TimeTrigger.prototype.constructor.name);
+		expect(sut.forType()).to.equal('TimeTrigger');
 	});
 
 	describe('register', function() {
@@ -72,7 +72,6 @@ describe('TimeTriggerScheduler', function() {
 				Times.once(),
 			);
 			scheduleJobMock.verify(s => s(It.isAny(), It.isAny()), Times.once());
-			expect(sut.getRegistered()).to.deep.equal([trigger]);
 		});
 
 		it('should call execute of action when on job callback', () => {
@@ -98,7 +97,6 @@ describe('TimeTriggerScheduler', function() {
 				Times.once(),
 			);
 			scheduleJobMock.verify(s => s(It.isAny(), It.isAny()), Times.once());
-			expect(sut.getRegistered()).to.deep.equal([trigger]);
 		});
 	});
 
@@ -124,7 +122,6 @@ describe('TimeTriggerScheduler', function() {
 				.build();
 			sut.register(trigger);
 			sut.unregister(trigger);
-			expect(sut.getRegistered()).to.deep.equal([]);
 			scheduleJobMock.verify(s => s(It.isAny(), It.isAny()), Times.once());
 			cancelJobMock.verify(c => c(job), Times.once());
 			cancelJobMock.verify(c => c(It.isAny()), Times.once());
@@ -157,6 +154,33 @@ describe('TimeTriggerScheduler', function() {
 					done();
 				});
 			sutWithLogger.register(trigger);
+		});
+	});
+
+	describe('destroy', () => {
+		it('should unregister all', () => {
+			const job1 = setUpScheduleJobToReturnAJob();
+			const trigger1 = new TimeTriggerBuilder()
+				.setHour(12)
+				.setMinute(30)
+				.setWeekdays([Weekday.Monday])
+				.setAction(action.object)
+				.build();
+			sut.register(trigger1);
+			const job2 = setUpScheduleJobToReturnAJob();
+			const trigger2 = new TimeTriggerBuilder()
+				.setHour(8)
+				.setMinute(17)
+				.setWeekdays([Weekday.Thursday])
+				.setAction(action.object)
+				.build();
+			sut.register(trigger2);
+
+			sut.destroy();
+
+			cancelJobMock.verify(c => c(job1), Times.once());
+			cancelJobMock.verify(c => c(job2), Times.once());
+			cancelJobMock.verify(c => c(It.isAny()), Times.exactly(2));
 		});
 	});
 

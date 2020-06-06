@@ -5,6 +5,8 @@ import { TriggerScheduler } from './TriggerScheduler';
 import { LoggingService } from '../services/LoggingService';
 
 export class TimeTriggerScheduler extends TriggerScheduler {
+	private registered: [TimeTrigger, Job][] = [];
+
 	constructor(
 		private scheduleJob: (rule: RecurrenceRule, callback: JobCallback) => Job,
 		private cancelJob: (job: Job) => boolean,
@@ -12,8 +14,6 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 	) {
 		super();
 	}
-
-	private registered: [TimeTrigger, Job][] = [];
 
 	public register(trigger: TimeTrigger): void {
 		if (this.getAssociatedJob(trigger)) {
@@ -39,8 +39,8 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 		}
 	}
 
-	public getRegistered(): TimeTrigger[] {
-		return this.registered.map(r => r[0]);
+	public destroy(): void {
+		this.registered.forEach(r => this.unregister(r[0]));
 	}
 
 	public forType(): string {

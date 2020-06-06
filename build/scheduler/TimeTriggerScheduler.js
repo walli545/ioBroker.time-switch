@@ -34,8 +34,8 @@ class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
             throw new Error('Trigger is not registered.');
         }
     }
-    getRegistered() {
-        return this.registered.map(r => r[0]);
+    destroy() {
+        this.registered.forEach(r => this.unregister(r[0]));
     }
     forType() {
         return TimeTrigger_1.TimeTrigger.prototype.constructor.name;
