@@ -23,6 +23,10 @@ const OnOffStateActionSerializer_1 = require("./serialization/OnOffStateActionSe
 const OnOffStateActionBuilder_1 = require("./actions/OnOffStateActionBuilder");
 const OnOffScheduleSerializer_1 = require("./serialization/OnOffScheduleSerializer");
 const node_schedule_1 = require("node-schedule");
+const AstroTriggerSerializer_1 = require("./serialization/AstroTriggerSerializer");
+const AstroTriggerScheduler_1 = require("./scheduler/AstroTriggerScheduler");
+const suncalc_1 = require("suncalc");
+const Coordinate_1 = require("./Coordinate");
 class TimeSwitch extends utils.Adapter {
     constructor(options = {}) {
         super(Object.assign(Object.assign({}, options), { name: 'time-switch' }));
@@ -30,8 +34,10 @@ class TimeSwitch extends utils.Adapter {
         this.loggingService = new IoBrokerLoggingService_1.IoBrokerLoggingService(this);
         this.stateService = new IoBrokerStateService_1.IoBrokerStateService(this, this.loggingService);
         this.actionSerializer = new UniversalSerializer_1.UniversalSerializer([new OnOffStateActionSerializer_1.OnOffStateActionSerializer(this.stateService)]);
-        this.triggerSerializer = new UniversalSerializer_1.UniversalSerializer([new TimeTriggerSerializer_1.TimeTriggerSerializer(this.actionSerializer)]);
-        this.messageService = new MessageService_1.MessageService(this.stateService, this.loggingService, this.scheduleIdToSchedule, this.triggerSerializer, this.actionSerializer, this.createNewOnOffScheduleSerializer());
+        this.triggerSerializer = new UniversalSerializer_1.UniversalSerializer([
+            new TimeTriggerSerializer_1.TimeTriggerSerializer(this.actionSerializer),
+            new AstroTriggerSerializer_1.AstroTriggerSerializer(this.actionSerializer),
+        ]);
         this.on('ready', this.onReady.bind(this));
         this.on('objectChange', this.onObjectChange.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
@@ -52,13 +58,14 @@ class TimeSwitch extends utils.Adapter {
      */
     onReady() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.initMessageService();
             yield this.fixStateStructure(this.config.schedules);
             const record = yield this.getStatesAsync(`time-switch.${this.instance}.*.data`);
             for (const id in record) {
                 const state = record[id];
                 this.log.debug(`got state: ${state ? state.toString() : 'null'}`);
                 if (state) {
-                    const schedule = this.createNewOnOffScheduleSerializer().deserialize(state.val);
+                    const schedule = (yield this.createNewOnOffScheduleSerializer()).deserialize(state.val);
                     const enabledState = yield this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
                     if (enabledState) {
                         schedule.setEnabled(enabledState.val);
@@ -73,6 +80,7 @@ class TimeSwitch extends utils.Adapter {
                 }
             }
             this.subscribeStates('*');
+            this.subscribeForeignObjects('system.config');
         });
     }
     /**
@@ -82,7 +90,7 @@ class TimeSwitch extends utils.Adapter {
         var _a;
         try {
             for (const id in this.scheduleIdToSchedule.keys()) {
-                (_a = this.scheduleIdToSchedule.get(id)) === null || _a === void 0 ? void 0 : _a.removeAllTriggers();
+                (_a = this.scheduleIdToSchedule.get(id)) === null || _a === void 0 ? void 0 : _a.destroy();
             }
             this.scheduleIdToSchedule.clear();
             this.log.info('cleaned everything up...');
@@ -140,7 +148,12 @@ class TimeSwitch extends utils.Adapter {
     onMessage(obj) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.messageService.handleMessage(obj);
+                if (this.messageService) {
+                    yield this.messageService.handleMessage(obj);
+                }
+                else {
+                    this.log.error('Message service not initialized');
+                }
             }
             catch (e) {
                 this.log.error(e.stack);
@@ -153,6 +166,11 @@ class TimeSwitch extends utils.Adapter {
     //------------------------------------------------------------------------------------------------------------------
     // Private helper methods
     //------------------------------------------------------------------------------------------------------------------
+    initMessageService() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.messageService = new MessageService_1.MessageService(this.stateService, this.loggingService, this.scheduleIdToSchedule, this.triggerSerializer, this.actionSerializer, yield this.createNewOnOffScheduleSerializer());
+        });
+    }
     fixStateStructure(statesInSettings) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!statesInSettings) {
@@ -229,10 +247,10 @@ class TimeSwitch extends utils.Adapter {
         return __awaiter(this, void 0, void 0, function* () {
             this.log.debug('onScheduleChange: ' + scheduleString + ' ' + id);
             this.log.debug('schedule found: ' + this.scheduleIdToSchedule.get(id));
-            const schedule = this.createNewOnOffScheduleSerializer().deserialize(scheduleString);
+            const schedule = (yield this.createNewOnOffScheduleSerializer()).deserialize(scheduleString);
             const enabledState = yield this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
             if (enabledState) {
-                (_a = this.scheduleIdToSchedule.get(id)) === null || _a === void 0 ? void 0 : _a.removeAllTriggers();
+                (_a = this.scheduleIdToSchedule.get(id)) === null || _a === void 0 ? void 0 : _a.destroy();
                 schedule.setEnabled(enabledState.val);
                 this.scheduleIdToSchedule.set(id, schedule);
             }
@@ -242,7 +260,35 @@ class TimeSwitch extends utils.Adapter {
         });
     }
     createNewOnOffScheduleSerializer() {
-        return new OnOffScheduleSerializer_1.OnOffScheduleSerializer(new UniversalTriggerScheduler_1.UniversalTriggerScheduler([new TimeTriggerScheduler_1.TimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService)]), this.actionSerializer, this.triggerSerializer);
+        return __awaiter(this, void 0, void 0, function* () {
+            return new OnOffScheduleSerializer_1.OnOffScheduleSerializer(new UniversalTriggerScheduler_1.UniversalTriggerScheduler([
+                new TimeTriggerScheduler_1.TimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService),
+                new AstroTriggerScheduler_1.AstroTriggerScheduler(new TimeTriggerScheduler_1.TimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService), suncalc_1.getTimes, yield this.getCoordinate()),
+            ]), this.actionSerializer, this.triggerSerializer);
+        });
+    }
+    getCoordinate() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.coordinate) {
+                return Promise.resolve(this.coordinate);
+            }
+            else {
+                return new Promise((resolve, _) => {
+                    this.getForeignObject('system.config', (error, obj) => {
+                        if (obj && obj.common) {
+                            const lat = obj.common.latitude;
+                            const long = obj.common.longitude;
+                            if (lat && long) {
+                                resolve(new Coordinate_1.Coordinate(lat, long));
+                                return;
+                            }
+                        }
+                        this.log.error('Could not read coordinates from system.config, using Berlins coordinates as fallback');
+                        resolve(new Coordinate_1.Coordinate(52, 13));
+                    });
+                });
+            }
+        });
     }
 }
 exports.TimeSwitch = TimeSwitch;
