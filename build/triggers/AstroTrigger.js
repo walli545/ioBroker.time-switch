@@ -8,7 +8,7 @@ class AstroTrigger extends BaseDailyTrigger_1.BaseDailyTrigger {
             throw new Error('Astro time may not be null.');
         }
         if (shiftInMinutes > AstroTrigger.MAX_SHIFT || shiftInMinutes < -AstroTrigger.MAX_SHIFT) {
-            throw new Error('Shift in minutes must be in range -600 to 600.');
+            throw new Error('Shift in minutes must be in range -120 to 120.');
         }
         this.astroTime = astroTime;
         this.shiftInMinutes = shiftInMinutes;
@@ -21,4 +21,4 @@ class AstroTrigger extends BaseDailyTrigger_1.BaseDailyTrigger {
     }
 }
 exports.AstroTrigger = AstroTrigger;
-AstroTrigger.MAX_SHIFT = 600;
+AstroTrigger.MAX_SHIFT = 120;
