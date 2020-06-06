@@ -100,7 +100,7 @@ export class TimeSwitch extends utils.Adapter {
 	private onUnload(callback: () => void): void {
 		try {
 			for (const id in this.scheduleIdToSchedule.keys()) {
-				this.scheduleIdToSchedule.get(id)?.removeAllTriggers();
+				this.scheduleIdToSchedule.get(id)?.destroy();
 			}
 			this.scheduleIdToSchedule.clear();
 			this.log.info('cleaned everything up...');
@@ -242,7 +242,7 @@ export class TimeSwitch extends utils.Adapter {
 		const schedule = this.createNewOnOffScheduleSerializer().deserialize(scheduleString);
 		const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
 		if (enabledState) {
-			this.scheduleIdToSchedule.get(id)?.removeAllTriggers();
+			this.scheduleIdToSchedule.get(id)?.destroy();
 			schedule.setEnabled(enabledState.val);
 			this.scheduleIdToSchedule.set(id, schedule);
 		} else {
