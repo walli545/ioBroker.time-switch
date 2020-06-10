@@ -1,25 +1,13 @@
 import { Action } from '../actions/Action';
-import { Weekday } from './Weekday';
 import { AstroTime } from './AstroTime';
 import { AstroTrigger } from './AstroTrigger';
 import { Builder } from '../Builder';
+import { DailyTriggerBuilder } from './DailyTriggerBuilder';
+import { Weekday } from './Weekday';
 
-export class AstroTriggerBuilder implements Builder<AstroTrigger> {
-	private action: Action | null = null;
-	private id = '0';
+export class AstroTriggerBuilder extends DailyTriggerBuilder implements Builder<AstroTrigger> {
 	private astroTime: AstroTime | null = null;
 	private shift = 0;
-	private weekdays: Weekday[] = [];
-
-	public setAction(action: Action): AstroTriggerBuilder {
-		this.action = action;
-		return this;
-	}
-
-	public setId(id: string): AstroTriggerBuilder {
-		this.id = id;
-		return this;
-	}
 
 	public setAstroTime(astroTime: AstroTime): AstroTriggerBuilder {
 		this.astroTime = astroTime;
@@ -31,18 +19,28 @@ export class AstroTriggerBuilder implements Builder<AstroTrigger> {
 		return this;
 	}
 
+	public setAction(action: Action): AstroTriggerBuilder {
+		super.setAction(action);
+		return this;
+	}
+
+	public setId(id: string): AstroTriggerBuilder {
+		super.setId(id);
+		return this;
+	}
+
 	public setWeekdays(weekdays: Weekday[]): AstroTriggerBuilder {
-		this.weekdays = weekdays;
+		super.setWeekdays(weekdays);
 		return this;
 	}
 
 	public build(): AstroTrigger {
 		return new AstroTrigger(
-			this.id,
+			this.getId(),
 			(this.astroTime as any) as AstroTime,
 			this.shift,
-			this.weekdays,
-			(this.action as any) as Action,
+			this.getWeekdays(),
+			(this.getAction() as any) as Action,
 		);
 	}
 }

@@ -1,21 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const AstroTrigger_1 = require("./AstroTrigger");
-class AstroTriggerBuilder {
+const DailyTriggerBuilder_1 = require("./DailyTriggerBuilder");
+class AstroTriggerBuilder extends DailyTriggerBuilder_1.DailyTriggerBuilder {
     constructor() {
-        this.action = null;
-        this.id = '0';
+        super(...arguments);
         this.astroTime = null;
         this.shift = 0;
-        this.weekdays = [];
-    }
-    setAction(action) {
-        this.action = action;
-        return this;
-    }
-    setId(id) {
-        this.id = id;
-        return this;
     }
     setAstroTime(astroTime) {
         this.astroTime = astroTime;
@@ -25,12 +16,20 @@ class AstroTriggerBuilder {
         this.shift = shift;
         return this;
     }
+    setAction(action) {
+        super.setAction(action);
+        return this;
+    }
+    setId(id) {
+        super.setId(id);
+        return this;
+    }
     setWeekdays(weekdays) {
-        this.weekdays = weekdays;
+        super.setWeekdays(weekdays);
         return this;
     }
     build() {
-        return new AstroTrigger_1.AstroTrigger(this.id, this.astroTime, this.shift, this.weekdays, this.action);
+        return new AstroTrigger_1.AstroTrigger(this.getId(), this.astroTime, this.shift, this.getWeekdays(), this.getAction());
     }
 }
 exports.AstroTriggerBuilder = AstroTriggerBuilder;

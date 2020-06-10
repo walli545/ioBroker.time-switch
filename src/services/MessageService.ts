@@ -12,6 +12,9 @@ import { TimeSwitch } from '../main';
 import { Serializer } from '../serialization/Serializer';
 import { Action } from '../actions/Action';
 import { ActionReferenceSerializer } from '../serialization/ActionReferenceSerializer';
+import { DailyTriggerBuilder } from '../triggers/DailyTriggerBuilder';
+import { AstroTriggerBuilder } from '../triggers/AstroTriggerBuilder';
+import { AstroTime } from '../triggers/AstroTime';
 
 export class MessageService {
 	private currentMessage: ioBroker.Message | null = null;
@@ -78,25 +81,27 @@ export class MessageService {
 	}
 
 	private addTrigger(schedule: Schedule, data: any): void {
-		let newTrigger: Trigger;
+		let triggerBuilder: DailyTriggerBuilder;
+
 		if (data.triggerType === 'TimeTrigger') {
 			this.logger.logDebug('Wants TimeTrigger');
-			const triggerBuilder = new TimeTriggerBuilder()
-				.setWeekdays(AllWeekdays)
-				.setHour(0)
-				.setMinute(0)
-				.setId(this.getNextTriggerId(schedule.getTriggers()));
-			if (data.actionType === 'OnOffValueAction' && schedule instanceof OnOffSchedule) {
-				this.logger.logDebug('Wants OnOffValueAction');
-				triggerBuilder.setAction(schedule.getOnAction());
-			} else {
-				throw new Error(`Cannot add trigger with action of type ${data.actionType}`);
-			}
-			newTrigger = triggerBuilder.build();
+			triggerBuilder = new TimeTriggerBuilder().setHour(0).setMinute(0);
+		} else if (data.triggerType === 'AstroTrigger') {
+			this.logger.logDebug('Wants AstroTrigger');
+			triggerBuilder = new AstroTriggerBuilder().setAstroTime(AstroTime.Sunrise).setShift(0);
 		} else {
 			throw new Error(`Cannot add trigger of type ${data.triggerType}`);
 		}
-		schedule.addTrigger(newTrigger);
+
+		triggerBuilder.setWeekdays(AllWeekdays).setId(this.getNextTriggerId(schedule.getTriggers()));
+
+		if (data.actionType === 'OnOffValueAction' && schedule instanceof OnOffSchedule) {
+			this.logger.logDebug('Wants OnOffValueAction');
+			triggerBuilder.setAction(schedule.getOnAction());
+		} else {
+			throw new Error(`Cannot add trigger with action of type ${data.actionType}`);
+		}
+		schedule.addTrigger(triggerBuilder.build());
 	}
 
 	private async updateTrigger(schedule: Schedule, triggerString: string): Promise<void> {
