@@ -6,6 +6,7 @@ import { AstroTrigger } from '../triggers/AstroTrigger';
 import { TimeTrigger } from '../triggers/TimeTrigger';
 import { TimeTriggerBuilder } from '../triggers/TimeTriggerBuilder';
 import { AllWeekdays } from '../triggers/Weekday';
+import { LoggingService } from '../services/LoggingService';
 
 export class AstroTriggerScheduler extends TriggerScheduler {
 	private registered: AstroTrigger[] = [];
@@ -17,6 +18,8 @@ export class AstroTriggerScheduler extends TriggerScheduler {
 		.setMinute(0)
 		.setAction({
 			execute: () => {
+				/* istanbul ignore next */
+				this.logger?.logDebug(`Rescheduling astro triggers`);
 				this.scheduled.forEach(s => this.timeTriggerScheduler.unregister(s[1]));
 				this.registered.forEach(r => this.tryScheduleTriggerToday(r));
 			},
@@ -27,6 +30,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
 		private readonly timeTriggerScheduler: TimeTriggerScheduler,
 		private readonly getTimes: (date: Date, latitude: number, longitude: number) => GetTimesResult,
 		private readonly coordinate: Coordinate,
+		private readonly logger?: LoggingService,
 	) {
 		super();
 		this.timeTriggerScheduler.register(this.rescheduleTrigger);

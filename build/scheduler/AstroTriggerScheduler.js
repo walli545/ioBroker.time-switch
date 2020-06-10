@@ -5,11 +5,12 @@ const AstroTrigger_1 = require("../triggers/AstroTrigger");
 const TimeTriggerBuilder_1 = require("../triggers/TimeTriggerBuilder");
 const Weekday_1 = require("../triggers/Weekday");
 class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
-    constructor(timeTriggerScheduler, getTimes, coordinate) {
+    constructor(timeTriggerScheduler, getTimes, coordinate, logger) {
         super();
         this.timeTriggerScheduler = timeTriggerScheduler;
         this.getTimes = getTimes;
         this.coordinate = coordinate;
+        this.logger = logger;
         this.registered = [];
         this.scheduled = [];
         this.rescheduleTrigger = new TimeTriggerBuilder_1.TimeTriggerBuilder()
@@ -19,6 +20,9 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
             .setMinute(0)
             .setAction({
             execute: () => {
+                var _a;
+                /* istanbul ignore next */
+                (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Rescheduling astro triggers`);
                 this.scheduled.forEach(s => this.timeTriggerScheduler.unregister(s[1]));
                 this.registered.forEach(r => this.tryScheduleTriggerToday(r));
             },

@@ -20,7 +20,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 			throw new Error('Trigger is already registered.');
 		}
 		this.logger?.logDebug(
-			`Scheduling trigger at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`,
+			`Scheduling trigger ${trigger.getId()} at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`,
 		);
 		const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
 			this.logger?.logDebug(`Executing trigger with id ${trigger.getId()}`);

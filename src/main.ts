@@ -294,6 +294,7 @@ export class TimeSwitch extends utils.Adapter {
 						const lat = (obj.common as any).latitude;
 						const long = (obj.common as any).longitude;
 						if (lat && long) {
+							this.log.debug(`Got coordinates lat=${lat} long=${long}`);
 							resolve(new Coordinate(lat, long));
 							return;
 						}
