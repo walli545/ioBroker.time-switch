@@ -151,9 +151,9 @@ export class MessageService {
 
 	private getNextTriggerId(current: Trigger[]): string {
 		const numbers = current
-			.map(t => t.getId())
-			.map(id => Number.parseInt(id, 10))
-			.filter(id => !Number.isNaN(id))
+			.map((t) => t.getId())
+			.map((id) => Number.parseInt(id, 10))
+			.filter((id) => !Number.isNaN(id))
 			.sort((a, b) => a - b);
 		let newId = 0;
 		for (let i = 0; i < numbers.length; i++) {

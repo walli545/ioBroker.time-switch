@@ -46,7 +46,7 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
 			offAction: JSON.parse(this.actionSerializer.serialize(schedule.getOffAction())),
 		};
 		const oldActionSerializer = this.replaceActionSerializerWithReference(schedule);
-		json.triggers = schedule.getTriggers().map(t => JSON.parse(this.triggerSerializer.serialize(t)));
+		json.triggers = schedule.getTriggers().map((t) => JSON.parse(this.triggerSerializer.serialize(t)));
 		this.actionSerializer.replaceSerializer(oldActionSerializer);
 		return JSON.stringify(json);
 	}

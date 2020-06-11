@@ -9,7 +9,7 @@ export class UniversalTriggerScheduler {
 	}
 
 	public register(trigger: Trigger): void {
-		const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+		const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
 		if (scheduler) {
 			return scheduler.register(trigger);
 		} else {
@@ -18,7 +18,7 @@ export class UniversalTriggerScheduler {
 	}
 
 	public unregister(trigger: Trigger): void {
-		const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+		const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
 		if (scheduler) {
 			return scheduler.unregister(trigger);
 		} else {
@@ -28,14 +28,14 @@ export class UniversalTriggerScheduler {
 
 	public getRegistered(): Trigger[] {
 		let registered: Trigger[] = [];
-		this.schedulers.forEach(s => {
+		this.schedulers.forEach((s) => {
 			registered = registered.concat(s.getRegistered());
 		});
 		return registered;
 	}
 
 	public unregisterAll(): void {
-		this.getRegistered().forEach(t => {
+		this.getRegistered().forEach((t) => {
 			this.unregister(t);
 		});
 	}
