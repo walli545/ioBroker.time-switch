@@ -47,7 +47,7 @@ export class TimeSwitch extends utils.Adapter {
 	]);
 	private messageService: MessageService | undefined;
 
-	public constructor(options: Partial<ioBroker.AdapterOptions> = {}) {
+	public constructor(options: Partial<utils.AdapterOptions> = {}) {
 		super({
 			...options,
 			name: 'time-switch',
@@ -82,10 +82,10 @@ export class TimeSwitch extends utils.Adapter {
 			const state = record[id];
 			this.log.debug(`got state: ${state ? state.toString() : 'null'}`);
 			if (state) {
-				const schedule = (await this.createNewOnOffScheduleSerializer()).deserialize(state.val);
+				const schedule = (await this.createNewOnOffScheduleSerializer()).deserialize(state.val as string);
 				const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
 				if (enabledState) {
-					schedule.setEnabled(enabledState.val);
+					schedule.setEnabled(enabledState.val as boolean);
 					this.scheduleIdToSchedule.set(id, schedule);
 				} else {
 					this.log.error(`Could not retrieve state enabled state for ${id}`);
@@ -145,12 +145,12 @@ export class TimeSwitch extends utils.Adapter {
 		if (id.startsWith(`time-switch.${this.instance}`)) {
 			if (id.endsWith('data')) {
 				this.log.debug('is schedule id');
-				await this.onScheduleChange(id, state.val);
+				await this.onScheduleChange(id, state.val as string);
 			} else if (id.endsWith('enabled')) {
 				this.log.debug('is enabled id');
 				const dataId = TimeSwitch.getScheduleIdFromEnabledId(id);
 				const scheduleData = (await this.getStateAsync(dataId))?.val;
-				await this.onScheduleChange(dataId, scheduleData);
+				await this.onScheduleChange(dataId, scheduleData as string);
 			}
 		}
 	}
@@ -262,7 +262,7 @@ export class TimeSwitch extends utils.Adapter {
 		const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
 		if (enabledState) {
 			this.scheduleIdToSchedule.get(id)?.destroy();
-			schedule.setEnabled(enabledState.val);
+			schedule.setEnabled(enabledState.val as boolean);
 			this.scheduleIdToSchedule.set(id, schedule);
 		} else {
 			this.log.error(`Could not retrieve state enabled state for ${id}`);
@@ -311,7 +311,7 @@ export class TimeSwitch extends utils.Adapter {
 
 if (module.parent) {
 	// Export the constructor in compact mode
-	module.exports = (options: Partial<ioBroker.AdapterOptions> | undefined) => new TimeSwitch(options);
+	module.exports = (options: Partial<utils.AdapterOptions> | undefined) => new TimeSwitch(options);
 } else {
 	// otherwise start the instance directly
 	(() => new TimeSwitch())();
