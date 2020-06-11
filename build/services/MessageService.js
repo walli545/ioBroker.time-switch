@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MessageService = void 0;
 const TimeTriggerBuilder_1 = require("../triggers/TimeTriggerBuilder");
 const Weekday_1 = require("../triggers/Weekday");
 const OnOffStateAction_1 = require("../actions/OnOffStateAction");
@@ -151,9 +152,9 @@ class MessageService {
     }
     getNextTriggerId(current) {
         const numbers = current
-            .map(t => t.getId())
-            .map(id => Number.parseInt(id, 10))
-            .filter(id => !Number.isNaN(id))
+            .map((t) => t.getId())
+            .map((id) => Number.parseInt(id, 10))
+            .filter((id) => !Number.isNaN(id))
             .sort((a, b) => a - b);
         let newId = 0;
         for (let i = 0; i < numbers.length; i++) {
