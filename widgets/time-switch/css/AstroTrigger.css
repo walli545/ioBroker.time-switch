@@ -1,0 +1,23 @@
+.view .time {
+    text-align: left;
+    color: var(--ts-widget-astro-time-fg-color, --ts-widget-fg-color);
+    font-size: var(--ts-widget-astro-time-font-size, 1.5em);
+    font-weight: bold;
+}
+
+.view .shift {
+    font-size: var(--ts-widget-astro-shift-font-size, 1em);
+    color: var(--ts-widget-astro-shift-fg-color, #5d5d5d);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+#shift,#time {
+    font-size: 1.2rem;
+    width: 150px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
