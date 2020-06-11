@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AstroTriggerBuilder = void 0;
 const AstroTrigger_1 = require("./AstroTrigger");
 const DailyTriggerBuilder_1 = require("./DailyTriggerBuilder");
 class AstroTriggerBuilder extends DailyTriggerBuilder_1.DailyTriggerBuilder {

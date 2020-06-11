@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MessageService = void 0;
 const TimeTriggerBuilder_1 = require("../triggers/TimeTriggerBuilder");
 const Weekday_1 = require("../triggers/Weekday");
 const OnOffStateAction_1 = require("../actions/OnOffStateAction");

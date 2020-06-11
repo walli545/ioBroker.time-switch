@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AstroTriggerSerializer = void 0;
 const AstroTrigger_1 = require("../triggers/AstroTrigger");
 const AstroTriggerBuilder_1 = require("../triggers/AstroTriggerBuilder");
 class AstroTriggerSerializer {

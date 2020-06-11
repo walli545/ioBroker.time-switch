@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TimeTriggerBuilder = void 0;
 const TimeTrigger_1 = require("./TimeTrigger");
 const DailyTriggerBuilder_1 = require("./DailyTriggerBuilder");
 class TimeTriggerBuilder extends DailyTriggerBuilder_1.DailyTriggerBuilder {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AstroTriggerScheduler = void 0;
 const TriggerScheduler_1 = require("./TriggerScheduler");
 const AstroTrigger_1 = require("../triggers/AstroTrigger");
 const TimeTriggerBuilder_1 = require("../triggers/TimeTriggerBuilder");

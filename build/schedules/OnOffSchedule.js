@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.OnOffSchedule = void 0;
 const OnOffStateAction_1 = require("../actions/OnOffStateAction");
 const Schedule_1 = require("./Schedule");
 class OnOffSchedule extends Schedule_1.Schedule {

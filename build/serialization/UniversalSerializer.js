@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UniversalSerializer = void 0;
 class UniversalSerializer {
     constructor(serializers) {
         this.serializers = serializers;

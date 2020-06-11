@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UniversalTriggerScheduler = void 0;
 const TriggerScheduler_1 = require("./TriggerScheduler");
 class UniversalTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
     constructor(schedulers) {

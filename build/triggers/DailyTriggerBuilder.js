@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DailyTriggerBuilder = void 0;
 class DailyTriggerBuilder {
     constructor() {
         this.action = null;

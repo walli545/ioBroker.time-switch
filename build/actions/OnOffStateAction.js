@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.OnOffStateAction = void 0;
 const BaseStateAction_1 = require("./BaseStateAction");
 class OnOffStateAction extends BaseStateAction_1.BaseStateAction {
     constructor(idsOfStatesToSet, onValue, offValue, booleanValue, stateService) {
