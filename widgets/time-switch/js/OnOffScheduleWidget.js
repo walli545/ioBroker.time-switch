@@ -5,6 +5,7 @@
 			this.sr = this.createShadowRoot();
 			this.settings = null;
 			this.currentTriggers = [];
+			this.connected = false;
 		}
 
 		static get observedAttributes() {
@@ -12,6 +13,9 @@
 		}
 
 		connectedCallback() {
+			if (this.connected) {
+				return;
+			}
 			this.sr.querySelector('#btn-add-trigger-dropdown').addEventListener('click', e => {
 				const dropdown = this.sr.querySelector('#add-trigger-dropdown');
 				dropdown.classList.add('show');
@@ -34,6 +38,7 @@
 			this.sr.querySelector('button#manual-on').addEventListener('click', this.onManualClick.bind(this));
 			this.sr.querySelector('#enabled').addEventListener('click', () => {
 				this.enabled = !this.enabled;
+				vis.binds['time-switch'].sendMessage(this.enabled ? 'enable-schedule' : 'disable-schedule', { dataId: this.settings.dataId});
 			});
 			this.sr.querySelector('#manual').addEventListener('click', () => {
 				const toggle = this.sr.querySelector('#manual');
@@ -42,6 +47,7 @@
 					target: { id: toggle.classList.contains('checked') ? 'manual-on' : 'manual-off' },
 				});
 			});
+			this.connected = true;
 		}
 
 		attributeChangedCallback(attr) {
@@ -67,10 +73,8 @@
 			const toggle = this.sr.querySelector('#enabled');
 			if (val) {
 				toggle.classList.add('checked');
-				vis.binds['time-switch'].sendMessage('enable-schedule', { dataId: this.settings.dataId});
 			} else {
 				toggle.classList.remove('checked');
-				vis.binds['time-switch'].sendMessage('disable-schedule', { dataId: this.settings.dataId});
 			}
 		}
 
