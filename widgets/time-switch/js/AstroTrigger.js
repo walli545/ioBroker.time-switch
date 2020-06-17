@@ -62,7 +62,12 @@
 			if (this.data.astroTime !== this.astroTime || this.data.shiftInMinutes !== this.shiftInMinutes) {
 				this.astroTime = this.data.astroTime;
 				this.shiftInMinutes = this.data.shiftInMinutes;
-				this.sr.querySelector('.view .time').textContent = vis.binds['time-switch'].translate(this.astroTime);
+				const translatedAstroTime = vis.binds['time-switch'].translate(this.astroTime);
+				this.sr.querySelector('.view .time.text').textContent = translatedAstroTime;
+				const iconElement = this.sr.querySelector('.view .time.icon');
+				iconElement.src = `widgets/time-switch/img/astro/${this.astroTime}.svg`;
+				iconElement.alt = translatedAstroTime;
+				iconElement.title = translatedAstroTime;
 				this.sr.querySelector('.edit #time').value = this.astroTime;
 				let shiftFormatted = '';
 				if (this.shiftInMinutes > 0) {
@@ -114,7 +119,8 @@
 			shadowRoot.innerHTML = `
 				<link rel="stylesheet" href="widgets/time-switch/css/AstroTrigger.css"/>
 				<div class="container view">
-						<div class="time"></div>
+						<div class="time text"></div>
+						<img class="time icon"/>
 						<div class="shift"></div>
 				</div>
 				<div class="container edit" style="display: none">

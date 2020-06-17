@@ -55,5 +55,6 @@
     "trigger": "Вызывать",
     "trigger count": "Количество триггеров",
     "true": "правда",
+    "useAstroIcons": "Используйте значки Astro",
     "valueType": "Тип ценности"
 }
