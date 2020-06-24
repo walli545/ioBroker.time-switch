@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OnOffStateActionSerializer = void 0;
 const OnOffStateActionBuilder_1 = require("../actions/OnOffStateActionBuilder");
 const OnOffStateAction_1 = require("../actions/OnOffStateAction");
 class OnOffStateActionSerializer {

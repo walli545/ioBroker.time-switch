@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AllWeekdays = exports.Weekday = void 0;
 var Weekday;
 (function (Weekday) {
     Weekday[Weekday["Sunday"] = 0] = "Sunday";

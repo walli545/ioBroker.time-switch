@@ -45,7 +45,7 @@ export class TimeSwitch extends utils.Adapter {
 		this.createNewOnOffScheduleSerializer(),
 	);
 
-	public constructor(options: Partial<utils.AdapterOptions> = {}) {
+	public constructor(options: Partial<ioBroker.AdapterOptions> = {}) {
 		super({
 			...options,
 			name: 'time-switch',
@@ -79,10 +79,10 @@ export class TimeSwitch extends utils.Adapter {
 			const state = record[id];
 			this.log.debug(`got state: ${state ? state.toString() : 'null'}`);
 			if (state) {
-				const schedule = this.createNewOnOffScheduleSerializer().deserialize(state.val as string);
+				const schedule = this.createNewOnOffScheduleSerializer().deserialize(state.val);
 				const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
 				if (enabledState) {
-					schedule.setEnabled(enabledState.val as boolean);
+					schedule.setEnabled(enabledState.val);
 					this.scheduleIdToSchedule.set(id, schedule);
 				} else {
 					this.log.error(`Could not retrieve state enabled state for ${id}`);
@@ -141,11 +141,11 @@ export class TimeSwitch extends utils.Adapter {
 		if (id.startsWith(`time-switch.${this.instance}`)) {
 			if (id.endsWith('data')) {
 				this.log.debug('is schedule id');
-				await this.onScheduleChange(id, state.val as string);
+				await this.onScheduleChange(id, state.val);
 			} else if (id.endsWith('enabled')) {
 				this.log.debug('is enabled id');
 				const dataId = TimeSwitch.getScheduleIdFromEnabledId(id);
-				const scheduleData = (await this.getStateAsync(dataId))?.val as string;
+				const scheduleData = (await this.getStateAsync(dataId))?.val;
 				await this.onScheduleChange(dataId, scheduleData);
 			}
 		}
@@ -184,7 +184,7 @@ export class TimeSwitch extends utils.Adapter {
 			const id = Number.parseInt(split[3], 10);
 			if (type == 'onoff') {
 				if (statesInSettings.onOff.includes(id)) {
-					statesInSettings.onOff = statesInSettings.onOff.filter((i) => i !== id);
+					statesInSettings.onOff = statesInSettings.onOff.filter(i => i !== id);
 					this.log.debug('Found state ' + fullId);
 				} else {
 					this.log.debug('Deleting state ' + fullId);
@@ -243,7 +243,7 @@ export class TimeSwitch extends utils.Adapter {
 		const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
 		if (enabledState) {
 			this.scheduleIdToSchedule.get(id)?.removeAllTriggers();
-			schedule.setEnabled(enabledState.val as boolean);
+			schedule.setEnabled(enabledState.val);
 			this.scheduleIdToSchedule.set(id, schedule);
 		} else {
 			this.log.error(`Could not retrieve state enabled state for ${id}`);
@@ -261,7 +261,7 @@ export class TimeSwitch extends utils.Adapter {
 
 if (module.parent) {
 	// Export the constructor in compact mode
-	module.exports = (options: Partial<utils.AdapterOptions> | undefined) => new TimeSwitch(options);
+	module.exports = (options: Partial<ioBroker.AdapterOptions> | undefined) => new TimeSwitch(options);
 } else {
 	// otherwise start the instance directly
 	(() => new TimeSwitch())();

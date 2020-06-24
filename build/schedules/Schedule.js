@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Schedule = void 0;
 class Schedule {
     constructor(triggerScheduler) {
         this.enabled = false;
@@ -14,7 +13,7 @@ class Schedule {
     setEnabled(enabled) {
         if (enabled !== this.enabled) {
             if (enabled) {
-                this.getTriggers().forEach((t) => this.triggerScheduler.register(t));
+                this.getTriggers().forEach(t => this.triggerScheduler.register(t));
             }
             else {
                 this.triggerScheduler.unregisterAll();
@@ -49,7 +48,7 @@ class Schedule {
         }
     }
     updateTrigger(trigger) {
-        const index = this.getTriggers().findIndex((t) => t.getId() === trigger.getId());
+        const index = this.getTriggers().findIndex(t => t.getId() === trigger.getId());
         if (index == -1) {
             throw new Error(`Cannot update trigger, trigger id ${trigger.getId()} not found`);
         }
@@ -62,7 +61,7 @@ class Schedule {
         }
     }
     removeTrigger(triggerId) {
-        const trigger = this.triggers.find((t) => t.getId() === triggerId);
+        const trigger = this.triggers.find(t => t.getId() === triggerId);
         if (trigger) {
             this.removeTriggerAndUnregister(trigger);
         }
@@ -80,10 +79,10 @@ class Schedule {
         if (this.isEnabled()) {
             this.triggerScheduler.unregister(trigger);
         }
-        this.triggers = this.triggers.filter((t) => t.getId() !== trigger.getId());
+        this.triggers = this.triggers.filter(t => t.getId() !== trigger.getId());
     }
     findTriggerById(id) {
-        return this.getTriggers().find((t) => t.getId() === id);
+        return this.getTriggers().find(t => t.getId() === id);
     }
 }
 exports.Schedule = Schedule;

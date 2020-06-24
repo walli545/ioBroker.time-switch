@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TimeSwitch = void 0;
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
@@ -170,7 +169,7 @@ class TimeSwitch extends utils.Adapter {
                 const id = Number.parseInt(split[3], 10);
                 if (type == 'onoff') {
                     if (statesInSettings.onOff.includes(id)) {
-                        statesInSettings.onOff = statesInSettings.onOff.filter((i) => i !== id);
+                        statesInSettings.onOff = statesInSettings.onOff.filter(i => i !== id);
                         this.log.debug('Found state ' + fullId);
                     }
                     else {

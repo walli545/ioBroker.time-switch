@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OnOffStateActionBuilder = void 0;
 const BaseStateActionBuilder_1 = require("./BaseStateActionBuilder");
 const OnOffStateAction_1 = require("./OnOffStateAction");
 class OnOffStateActionBuilder extends BaseStateActionBuilder_1.BaseStateActionBuilder {

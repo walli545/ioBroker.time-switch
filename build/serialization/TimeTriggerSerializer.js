@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TimeTriggerSerializer = void 0;
 const TimeTrigger_1 = require("../triggers/TimeTrigger");
 const TimeTriggerBuilder_1 = require("../triggers/TimeTriggerBuilder");
 class TimeTriggerSerializer {
