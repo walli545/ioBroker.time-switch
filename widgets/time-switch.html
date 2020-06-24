@@ -1,11 +1,11 @@
 <!--
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.1.0-pre.1"
+	version: "2.1.0-pre.4"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 
-	Change counter: 16
+	Change counter: 19
 -->
 <!-- here you can include so many css as you want -->
 <link rel="stylesheet" href="widgets/time-switch/css/style.css" />
@@ -14,10 +14,10 @@
 <link rel="stylesheet" href="widgets/time-switch/css/material-radio-button.css" />
 <link rel="stylesheet" href="widgets/time-switch/css/material-toggle-switch.css" />
 <!-- here you can include so many js-files as you want -->
-<script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 <script src="widgets/time-switch/js/OnOffScheduleWidget.js"></script>
 <script src="widgets/time-switch/js/TriggerWithAction.js"></script>
 <script src="widgets/time-switch/js/TimeTrigger.js"></script>
+<script src="widgets/time-switch/js/AstroTrigger.js"></script>
 <script src="widgets/time-switch/js/Weekdays.js"></script>
 <script src="widgets/time-switch/js/OnOffStateAction.js"></script>
 <script type="module" src="widgets/time-switch/js/time-switch.js"></script>
@@ -118,6 +118,7 @@
 			dataId/id/onDataIdChange;
 			showId[true]/checkbox;
 			showManualSwitch[true]/checkbox;
+			useAstroIcons[false]/checkbox;
 			valueType[boolean]/select,boolean,string,number/onValueTypeChange;
 			offValue/string;
 			onValue/string;

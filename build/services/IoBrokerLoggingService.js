@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.IoBrokerLoggingService = void 0;
 class IoBrokerLoggingService {
     constructor(adapter) {
         this.adapter = adapter;

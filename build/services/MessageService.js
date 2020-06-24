@@ -9,12 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MessageService = void 0;
 const TimeTriggerBuilder_1 = require("../triggers/TimeTriggerBuilder");
 const Weekday_1 = require("../triggers/Weekday");
 const OnOffStateAction_1 = require("../actions/OnOffStateAction");
 const OnOffSchedule_1 = require("../schedules/OnOffSchedule");
 const main_1 = require("../main");
 const ActionReferenceSerializer_1 = require("../serialization/ActionReferenceSerializer");
+const AstroTriggerBuilder_1 = require("../triggers/AstroTriggerBuilder");
+const AstroTime_1 = require("../triggers/AstroTime");
 class MessageService {
     constructor(stateService, logger, scheduleIdToSchedule, triggerSerializer, actionSerializer, onOffScheduleSerializer) {
         this.stateService = stateService;
@@ -28,7 +31,7 @@ class MessageService {
     handleMessage(message) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.currentMessage) {
-                setTimeout(() => this.handleMessage(message), 500);
+                setTimeout(() => this.handleMessage(message), 50);
                 return;
             }
             this.currentMessage = message;
@@ -80,27 +83,27 @@ class MessageService {
         });
     }
     addTrigger(schedule, data) {
-        let newTrigger;
+        let triggerBuilder;
         if (data.triggerType === 'TimeTrigger') {
             this.logger.logDebug('Wants TimeTrigger');
-            const triggerBuilder = new TimeTriggerBuilder_1.TimeTriggerBuilder()
-                .setWeekdays(Weekday_1.AllWeekdays)
-                .setHour(0)
-                .setMinute(0)
-                .setId(this.getNextTriggerId(schedule.getTriggers()));
-            if (data.actionType === 'OnOffValueAction' && schedule instanceof OnOffSchedule_1.OnOffSchedule) {
-                this.logger.logDebug('Wants OnOffValueAction');
-                triggerBuilder.setAction(schedule.getOnAction());
-            }
-            else {
-                throw new Error(`Cannot add trigger with action of type ${data.actionType}`);
-            }
-            newTrigger = triggerBuilder.build();
+            triggerBuilder = new TimeTriggerBuilder_1.TimeTriggerBuilder().setHour(0).setMinute(0);
+        }
+        else if (data.triggerType === 'AstroTrigger') {
+            this.logger.logDebug('Wants AstroTrigger');
+            triggerBuilder = new AstroTriggerBuilder_1.AstroTriggerBuilder().setAstroTime(AstroTime_1.AstroTime.Sunrise).setShift(0);
         }
         else {
             throw new Error(`Cannot add trigger of type ${data.triggerType}`);
         }
-        schedule.addTrigger(newTrigger);
+        triggerBuilder.setWeekdays(Weekday_1.AllWeekdays).setId(this.getNextTriggerId(schedule.getTriggers()));
+        if (data.actionType === 'OnOffValueAction' && schedule instanceof OnOffSchedule_1.OnOffSchedule) {
+            this.logger.logDebug('Wants OnOffValueAction');
+            triggerBuilder.setAction(schedule.getOnAction());
+        }
+        else {
+            throw new Error(`Cannot add trigger with action of type ${data.actionType}`);
+        }
+        schedule.addTrigger(triggerBuilder.build());
     }
     updateTrigger(schedule, triggerString) {
         return __awaiter(this, void 0, void 0, function* () {

@@ -88,7 +88,7 @@ describe('OnOffSchedule', () => {
 			triggerScheduler.verify(s => s.register(t2.object), Times.once());
 			triggerScheduler.verify(s => s.register(It.isAny()), Times.exactly(2));
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.unregisterAll(), Times.never());
+			triggerScheduler.verify(s => s.destroy(), Times.never());
 			expect(sut.isEnabled()).to.be.true;
 		});
 
@@ -103,7 +103,7 @@ describe('OnOffSchedule', () => {
 			sut.setEnabled(false);
 
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.unregisterAll(), Times.never());
+			triggerScheduler.verify(s => s.destroy(), Times.never());
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
 			expect(sut.isEnabled()).to.be.false;
 		});
@@ -119,7 +119,7 @@ describe('OnOffSchedule', () => {
 			sut.setEnabled(false);
 
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.unregisterAll(), Times.once());
+			triggerScheduler.verify(s => s.destroy(), Times.once());
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
 			expect(sut.isEnabled()).to.be.false;
 		});
@@ -135,7 +135,7 @@ describe('OnOffSchedule', () => {
 			sut.setEnabled(true);
 
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.unregisterAll(), Times.never());
+			triggerScheduler.verify(s => s.destroy(), Times.never());
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
 			expect(sut.isEnabled()).to.be.true;
 		});
@@ -203,7 +203,7 @@ describe('OnOffSchedule', () => {
 			sut.removeTrigger('1');
 			triggerScheduler.verify(s => s.unregister(t.object), Times.once());
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.once());
-			triggerScheduler.verify(s => s.unregisterAll(), Times.never());
+			triggerScheduler.verify(s => s.destroy(), Times.never());
 		});
 
 		it('should not unregister trigger when disabled', () => {
@@ -212,7 +212,7 @@ describe('OnOffSchedule', () => {
 			sut.addTrigger(t.object);
 			sut.removeTrigger('1');
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.unregisterAll(), Times.never());
+			triggerScheduler.verify(s => s.destroy(), Times.never());
 		});
 	});
 
@@ -256,7 +256,7 @@ describe('OnOffSchedule', () => {
 
 			triggerScheduler.verify(s => s.unregister(oldTrigger.object), Times.once());
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.once());
-			triggerScheduler.verify(s => s.unregisterAll(), Times.never());
+			triggerScheduler.verify(s => s.destroy(), Times.never());
 		});
 
 		it('should not unregister old trigger when disabled', () => {
@@ -269,7 +269,7 @@ describe('OnOffSchedule', () => {
 			sut.updateTrigger(newTrigger.object);
 
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.unregisterAll(), Times.never());
+			triggerScheduler.verify(s => s.destroy(), Times.never());
 		});
 
 		it('should register new trigger when enabled', () => {
@@ -298,18 +298,18 @@ describe('OnOffSchedule', () => {
 		});
 	});
 
-	describe('remove all triggers', () => {
+	describe('destroy', () => {
 		it('should remove all triggers', () => {
 			const t1 = createMockTrigger('1');
 			const t2 = createMockTrigger('2');
 			sut.addTrigger(t1.object);
 			sut.addTrigger(t2.object);
 
-			sut.removeAllTriggers();
+			sut.destroy();
 			expect(sut.getTriggers()).to.deep.equal([]);
 		});
 
-		it('should unregister all triggers when enabled', () => {
+		it('should destroy all triggers when enabled', () => {
 			sut.setEnabled(true);
 			const t1 = createMockTrigger('1');
 			const t2 = createMockTrigger('2');
@@ -317,9 +317,9 @@ describe('OnOffSchedule', () => {
 			sut.addTrigger(t2.object);
 			triggerScheduler.reset();
 
-			sut.removeAllTriggers();
+			sut.destroy();
 
-			triggerScheduler.verify(s => s.unregisterAll(), Times.once());
+			triggerScheduler.verify(s => s.destroy(), Times.once());
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
 		});
 
@@ -331,9 +331,9 @@ describe('OnOffSchedule', () => {
 			sut.addTrigger(t2.object);
 			triggerScheduler.reset();
 
-			sut.removeAllTriggers();
+			sut.destroy();
 
-			triggerScheduler.verify(s => s.unregisterAll(), Times.never());
+			triggerScheduler.verify(s => s.destroy(), Times.never());
 			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
 		});
 	});

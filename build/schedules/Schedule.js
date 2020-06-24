@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Schedule = void 0;
 class Schedule {
     constructor(triggerScheduler) {
         this.enabled = false;
@@ -16,7 +17,7 @@ class Schedule {
                 this.getTriggers().forEach(t => this.triggerScheduler.register(t));
             }
             else {
-                this.triggerScheduler.unregisterAll();
+                this.triggerScheduler.destroy();
             }
             this.enabled = enabled;
         }
@@ -69,9 +70,9 @@ class Schedule {
             throw new Error(`Cannot delete trigger, trigger id ${triggerId} not found`);
         }
     }
-    removeAllTriggers() {
+    destroy() {
         if (this.isEnabled()) {
-            this.triggerScheduler.unregisterAll();
+            this.triggerScheduler.destroy();
         }
         this.triggers = [];
     }

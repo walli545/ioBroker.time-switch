@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.OnOffScheduleSerializer = void 0;
 const OnOffSchedule_1 = require("../schedules/OnOffSchedule");
 const OnOffStateAction_1 = require("../actions/OnOffStateAction");
 const ActionReferenceSerializer_1 = require("./ActionReferenceSerializer");
