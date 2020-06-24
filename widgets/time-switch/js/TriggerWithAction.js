@@ -220,6 +220,8 @@
 		getElementNameForTriggerType(type) {
 			if (type === 'TimeTrigger') {
 				return 'app-time-trigger';
+			} else if (type === 'AstroTrigger') {
+				return 'app-astro-trigger';
 			} else {
 				throw Error('No widget for trigger found');
 			}

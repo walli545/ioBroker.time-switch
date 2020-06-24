@@ -1,7 +1,8 @@
 import { Trigger } from '../triggers/Trigger';
 import { UniversalTriggerScheduler } from '../scheduler/UniversalTriggerScheduler';
+import { Destroyable } from '../Destroyable';
 
-export abstract class Schedule {
+export abstract class Schedule implements Destroyable {
 	private enabled = false;
 	private name = 'New Schedule';
 	private triggers: Trigger[] = [];
@@ -19,7 +20,7 @@ export abstract class Schedule {
 			if (enabled) {
 				this.getTriggers().forEach(t => this.triggerScheduler.register(t));
 			} else {
-				this.triggerScheduler.unregisterAll();
+				this.triggerScheduler.destroy();
 			}
 			this.enabled = enabled;
 		}
@@ -77,9 +78,9 @@ export abstract class Schedule {
 		}
 	}
 
-	public removeAllTriggers(): void {
+	public destroy(): void {
 		if (this.isEnabled()) {
-			this.triggerScheduler.unregisterAll();
+			this.triggerScheduler.destroy();
 		}
 		this.triggers = [];
 	}

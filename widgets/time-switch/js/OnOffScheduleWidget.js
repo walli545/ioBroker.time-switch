@@ -5,6 +5,7 @@
 			this.sr = this.createShadowRoot();
 			this.settings = null;
 			this.currentTriggers = [];
+			this.connected = false;
 		}
 
 		static get observedAttributes() {
@@ -12,13 +13,32 @@
 		}
 
 		connectedCallback() {
-			this.sr.querySelector('.button.add').addEventListener('click', this.addTimeTrigger.bind(this));
+			if (this.connected) {
+				return;
+			}
+			this.sr.querySelector('#btn-add-trigger-dropdown').addEventListener('click', e => {
+				const dropdown = this.sr.querySelector('#add-trigger-dropdown');
+				dropdown.classList.add('show');
+				e.stopImmediatePropagation();
+				window.addEventListener(
+					'click',
+					() => {
+						dropdown.classList.remove('show');
+					},
+					{ once: true },
+				);
+			});
+			this.sr.querySelector('#add-time-trigger').addEventListener('click', () => this.addTrigger('TimeTrigger'));
+			this.sr
+				.querySelector('#add-astro-trigger')
+				.addEventListener('click', () => this.addTrigger('AstroTrigger'));
 			this.sr.querySelector('.button.edit').addEventListener('click', this.onEditNameClick.bind(this));
 			this.sr.querySelector('.button.save').addEventListener('click', this.onSaveNameClick.bind(this));
 			this.sr.querySelector('button#manual-off').addEventListener('click', this.onManualClick.bind(this));
 			this.sr.querySelector('button#manual-on').addEventListener('click', this.onManualClick.bind(this));
 			this.sr.querySelector('#enabled').addEventListener('click', () => {
 				this.enabled = !this.enabled;
+				vis.binds['time-switch'].sendMessage(this.enabled ? 'enable-schedule' : 'disable-schedule', { dataId: this.settings.dataId});
 			});
 			this.sr.querySelector('#manual').addEventListener('click', () => {
 				const toggle = this.sr.querySelector('#manual');
@@ -27,6 +47,7 @@
 					target: { id: toggle.classList.contains('checked') ? 'manual-on' : 'manual-off' },
 				});
 			});
+			this.connected = true;
 		}
 
 		attributeChangedCallback(attr) {
@@ -52,10 +73,8 @@
 			const toggle = this.sr.querySelector('#enabled');
 			if (val) {
 				toggle.classList.add('checked');
-				vis.binds['time-switch'].sendMessage('enable-schedule', { dataId: this.settings.dataId});
 			} else {
 				toggle.classList.remove('checked');
-				vis.binds['time-switch'].sendMessage('disable-schedule', { dataId: this.settings.dataId});
 			}
 		}
 
@@ -176,10 +195,10 @@
 			});
 		}
 
-		addTimeTrigger() {
+		addTrigger(type) {
 			const message = {
 				dataId: this.settings.dataId,
-				triggerType: 'TimeTrigger',
+				triggerType: type,
 				actionType: 'OnOffValueAction',
 				valueType: this.settings.valueType,
 				stateIds: this.getStateIdsFromSettings(this.settings),
@@ -298,8 +317,14 @@
 						</div>
 					</div>
 					<div id="add">
-						<img class="button add" src="widgets/time-switch/img/add-24px.svg" width="28px"
+						<div class="dropdown">
+						  <img class="button" id="btn-add-trigger-dropdown" src="widgets/time-switch/img/add-24px.svg" width="28px"
 							height="28px" title="${vis.binds['time-switch'].translate('addTrigger')}"/>
+						  <div id="add-trigger-dropdown" class="dropdown-content">
+							<div class="dropdown-btn" id="add-time-trigger">${vis.binds['time-switch'].translate('addTimeTrigger')}</div>
+							<div class="dropdown-btn" id="add-astro-trigger">${vis.binds['time-switch'].translate('addAstroTrigger')}</div>
+						  </div>
+						</div>
 					</div>
 					<div class="triggers">
 				</div>

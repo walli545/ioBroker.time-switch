@@ -1,7 +1,7 @@
 /*
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.1.0-pre.1"
+	version: "2.1.0-pre.4"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 */
@@ -20,7 +20,7 @@ $.get('../time-switch.admin/words.js', function(script) {
 
 // export vis binds for widget
 vis.binds['time-switch'] = {
-	version: '2.1.0-pre.1',
+	version: '2.1.0-pre.4',
 	showVersion: showVersion,
 	createOnOffWidget: createOnOffWidget,
 	onOffScheduleWidgets: {},
@@ -61,6 +61,8 @@ function createOnOffWidget(widgetId, view, data, style) {
 	}
 	const element = document.createElement('app-on-off-schedule-widget');
 	element.setAttribute('widgetid', widgetId);
+	element.style.setProperty('--ts-widget-astro-icon-display', data.useAstroIcons ? 'inline' : 'none');
+	element.style.setProperty('--ts-widget-astro-text-display', data.useAstroIcons ? 'none' : 'inline');
 	widgetElement.appendChild(element);
 }
 

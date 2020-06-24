@@ -1,21 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TimeTriggerBuilder = void 0;
 const TimeTrigger_1 = require("./TimeTrigger");
-class TimeTriggerBuilder {
+const DailyTriggerBuilder_1 = require("./DailyTriggerBuilder");
+class TimeTriggerBuilder extends DailyTriggerBuilder_1.DailyTriggerBuilder {
     constructor() {
-        this.action = null;
-        this.id = '0';
+        super(...arguments);
         this.hour = 0;
         this.minute = 0;
-        this.weekdays = [];
-    }
-    setAction(action) {
-        this.action = action;
-        return this;
-    }
-    setId(id) {
-        this.id = id;
-        return this;
     }
     setHour(hour) {
         this.hour = hour;
@@ -25,12 +17,20 @@ class TimeTriggerBuilder {
         this.minute = minute;
         return this;
     }
+    setAction(action) {
+        super.setAction(action);
+        return this;
+    }
+    setId(id) {
+        super.setId(id);
+        return this;
+    }
     setWeekdays(weekdays) {
-        this.weekdays = weekdays;
+        super.setWeekdays(weekdays);
         return this;
     }
     build() {
-        return new TimeTrigger_1.TimeTrigger(this.id, this.hour, this.minute, this.weekdays, this.action);
+        return new TimeTrigger_1.TimeTrigger(this.getId(), this.hour, this.minute, this.getWeekdays(), this.getAction());
     }
 }
 exports.TimeTriggerBuilder = TimeTriggerBuilder;

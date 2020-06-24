@@ -44,10 +44,6 @@
     width: calc(100% - 30px);
 }
 
-#add img {
-    float: right;
-}
-
 .triggers {
     overflow-y: scroll;
     padding-right: 5px;
@@ -76,4 +72,41 @@ button.material-button{
 
 .manual-container.multiple p {
     margin-bottom: 5px;
+}
+
+#add div {
+    float: right;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    background-color: var(--ts-widget-add-trigger-dropdown-bg-color, #f1f1f1);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content .dropdown-btn {
+    color: var(--ts-widget-add-trigger-dropdown-fg-color, black);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    width: calc(100% - 32px);
+}
+
+.dropdown-content .dropdown-btn:hover {
+    cursor: pointer;
+    background-color: var(--ts-widget-add-trigger-dropdown-hover-bg-color, #ddd);
+}
+
+.show {
+    display:block;
 }
