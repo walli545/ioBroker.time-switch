@@ -38,7 +38,7 @@ class OnOffStateAction extends BaseStateAction_1.BaseStateAction {
     }
     execute() {
         const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
-        this.getIdsOfStatesToSet().forEach(id => {
+        this.getIdsOfStatesToSet().forEach((id) => {
             this.getStateService().setForeignState(id, valueToUse);
         });
     }

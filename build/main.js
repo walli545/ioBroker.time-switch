@@ -188,7 +188,7 @@ class TimeSwitch extends utils.Adapter {
                 const id = Number.parseInt(split[3], 10);
                 if (type == 'onoff') {
                     if (statesInSettings.onOff.includes(id)) {
-                        statesInSettings.onOff = statesInSettings.onOff.filter(i => i !== id);
+                        statesInSettings.onOff = statesInSettings.onOff.filter((i) => i !== id);
                         this.log.debug('Found state ' + fullId);
                     }
                     else {

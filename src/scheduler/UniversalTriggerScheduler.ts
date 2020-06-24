@@ -28,7 +28,7 @@ export class UniversalTriggerScheduler extends TriggerScheduler {
 	}
 
 	public destroy(): void {
-		this.schedulers.forEach(s => s.destroy());
+		this.schedulers.forEach((s) => s.destroy());
 	}
 
 	public forType(): string {
