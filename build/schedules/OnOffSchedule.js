@@ -20,7 +20,7 @@ class OnOffSchedule extends Schedule_1.Schedule {
             throw new Error(`onAction may not be null or undefined`);
         }
         this.onAction = onAction;
-        this.getTriggers().forEach(t => {
+        this.getTriggers().forEach((t) => {
             const action = t.getAction();
             if (action instanceof OnOffStateAction_1.OnOffStateAction) {
                 if (action.getBooleanValue()) {
@@ -34,7 +34,7 @@ class OnOffSchedule extends Schedule_1.Schedule {
             throw new Error(`offAction may not be null or undefined`);
         }
         this.offAction = offAction;
-        this.getTriggers().forEach(t => {
+        this.getTriggers().forEach((t) => {
             const action = t.getAction();
             if (action instanceof OnOffStateAction_1.OnOffStateAction) {
                 if (!action.getBooleanValue()) {

@@ -56,7 +56,7 @@ export class OnOffStateAction<T extends string | number | boolean> extends BaseS
 
 	public execute(): void {
 		const valueToUse = this.getBooleanValue() ? this.getOnValue() : this.getOffValue();
-		this.getIdsOfStatesToSet().forEach(id => {
+		this.getIdsOfStatesToSet().forEach((id) => {
 			this.getStateService().setForeignState(id, valueToUse);
 		});
 	}

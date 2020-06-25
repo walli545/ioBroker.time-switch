@@ -36,13 +36,13 @@ class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         }
     }
     destroy() {
-        this.registered.forEach(r => this.unregister(r[0]));
+        this.registered.forEach((r) => this.unregister(r[0]));
     }
     forType() {
         return TimeTrigger_1.TimeTrigger.prototype.constructor.name;
     }
     getAssociatedJob(trigger) {
-        const entry = this.registered.find(r => r[0] === trigger);
+        const entry = this.registered.find((r) => r[0] === trigger);
         if (entry) {
             return entry[1];
         }
@@ -51,7 +51,7 @@ class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         }
     }
     removeTrigger(trigger) {
-        this.registered = this.registered.filter(r => r[0] !== trigger);
+        this.registered = this.registered.filter((r) => r[0] !== trigger);
     }
     createRecurrenceRule(trigger) {
         const rule = new node_schedule_1.RecurrenceRule();

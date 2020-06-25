@@ -24,8 +24,8 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
                 var _a;
                 /* istanbul ignore next */
                 (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Rescheduling astro triggers`);
-                this.scheduled.forEach(s => this.timeTriggerScheduler.unregister(s[1]));
-                this.registered.forEach(r => this.tryScheduleTriggerToday(r));
+                this.scheduled.forEach((s) => this.timeTriggerScheduler.unregister(s[1]));
+                this.registered.forEach((r) => this.tryScheduleTriggerToday(r));
             },
         })
             .build();
@@ -40,9 +40,9 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
     }
     unregister(trigger) {
         if (this.isRegistered(trigger)) {
-            this.registered = this.registered.filter(t => t.getId() !== trigger.getId());
+            this.registered = this.registered.filter((t) => t.getId() !== trigger.getId());
             if (this.isScheduledToday(trigger)) {
-                this.scheduled = this.scheduled.filter(s => {
+                this.scheduled = this.scheduled.filter((s) => {
                     if (s[0] === trigger.getId()) {
                         this.timeTriggerScheduler.unregister(s[1]);
                         return false;
@@ -83,10 +83,10 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         }
     }
     isRegistered(trigger) {
-        return this.registered.find(r => r.getId() === trigger.getId()) != undefined;
+        return this.registered.find((r) => r.getId() === trigger.getId()) != undefined;
     }
     isScheduledToday(trigger) {
-        return this.scheduled.find(s => s[0] === trigger.getId()) != undefined;
+        return this.scheduled.find((s) => s[0] === trigger.getId()) != undefined;
     }
     nextDate(trigger) {
         const next = this.getTimes(new Date(), this.coordinate.getLatitude(), this.coordinate.getLongitude())[trigger.getAstroTime()];

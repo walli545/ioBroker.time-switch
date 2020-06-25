@@ -10,7 +10,7 @@ export class UniversalTriggerScheduler extends TriggerScheduler {
 	}
 
 	public register(trigger: Trigger): void {
-		const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+		const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
 		if (scheduler) {
 			return scheduler.register(trigger);
 		} else {
@@ -19,7 +19,7 @@ export class UniversalTriggerScheduler extends TriggerScheduler {
 	}
 
 	public unregister(trigger: Trigger): void {
-		const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+		const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
 		if (scheduler) {
 			return scheduler.unregister(trigger);
 		} else {
@@ -28,7 +28,7 @@ export class UniversalTriggerScheduler extends TriggerScheduler {
 	}
 
 	public destroy(): void {
-		this.schedulers.forEach(s => s.destroy());
+		this.schedulers.forEach((s) => s.destroy());
 	}
 
 	public forType(): string {

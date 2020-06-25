@@ -8,7 +8,7 @@ class UniversalTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         this.schedulers = schedulers;
     }
     register(trigger) {
-        const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+        const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
         if (scheduler) {
             return scheduler.register(trigger);
         }
@@ -17,7 +17,7 @@ class UniversalTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         }
     }
     unregister(trigger) {
-        const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+        const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
         if (scheduler) {
             return scheduler.unregister(trigger);
         }
@@ -26,7 +26,7 @@ class UniversalTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         }
     }
     destroy() {
-        this.schedulers.forEach(s => s.destroy());
+        this.schedulers.forEach((s) => s.destroy());
     }
     forType() {
         return 'Universal';
