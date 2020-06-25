@@ -9,11 +9,11 @@ class IoBrokerStateService {
         }
         this.adapter = adapter;
     }
-    setState(id, value) {
+    setState(id, value, ack = true) {
         if (id == null || id.length === 0) {
             throw new Error('id may not be null or empty.');
         }
-        this.adapter.setState(id, value, false);
+        this.adapter.setState(id, value, ack);
     }
     setForeignState(id, value) {
         var _a;

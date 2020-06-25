@@ -110,8 +110,8 @@ class TimeSwitch extends utils.Adapter {
                 this.log.debug(`state ${id} deleted`);
                 return;
             }
-            if (state.from === 'system.adapter.time-switch.0') {
-                this.log.debug(`change from adapter itself for ${id}`);
+            if (state.ack) {
+                this.log.debug(`Ignoring state change for ${id} with ack=true`);
                 return;
             }
             this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
@@ -126,6 +126,8 @@ class TimeSwitch extends utils.Adapter {
                     const scheduleData = (_a = (yield this.getStateAsync(dataId))) === null || _a === void 0 ? void 0 : _a.val;
                     yield this.onScheduleChange(dataId, scheduleData);
                 }
+                // Confirm state change with ack=true
+                this.stateService.setState(id, state.val, true);
             }
         });
     }

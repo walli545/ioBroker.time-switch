@@ -122,8 +122,8 @@ export class TimeSwitch extends utils.Adapter {
 			return;
 		}
 
-		if (state.from === 'system.adapter.time-switch.0') {
-			this.log.debug(`change from adapter itself for ${id}`);
+		if (state.ack) {
+			this.log.debug(`Ignoring state change for ${id} with ack=true`);
 			return;
 		}
 
@@ -138,6 +138,8 @@ export class TimeSwitch extends utils.Adapter {
 				const scheduleData = (await this.getStateAsync(dataId))?.val;
 				await this.onScheduleChange(dataId, scheduleData as string);
 			}
+			// Confirm state change with ack=true
+			this.stateService.setState(id, state.val as string, true);
 		}
 	}
 
