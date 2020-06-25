@@ -6,16 +6,16 @@ class UniversalSerializer {
         this.serializers = serializers;
     }
     replaceSerializer(serializer) {
-        const existing = this.serializers.find(s => s.getType() === serializer.getType());
+        const existing = this.serializers.find((s) => s.getType() === serializer.getType());
         if (existing) {
-            this.serializers = this.serializers.filter(s => s != existing);
+            this.serializers = this.serializers.filter((s) => s != existing);
             this.serializers.push(serializer);
             return existing;
         }
         throw new Error('Cannot replace non existing serializer');
     }
     serialize(object) {
-        const serializer = this.serializers.find(s => s.getType() === object.constructor.name);
+        const serializer = this.serializers.find((s) => s.getType() === object.constructor.name);
         if (serializer) {
             return serializer.serialize(object);
         }
@@ -25,7 +25,7 @@ class UniversalSerializer {
     }
     deserialize(stringToDeserialize) {
         const json = JSON.parse(stringToDeserialize);
-        const serializer = this.serializers.find(s => s.getType() === json.type);
+        const serializer = this.serializers.find((s) => s.getType() === json.type);
         if (serializer) {
             return serializer.deserialize(stringToDeserialize);
         }

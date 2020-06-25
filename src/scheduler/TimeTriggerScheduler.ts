@@ -40,7 +40,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 	}
 
 	public destroy(): void {
-		this.registered.forEach(r => this.unregister(r[0]));
+		this.registered.forEach((r) => this.unregister(r[0]));
 	}
 
 	public forType(): string {
@@ -48,7 +48,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 	}
 
 	private getAssociatedJob(trigger: TimeTrigger): Job | null {
-		const entry = this.registered.find(r => r[0] === trigger);
+		const entry = this.registered.find((r) => r[0] === trigger);
 		if (entry) {
 			return entry[1];
 		} else {
@@ -57,7 +57,7 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 	}
 
 	private removeTrigger(trigger: Trigger): void {
-		this.registered = this.registered.filter(r => r[0] !== trigger);
+		this.registered = this.registered.filter((r) => r[0] !== trigger);
 	}
 
 	private createRecurrenceRule(trigger: TimeTrigger): RecurrenceRule {

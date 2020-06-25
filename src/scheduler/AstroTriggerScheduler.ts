@@ -20,8 +20,8 @@ export class AstroTriggerScheduler extends TriggerScheduler {
 			execute: () => {
 				/* istanbul ignore next */
 				this.logger?.logDebug(`Rescheduling astro triggers`);
-				this.scheduled.forEach(s => this.timeTriggerScheduler.unregister(s[1]));
-				this.registered.forEach(r => this.tryScheduleTriggerToday(r));
+				this.scheduled.forEach((s) => this.timeTriggerScheduler.unregister(s[1]));
+				this.registered.forEach((r) => this.tryScheduleTriggerToday(r));
 			},
 		})
 		.build();
@@ -47,9 +47,9 @@ export class AstroTriggerScheduler extends TriggerScheduler {
 
 	public unregister(trigger: AstroTrigger): void {
 		if (this.isRegistered(trigger)) {
-			this.registered = this.registered.filter(t => t.getId() !== trigger.getId());
+			this.registered = this.registered.filter((t) => t.getId() !== trigger.getId());
 			if (this.isScheduledToday(trigger)) {
-				this.scheduled = this.scheduled.filter(s => {
+				this.scheduled = this.scheduled.filter((s) => {
 					if (s[0] === trigger.getId()) {
 						this.timeTriggerScheduler.unregister(s[1]);
 						return false;
@@ -93,11 +93,11 @@ export class AstroTriggerScheduler extends TriggerScheduler {
 	}
 
 	private isRegistered(trigger: AstroTrigger): boolean {
-		return this.registered.find(r => r.getId() === trigger.getId()) != undefined;
+		return this.registered.find((r) => r.getId() === trigger.getId()) != undefined;
 	}
 
 	private isScheduledToday(trigger: AstroTrigger): boolean {
-		return this.scheduled.find(s => s[0] === trigger.getId()) != undefined;
+		return this.scheduled.find((s) => s[0] === trigger.getId()) != undefined;
 	}
 
 	private nextDate(trigger: AstroTrigger): Date {

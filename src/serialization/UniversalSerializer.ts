@@ -4,9 +4,9 @@ export class UniversalSerializer<T extends Record<string, any>> implements Seria
 	constructor(private serializers: Serializer<T>[]) {}
 
 	replaceSerializer(serializer: Serializer<T>): Serializer<T> {
-		const existing = this.serializers.find(s => s.getType() === serializer.getType());
+		const existing = this.serializers.find((s) => s.getType() === serializer.getType());
 		if (existing) {
-			this.serializers = this.serializers.filter(s => s != existing);
+			this.serializers = this.serializers.filter((s) => s != existing);
 			this.serializers.push(serializer);
 			return existing;
 		}
@@ -14,7 +14,7 @@ export class UniversalSerializer<T extends Record<string, any>> implements Seria
 	}
 
 	public serialize(object: T): string {
-		const serializer = this.serializers.find(s => s.getType() === object.constructor.name);
+		const serializer = this.serializers.find((s) => s.getType() === object.constructor.name);
 		if (serializer) {
 			return serializer.serialize(object);
 		} else {
@@ -24,7 +24,7 @@ export class UniversalSerializer<T extends Record<string, any>> implements Seria
 
 	public deserialize(stringToDeserialize: string): T {
 		const json = JSON.parse(stringToDeserialize);
-		const serializer = this.serializers.find(s => s.getType() === json.type);
+		const serializer = this.serializers.find((s) => s.getType() === json.type);
 		if (serializer) {
 			return serializer.deserialize(stringToDeserialize);
 		} else {
