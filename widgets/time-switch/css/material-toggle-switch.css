@@ -42,9 +42,9 @@
     -o-user-select: none;
 }
 .md-switch-container.checked .md-switch-track {
-    background: rgba(0, 0, 87, 0.5);
+    background: #2f2f2f;
 }
 .md-switch-container.checked .md-switch-handle {
     left: 14px;
-    background: #337ab7;
+    background: var(--ts-widget-primary-color, #337ab7);
 }

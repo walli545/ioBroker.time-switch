@@ -15,6 +15,10 @@ import { OnOffStateActionSerializer } from './serialization/OnOffStateActionSeri
 import { OnOffStateActionBuilder } from './actions/OnOffStateActionBuilder';
 import { OnOffScheduleSerializer } from './serialization/OnOffScheduleSerializer';
 import { cancelJob, scheduleJob } from 'node-schedule';
+import { AstroTriggerSerializer } from './serialization/AstroTriggerSerializer';
+import { AstroTriggerScheduler } from './scheduler/AstroTriggerScheduler';
+import { getTimes } from 'suncalc';
+import { Coordinate } from './Coordinate';
 
 // Augment the adapter.config object with the actual types
 declare global {
@@ -34,24 +38,21 @@ export class TimeSwitch extends utils.Adapter {
 	private loggingService = new IoBrokerLoggingService(this);
 	private stateService = new IoBrokerStateService(this, this.loggingService);
 
-	private actionSerializer = new UniversalSerializer<Action>([new OnOffStateActionSerializer(this.stateService)]);
-	private triggerSerializer = new UniversalSerializer<Trigger>([new TimeTriggerSerializer(this.actionSerializer)]);
-	private messageService = new MessageService(
-		this.stateService,
-		this.loggingService,
-		this.scheduleIdToSchedule,
-		this.triggerSerializer,
-		this.actionSerializer,
-		this.createNewOnOffScheduleSerializer(),
-	);
+	private coordinate: Coordinate | undefined;
 
-	public constructor(options: Partial<ioBroker.AdapterOptions> = {}) {
+	private actionSerializer = new UniversalSerializer<Action>([new OnOffStateActionSerializer(this.stateService)]);
+	private triggerSerializer = new UniversalSerializer<Trigger>([
+		new TimeTriggerSerializer(this.actionSerializer),
+		new AstroTriggerSerializer(this.actionSerializer),
+	]);
+	private messageService: MessageService | undefined;
+
+	public constructor(options: Partial<utils.AdapterOptions> = {}) {
 		super({
 			...options,
 			name: 'time-switch',
 		});
 		this.on('ready', this.onReady.bind(this));
-		this.on('objectChange', this.onObjectChange.bind(this));
 		this.on('stateChange', this.onStateChange.bind(this));
 		this.on('message', this.onMessage.bind(this));
 		this.on('unload', this.onUnload.bind(this));
@@ -73,16 +74,17 @@ export class TimeSwitch extends utils.Adapter {
 	 * Is called when databases are connected and adapter received configuration.
 	 */
 	private async onReady(): Promise<void> {
+		await this.initMessageService();
 		await this.fixStateStructure(this.config.schedules);
 		const record = await this.getStatesAsync(`time-switch.${this.instance}.*.data`);
 		for (const id in record) {
 			const state = record[id];
 			this.log.debug(`got state: ${state ? state.toString() : 'null'}`);
 			if (state) {
-				const schedule = this.createNewOnOffScheduleSerializer().deserialize(state.val);
+				const schedule = (await this.createNewOnOffScheduleSerializer()).deserialize(state.val as string);
 				const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
 				if (enabledState) {
-					schedule.setEnabled(enabledState.val);
+					schedule.setEnabled(enabledState.val as boolean);
 					this.scheduleIdToSchedule.set(id, schedule);
 				} else {
 					this.log.error(`Could not retrieve state enabled state for ${id}`);
@@ -92,6 +94,7 @@ export class TimeSwitch extends utils.Adapter {
 			}
 		}
 		this.subscribeStates('*');
+		this.subscribeForeignObjects('system.config');
 	}
 
 	/**
@@ -100,26 +103,13 @@ export class TimeSwitch extends utils.Adapter {
 	private onUnload(callback: () => void): void {
 		try {
 			for (const id in this.scheduleIdToSchedule.keys()) {
-				this.scheduleIdToSchedule.get(id)?.removeAllTriggers();
+				this.scheduleIdToSchedule.get(id)?.destroy();
 			}
 			this.scheduleIdToSchedule.clear();
 			this.log.info('cleaned everything up...');
 			callback();
 		} catch (e) {
 			callback();
-		}
-	}
-
-	/**
-	 * Is called if a subscribed object changes
-	 */
-	private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-		if (obj) {
-			// The object was changed
-			this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-		} else {
-			// The object was deleted
-			this.log.info(`object ${id} deleted`);
 		}
 	}
 
@@ -132,8 +122,8 @@ export class TimeSwitch extends utils.Adapter {
 			return;
 		}
 
-		if (state.from === 'system.adapter.time-switch.0') {
-			this.log.debug(`change from adapter itself for ${id}`);
+		if (state.ack) {
+			this.log.debug(`Ignoring state change for ${id} with ack=true`);
 			return;
 		}
 
@@ -141,13 +131,15 @@ export class TimeSwitch extends utils.Adapter {
 		if (id.startsWith(`time-switch.${this.instance}`)) {
 			if (id.endsWith('data')) {
 				this.log.debug('is schedule id');
-				await this.onScheduleChange(id, state.val);
+				await this.onScheduleChange(id, state.val as string);
 			} else if (id.endsWith('enabled')) {
 				this.log.debug('is enabled id');
 				const dataId = TimeSwitch.getScheduleIdFromEnabledId(id);
 				const scheduleData = (await this.getStateAsync(dataId))?.val;
-				await this.onScheduleChange(dataId, scheduleData);
+				await this.onScheduleChange(dataId, scheduleData as string);
 			}
+			// Confirm state change with ack=true
+			this.stateService.setState(id, state.val as string, true);
 		}
 	}
 
@@ -156,7 +148,11 @@ export class TimeSwitch extends utils.Adapter {
 	 */
 	private async onMessage(obj: ioBroker.Message): Promise<void> {
 		try {
-			await this.messageService.handleMessage(obj);
+			if (this.messageService) {
+				await this.messageService.handleMessage(obj);
+			} else {
+				this.log.error('Message service not initialized');
+			}
 		} catch (e) {
 			this.log.error(e.stack);
 			this.log.error(e.message);
@@ -169,7 +165,24 @@ export class TimeSwitch extends utils.Adapter {
 	// Private helper methods
 	//------------------------------------------------------------------------------------------------------------------
 
+	private async initMessageService(): Promise<void> {
+		this.messageService = new MessageService(
+			this.stateService,
+			this.loggingService,
+			this.scheduleIdToSchedule,
+			this.triggerSerializer,
+			this.actionSerializer,
+			await this.createNewOnOffScheduleSerializer(),
+		);
+	}
+
 	private async fixStateStructure(statesInSettings: { onOff: number[] }): Promise<void> {
+		if (!statesInSettings) {
+			statesInSettings = { onOff: [] };
+		}
+		if (!statesInSettings.onOff) {
+			statesInSettings.onOff = [];
+		}
 		const prefix = `time-switch.${this.instance}.`;
 		const currentStates = await this.getStatesAsync(`${prefix}*.data`);
 		for (const fullId in currentStates) {
@@ -178,7 +191,7 @@ export class TimeSwitch extends utils.Adapter {
 			const id = Number.parseInt(split[3], 10);
 			if (type == 'onoff') {
 				if (statesInSettings.onOff.includes(id)) {
-					statesInSettings.onOff = statesInSettings.onOff.filter(i => i !== id);
+					statesInSettings.onOff = statesInSettings.onOff.filter((i) => i !== id);
 					this.log.debug('Found state ' + fullId);
 				} else {
 					this.log.debug('Deleting state ' + fullId);
@@ -233,29 +246,60 @@ export class TimeSwitch extends utils.Adapter {
 	private async onScheduleChange(id: string, scheduleString: string): Promise<void> {
 		this.log.debug('onScheduleChange: ' + scheduleString + ' ' + id);
 		this.log.debug('schedule found: ' + this.scheduleIdToSchedule.get(id));
-		const schedule = this.createNewOnOffScheduleSerializer().deserialize(scheduleString);
+		const schedule = (await this.createNewOnOffScheduleSerializer()).deserialize(scheduleString);
 		const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
 		if (enabledState) {
-			this.scheduleIdToSchedule.get(id)?.removeAllTriggers();
-			schedule.setEnabled(enabledState.val);
+			this.scheduleIdToSchedule.get(id)?.destroy();
+			schedule.setEnabled(enabledState.val as boolean);
 			this.scheduleIdToSchedule.set(id, schedule);
 		} else {
 			this.log.error(`Could not retrieve state enabled state for ${id}`);
 		}
 	}
 
-	private createNewOnOffScheduleSerializer(): OnOffScheduleSerializer {
+	private async createNewOnOffScheduleSerializer(): Promise<OnOffScheduleSerializer> {
 		return new OnOffScheduleSerializer(
-			new UniversalTriggerScheduler([new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService)]),
+			new UniversalTriggerScheduler([
+				new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
+				new AstroTriggerScheduler(
+					new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
+					getTimes,
+					await this.getCoordinate(),
+				),
+			]),
 			this.actionSerializer,
 			this.triggerSerializer,
 		);
+	}
+
+	private async getCoordinate(): Promise<Coordinate> {
+		if (this.coordinate) {
+			return Promise.resolve(this.coordinate);
+		} else {
+			return new Promise((resolve, _) => {
+				this.getForeignObject('system.config', (error, obj) => {
+					if (obj && obj.common) {
+						const lat = (obj.common as any).latitude;
+						const long = (obj.common as any).longitude;
+						if (lat && long) {
+							this.log.debug(`Got coordinates lat=${lat} long=${long}`);
+							resolve(new Coordinate(lat, long));
+							return;
+						}
+					}
+					this.log.error(
+						'Could not read coordinates from system.config, using Berlins coordinates as fallback',
+					);
+					resolve(new Coordinate(52, 13));
+				});
+			});
+		}
 	}
 }
 
 if (module.parent) {
 	// Export the constructor in compact mode
-	module.exports = (options: Partial<ioBroker.AdapterOptions> | undefined) => new TimeSwitch(options);
+	module.exports = (options: Partial<utils.AdapterOptions> | undefined) => new TimeSwitch(options);
 } else {
 	// otherwise start the instance directly
 	(() => new TimeSwitch())();

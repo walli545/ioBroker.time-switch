@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BaseDailyTrigger = void 0;
 class BaseDailyTrigger {
     constructor(id, action, weekdays) {
         if (id == null) {
@@ -12,9 +13,6 @@ class BaseDailyTrigger {
         this.weekdays = weekdays;
         this.action = action;
         this.id = id;
-    }
-    trigger() {
-        this.getAction().execute();
     }
     getWeekdays() {
         return this.weekdays;

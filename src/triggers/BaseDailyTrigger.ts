@@ -20,10 +20,6 @@ export abstract class BaseDailyTrigger implements DailyTrigger {
 		this.id = id;
 	}
 
-	public trigger(): void {
-		this.getAction().execute();
-	}
-
 	public getWeekdays(): Weekday[] {
 		return this.weekdays;
 	}

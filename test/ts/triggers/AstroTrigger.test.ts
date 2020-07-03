@@ -1,76 +1,184 @@
-// import { expect } from 'chai';
-// import { AstroTime } from '../../../src/triggers/AstroTime';
-// import { AstroTrigger } from '../../../src/triggers/AstroTrigger';
-// import { Weekday } from '../../../src/triggers/Weekday';
-//
-// describe('AstroTrigger', () => {
-// 	describe('ctor and getter', () => {
-// 		it('throws when astroTime is null', () => {
-// 			expect(() => new AstroTrigger(null as any, 0, [Weekday.Monday])).to.throw();
-// 		});
-//
-// 		it('throws when shift is 601', () => {
-// 			expect(() => new AstroTrigger(AstroTime.Dawn, 601, [Weekday.Monday])).to.throw();
-// 		});
-//
-// 		it('throws when shift is -601', () => {
-// 			expect(() => new AstroTrigger(AstroTime.Dawn, -601, [Weekday.Monday])).to.throw();
-// 		});
-//
-// 		it('throws when shift is Number.POSITIVE_INFINITY', () => {
-// 			expect(() => new AstroTrigger(AstroTime.Dawn, Number.POSITIVE_INFINITY, [Weekday.Monday])).to.throw();
-// 		});
-//
-// 		it('throws when shift is Number.NEGATIVE_INFINITY', () => {
-// 			expect(() => new AstroTrigger(AstroTime.Dawn, Number.NEGATIVE_INFINITY, [Weekday.Monday])).to.throw();
-// 		});
-//
-// 		it('throws when weekdays is null', () => {
-// 			expect(() => new AstroTrigger(AstroTime.Dawn, 0, null as any)).to.throw();
-// 		});
-//
-// 		it('throws when weekdays is empty', () => {
-// 			expect(() => new AstroTrigger(AstroTime.Dawn, 0, [])).to.throw();
-// 		});
-//
-// 		it('throws when weekdays contains a duplicate', () => {
-// 			expect(() => new AstroTrigger(AstroTime.Dawn, 0, [Weekday.Monday, Weekday.Monday])).to.throw();
-// 		});
-//
-// 		it('creates with astroTime=Sunrise, shift=0, weekdays=[Monday]', () => {
-// 			const have = new AstroTrigger(AstroTime.Sunrise, 0, [Weekday.Monday]);
-// 			expect(have.getAstroTime()).to.equal(AstroTime.Sunrise);
-// 			expect(have.getShiftInMinutes()).to.equal(0);
-// 			expect(have.getWeekdays().length).to.equal(1);
-// 			expect(have.getWeekdays().includes(Weekday.Monday)).to.equal(true);
-// 		});
-//
-// 		it('creates with astroTime=Dawn, shift=600, weekdays=[all]', () => {
-// 			const have = new AstroTrigger(AstroTime.Dawn, 600, [
-// 				Weekday.Monday,
-// 				Weekday.Tuesday,
-// 				Weekday.Wednesday,
-// 				Weekday.Thursday,
-// 				Weekday.Friday,
-// 				Weekday.Saturday,
-// 				Weekday.Sunday,
-// 			]);
-// 			expect(have.getAstroTime()).to.equal(AstroTime.Dawn);
-// 			expect(have.getShiftInMinutes()).to.equal(600);
-// 			expect(have.getWeekdays().length).to.equal(7);
-// 		});
-//
-// 		it('creates with astroTime=Dawn, shift=600, weekdays=[Monday, Wednesday, Friday]', () => {
-// 			const have = new AstroTrigger(AstroTime.Night, -600, [Weekday.Monday, Weekday.Wednesday, Weekday.Friday]);
-// 			expect(have.getAstroTime()).to.equal(AstroTime.Night);
-// 			expect(have.getShiftInMinutes()).to.equal(-600);
-// 			expect(have.getWeekdays().length).to.equal(3);
-// 		});
-// 	});
-//
-// 	describe('constants', () => {
-// 		it('MAX_SHIFT is 600', () => {
-// 			expect(AstroTrigger.MAX_SHIFT).to.equal(600);
-// 		});
-// 	});
-// });
+import { expect } from 'chai';
+import * as TypeMoq from 'typemoq';
+import { AstroTime } from '../../../src/triggers/AstroTime';
+import { AstroTrigger } from '../../../src/triggers/AstroTrigger';
+import { AllWeekdays, Weekday } from '../../../src/triggers/Weekday';
+import { AstroTriggerBuilder } from '../../../src/triggers/AstroTriggerBuilder';
+import { Action } from '../../../src/actions/Action';
+
+describe('AstroTrigger', () => {
+	describe('ctor and getter', () => {
+		const actionMock = TypeMoq.Mock.ofType<Action>().object;
+
+		it('throws when id is null', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId(null as any)
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.SolarNoon)
+					.setShift(0)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when astroTime is null', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(null as any)
+					.setShift(0)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when astroTime is undefined', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(undefined as any)
+					.setShift(0)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when shift is null', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.Sunset)
+					.setShift(null as any)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when shift is undefined', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.Sunset)
+					.setShift(undefined as any)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when shift is 121', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.Sunset)
+					.setShift(121)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when shift is -121', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.Sunset)
+					.setShift(-121)
+					.setWeekdays([Weekday.Monday])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when weekdays is null', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.Sunset)
+					.setShift(0)
+					.setWeekdays(null as any)
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when weekdays is empty', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.Sunset)
+					.setShift(0)
+					.setWeekdays([])
+					.build(),
+			).to.throw();
+		});
+
+		it('throws when weekdays contains a duplicate', () => {
+			expect(() =>
+				new AstroTriggerBuilder()
+					.setId('1')
+					.setAction(actionMock)
+					.setAstroTime(AstroTime.Sunset)
+					.setShift(0)
+					.setWeekdays([Weekday.Sunday, Weekday.Sunday])
+					.build(),
+			).to.throw();
+		});
+
+		it('creates with astroTime=Sunrise, shift=0, weekdays=[Monday]', () => {
+			const have = new AstroTriggerBuilder()
+				.setId('1')
+				.setAction(actionMock)
+				.setAstroTime(AstroTime.Sunrise)
+				.setShift(0)
+				.setWeekdays([Weekday.Monday])
+				.build();
+			expect(have.getId()).to.equal('1');
+			expect(have.getAction()).to.equal(actionMock);
+			expect(have.getAstroTime()).to.equal(AstroTime.Sunrise);
+			expect(have.getShiftInMinutes()).to.equal(0);
+			expect(have.getWeekdays()).to.deep.equal([Weekday.Monday]);
+		});
+
+		it('creates with astroTime=Sunset, shift=120, weekdays=[all]', () => {
+			const have = new AstroTriggerBuilder()
+				.setId('1')
+				.setAction(actionMock)
+				.setAstroTime(AstroTime.Sunset)
+				.setShift(120)
+				.setWeekdays(AllWeekdays)
+				.build();
+			expect(have.getId()).to.equal('1');
+			expect(have.getAction()).to.equal(actionMock);
+			expect(have.getAstroTime()).to.equal(AstroTime.Sunset);
+			expect(have.getShiftInMinutes()).to.equal(120);
+			expect(have.getWeekdays()).to.deep.equal(AllWeekdays);
+		});
+
+		it('creates with astroTime=SolarNoon, shift=-120, weekdays=[Monday, Wednesday, Friday]', () => {
+			const have = new AstroTriggerBuilder()
+				.setId('8')
+				.setAction(actionMock)
+				.setAstroTime(AstroTime.SolarNoon)
+				.setShift(-120)
+				.setWeekdays([Weekday.Monday, Weekday.Wednesday, Weekday.Friday])
+				.build();
+			expect(have.getId()).to.equal('8');
+			expect(have.getAction()).to.equal(actionMock);
+			expect(have.getAstroTime()).to.equal(AstroTime.SolarNoon);
+			expect(have.getShiftInMinutes()).to.equal(-120);
+			expect(have.getWeekdays()).to.deep.equal([Weekday.Monday, Weekday.Wednesday, Weekday.Friday]);
+		});
+	});
+
+	describe('constants', () => {
+		it('MAX_SHIFT is 200', () => {
+			expect(AstroTrigger.MAX_SHIFT).to.equal(120);
+		});
+	});
+});

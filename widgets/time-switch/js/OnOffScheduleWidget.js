@@ -5,6 +5,7 @@
 			this.sr = this.createShadowRoot();
 			this.settings = null;
 			this.currentTriggers = [];
+			this.connected = false;
 		}
 
 		static get observedAttributes() {
@@ -12,13 +13,32 @@
 		}
 
 		connectedCallback() {
-			this.sr.querySelector('.button.add').addEventListener('click', this.addTimeTrigger.bind(this));
+			if (this.connected) {
+				return;
+			}
+			this.sr.querySelector('#btn-add-trigger-dropdown').addEventListener('click', e => {
+				const dropdown = this.sr.querySelector('#add-trigger-dropdown');
+				dropdown.classList.add('show');
+				e.stopImmediatePropagation();
+				window.addEventListener(
+					'click',
+					() => {
+						dropdown.classList.remove('show');
+					},
+					{ once: true },
+				);
+			});
+			this.sr.querySelector('#add-time-trigger').addEventListener('click', () => this.addTrigger('TimeTrigger'));
+			this.sr
+				.querySelector('#add-astro-trigger')
+				.addEventListener('click', () => this.addTrigger('AstroTrigger'));
 			this.sr.querySelector('.button.edit').addEventListener('click', this.onEditNameClick.bind(this));
 			this.sr.querySelector('.button.save').addEventListener('click', this.onSaveNameClick.bind(this));
 			this.sr.querySelector('button#manual-off').addEventListener('click', this.onManualClick.bind(this));
 			this.sr.querySelector('button#manual-on').addEventListener('click', this.onManualClick.bind(this));
 			this.sr.querySelector('#enabled').addEventListener('click', () => {
 				this.enabled = !this.enabled;
+				vis.binds['time-switch'].sendMessage(this.enabled ? 'enable-schedule' : 'disable-schedule', { dataId: this.settings.dataId});
 			});
 			this.sr.querySelector('#manual').addEventListener('click', () => {
 				const toggle = this.sr.querySelector('#manual');
@@ -27,6 +47,7 @@
 					target: { id: toggle.classList.contains('checked') ? 'manual-on' : 'manual-off' },
 				});
 			});
+			this.connected = true;
 		}
 
 		attributeChangedCallback(attr) {
@@ -52,10 +73,8 @@
 			const toggle = this.sr.querySelector('#enabled');
 			if (val) {
 				toggle.classList.add('checked');
-				vis.binds['time-switch'].sendMessage('enable-schedule', { dataId: this.settings.dataId});
 			} else {
 				toggle.classList.remove('checked');
-				vis.binds['time-switch'].sendMessage('disable-schedule', { dataId: this.settings.dataId});
 			}
 		}
 
@@ -176,10 +195,10 @@
 			});
 		}
 
-		addTimeTrigger() {
+		addTrigger(type) {
 			const message = {
 				dataId: this.settings.dataId,
-				triggerType: 'TimeTrigger',
+				triggerType: type,
 				actionType: 'OnOffValueAction',
 				valueType: this.settings.valueType,
 				stateIds: this.getStateIdsFromSettings(this.settings),
@@ -270,12 +289,12 @@
 						<div class="view">
 							<h1></h1>
 							<img class="button edit" src="widgets/time-switch/img/edit-24px.svg" width="28px" 
-								height="28px" title="${translateWord('editName')}"/>
+								height="28px" title="${vis.binds['time-switch'].translate('editName')}"/>
 						</div>
 						<div class="edit" style="display: none;">
 							<input type="text">
 							<img class="button save" src="widgets/time-switch/img/save-24px.svg" width="28px"
-								height="28px"title="${translateWord('saveName')}"/>
+								height="28px"title="${vis.binds['time-switch'].translate('saveName')}"/>
 						</div>
 					</div>
 					<div id="switched-oid"></div>
@@ -283,23 +302,29 @@
 					<div id="enabled" class="md-switch-container">
 						<div class="md-switch-track"></div>
 						<div class="md-switch-handle"></div>
-						<div class="md-switch-label">${translateWord('automaticSwitchingEnabled')}</div>
+						<div class="md-switch-label">${vis.binds['time-switch'].translate('automaticSwitchingEnabled')}</div>
 					</div>
 					<div class="manual-container multiple" style="display: none;">
-						<p>${translateWord('manualSwitching')}</p>
-						<button class="material-button" id="manual-on">${translateWord('allOn')}</button>
-						<button class="material-button" id="manual-off">${translateWord('allOff')}</button>
+						<p>${vis.binds['time-switch'].translate('manualSwitching')}</p>
+						<button class="material-button" id="manual-on">${vis.binds['time-switch'].translate('allOn')}</button>
+						<button class="material-button" id="manual-off">${vis.binds['time-switch'].translate('allOff')}</button>
 					</div>
 					<div class="manual-container single" style="display: none;">
 						<div id="manual" class="md-switch-container">
 							<div class="md-switch-track"></div>
 							<div class="md-switch-handle"></div>
-							<div class="md-switch-label">${translateWord('currentValue')}</div>
+							<div class="md-switch-label">${vis.binds['time-switch'].translate('currentValue')}</div>
 						</div>
 					</div>
 					<div id="add">
-						<img class="button add" src="widgets/time-switch/img/add-24px.svg" width="28px"
-							height="28px" title="${translateWord('addTrigger')}"/>
+						<div class="dropdown">
+						  <img class="button" id="btn-add-trigger-dropdown" src="widgets/time-switch/img/add-24px.svg" width="28px"
+							height="28px" title="${vis.binds['time-switch'].translate('addTrigger')}"/>
+						  <div id="add-trigger-dropdown" class="dropdown-content">
+							<div class="dropdown-btn" id="add-time-trigger">${vis.binds['time-switch'].translate('addTimeTrigger')}</div>
+							<div class="dropdown-btn" id="add-astro-trigger">${vis.binds['time-switch'].translate('addAstroTrigger')}</div>
+						  </div>
+						</div>
 					</div>
 					<div class="triggers">
 				</div>

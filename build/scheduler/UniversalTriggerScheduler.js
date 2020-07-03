@@ -1,11 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class UniversalTriggerScheduler {
+exports.UniversalTriggerScheduler = void 0;
+const TriggerScheduler_1 = require("./TriggerScheduler");
+class UniversalTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
     constructor(schedulers) {
+        super();
         this.schedulers = schedulers;
     }
     register(trigger) {
-        const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+        const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
         if (scheduler) {
             return scheduler.register(trigger);
         }
@@ -14,7 +17,7 @@ class UniversalTriggerScheduler {
         }
     }
     unregister(trigger) {
-        const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+        const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
         if (scheduler) {
             return scheduler.unregister(trigger);
         }
@@ -22,17 +25,11 @@ class UniversalTriggerScheduler {
             throw new Error(`No scheduler for trigger of type ${trigger.constructor.name} found`);
         }
     }
-    getRegistered() {
-        let registered = [];
-        this.schedulers.forEach(s => {
-            registered = registered.concat(s.getRegistered());
-        });
-        return registered;
+    destroy() {
+        this.schedulers.forEach((s) => s.destroy());
     }
-    unregisterAll() {
-        this.getRegistered().forEach(t => {
-            this.unregister(t);
-        });
+    forType() {
+        return 'Universal';
     }
 }
 exports.UniversalTriggerScheduler = UniversalTriggerScheduler;

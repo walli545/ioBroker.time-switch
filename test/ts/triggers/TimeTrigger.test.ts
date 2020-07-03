@@ -311,7 +311,7 @@ describe('TimeTrigger', () => {
 				.setAction(testAction)
 				.build();
 
-			trigger.trigger();
+			trigger.getAction().execute();
 
 			expect(executed).to.be.true;
 		});

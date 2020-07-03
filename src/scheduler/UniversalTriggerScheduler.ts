@@ -1,15 +1,16 @@
 import { TriggerScheduler } from './TriggerScheduler';
 import { Trigger } from '../triggers/Trigger';
 
-export class UniversalTriggerScheduler {
+export class UniversalTriggerScheduler extends TriggerScheduler {
 	private readonly schedulers: TriggerScheduler[];
 
 	constructor(schedulers: TriggerScheduler[]) {
+		super();
 		this.schedulers = schedulers;
 	}
 
 	public register(trigger: Trigger): void {
-		const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+		const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
 		if (scheduler) {
 			return scheduler.register(trigger);
 		} else {
@@ -18,7 +19,7 @@ export class UniversalTriggerScheduler {
 	}
 
 	public unregister(trigger: Trigger): void {
-		const scheduler = this.schedulers.find(s => s.forType() === trigger.constructor.name);
+		const scheduler = this.schedulers.find((s) => s.forType() === trigger.constructor.name);
 		if (scheduler) {
 			return scheduler.unregister(trigger);
 		} else {
@@ -26,17 +27,11 @@ export class UniversalTriggerScheduler {
 		}
 	}
 
-	public getRegistered(): Trigger[] {
-		let registered: Trigger[] = [];
-		this.schedulers.forEach(s => {
-			registered = registered.concat(s.getRegistered());
-		});
-		return registered;
+	public destroy(): void {
+		this.schedulers.forEach((s) => s.destroy());
 	}
 
-	public unregisterAll(): void {
-		this.getRegistered().forEach(t => {
-			this.unregister(t);
-		});
+	public forType(): string {
+		return 'Universal';
 	}
 }

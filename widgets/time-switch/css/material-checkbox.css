@@ -7,8 +7,6 @@
 	z-index: 0;
 	position: relative;
 	display: inline-block;
-	color: rgba(256, 256, 256, 0.87);
-	font-family: var(--pure-material-font, 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system);
 	font-size: 16px;
 	line-height: 1.5;
 }
@@ -76,18 +74,18 @@
 /* Checked, Indeterminate */
 .pure-material-checkbox > input:checked,
 .pure-material-checkbox > input:indeterminate {
-	background-color: #337ab7;
+	background-color: var(--ts-widget-primary-color, #337ab7);
 }
 
 .pure-material-checkbox > input:checked + span::before,
 .pure-material-checkbox > input:indeterminate + span::before {
-	border-color: #337ab7;
-	background-color: #337ab7;
+	border-color: var(--ts-widget-primary-color, #337ab7);
+	background-color: var(--ts-widget-primary-color, #337ab7);
 }
 
 .pure-material-checkbox > input:checked + span::after,
 .pure-material-checkbox > input:indeterminate + span::after {
-	border-color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
+	border-color: var(--ts-widget-btn-fg-color, #ffffff);
 }
 
 .pure-material-checkbox > input:indeterminate + span::after {
@@ -116,7 +114,7 @@
 }
 
 .pure-material-checkbox > input:active + span::before {
-	border-color: #337ab7;
+	border-color: var(--ts-widget-primary-color, #337ab7);
 }
 
 .pure-material-checkbox > input:checked:active + span::before {

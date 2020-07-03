@@ -1,7 +1,7 @@
 /*
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.0.0"
+	version: "2.1.0"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 */
@@ -9,22 +9,25 @@
 
 // add translations for edit mode
 const iobSystemDic = systemDictionary;
+let timeSwitchDic;
 $.get('../time-switch.admin/words.js', function(script) {
 	let translation = script.substring(script.indexOf('{'), script.length);
 	translation = translation.substring(0, translation.lastIndexOf(';'));
+	timeSwitchDic = JSON.parse(translation);
 	$.extend(systemDictionary, iobSystemDic);
-	$.extend(systemDictionary, JSON.parse(translation));
+	$.extend(systemDictionary, timeSwitchDic);
 });
 
 // export vis binds for widget
 vis.binds['time-switch'] = {
-	version: '2.0.0',
+	version: '2.1.0',
 	showVersion: showVersion,
 	createOnOffWidget: createOnOffWidget,
 	onOffScheduleWidgets: {},
 	onDataIdChange: onDataIdChange,
 	onStateIdChange: onStateIdChange,
 	sendMessage: sendMessage,
+	translate: translate,
 };
 vis.binds['time-switch'].showVersion();
 
@@ -36,6 +39,10 @@ function showVersion() {
 
 function sendMessage(cmd, data) {
 	servConn._socket.emit('sendTo', 'time-switch', cmd, data);
+}
+
+function translate(word) {
+	return translateWord(word, systemLang, timeSwitchDic);
 }
 
 function createOnOffWidget(widgetId, view, data, style) {
@@ -54,6 +61,8 @@ function createOnOffWidget(widgetId, view, data, style) {
 	}
 	const element = document.createElement('app-on-off-schedule-widget');
 	element.setAttribute('widgetid', widgetId);
+	element.style.setProperty('--ts-widget-astro-icon-display', data.useAstroIcons ? 'inline' : 'none');
+	element.style.setProperty('--ts-widget-astro-text-display', data.useAstroIcons ? 'none' : 'inline');
 	widgetElement.appendChild(element);
 }
 
@@ -90,7 +99,7 @@ function validateOnOffWidgetSettings(widgetElement, data) {
 
 function showWarningInWidget(widgetElement, warning) {
 	const p = document.createElement('p');
-	p.textContent = translateWord(warning);
+	p.textContent = vis.binds['time-switch'].translate(warning);
 	while (widgetElement.firstChild) {
 		widgetElement.removeChild(widgetElement.firstChild);
 	}

@@ -1,11 +1,11 @@
 <!--
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.0.0"
+	version: "2.1.0"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 
-	Change counter: 12
+	Change counter: 19
 -->
 <!-- here you can include so many css as you want -->
 <link rel="stylesheet" href="widgets/time-switch/css/style.css" />
@@ -17,6 +17,7 @@
 <script src="widgets/time-switch/js/OnOffScheduleWidget.js"></script>
 <script src="widgets/time-switch/js/TriggerWithAction.js"></script>
 <script src="widgets/time-switch/js/TimeTrigger.js"></script>
+<script src="widgets/time-switch/js/AstroTrigger.js"></script>
 <script src="widgets/time-switch/js/Weekdays.js"></script>
 <script src="widgets/time-switch/js/OnOffStateAction.js"></script>
 <script type="module" src="widgets/time-switch/js/time-switch.js"></script>
@@ -117,6 +118,7 @@
 			dataId/id/onDataIdChange;
 			showId[true]/checkbox;
 			showManualSwitch[true]/checkbox;
+			useAstroIcons[false]/checkbox;
 			valueType[boolean]/select,boolean,string,number/onValueTypeChange;
 			offValue/string;
 			onValue/string;

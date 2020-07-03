@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.OnOffScheduleSerializer = void 0;
 const OnOffSchedule_1 = require("../schedules/OnOffSchedule");
 const OnOffStateAction_1 = require("../actions/OnOffStateAction");
 const ActionReferenceSerializer_1 = require("./ActionReferenceSerializer");
@@ -38,7 +39,7 @@ class OnOffScheduleSerializer {
             offAction: JSON.parse(this.actionSerializer.serialize(schedule.getOffAction())),
         };
         const oldActionSerializer = this.replaceActionSerializerWithReference(schedule);
-        json.triggers = schedule.getTriggers().map(t => JSON.parse(this.triggerSerializer.serialize(t)));
+        json.triggers = schedule.getTriggers().map((t) => JSON.parse(this.triggerSerializer.serialize(t)));
         this.actionSerializer.replaceSerializer(oldActionSerializer);
         return JSON.stringify(json);
     }

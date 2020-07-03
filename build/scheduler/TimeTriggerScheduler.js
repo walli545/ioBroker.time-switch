@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TimeTriggerScheduler = void 0;
 const node_schedule_1 = require("node-schedule");
 const TimeTrigger_1 = require("../triggers/TimeTrigger");
 const TriggerScheduler_1 = require("./TriggerScheduler");
@@ -16,7 +17,7 @@ class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         if (this.getAssociatedJob(trigger)) {
             throw new Error('Trigger is already registered.');
         }
-        (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Scheduling trigger at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`);
+        (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Scheduling trigger ${trigger.getId()} at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`);
         const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
             var _a;
             (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Executing trigger with id ${trigger.getId()}`);
@@ -34,14 +35,14 @@ class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
             throw new Error('Trigger is not registered.');
         }
     }
-    getRegistered() {
-        return this.registered.map(r => r[0]);
+    destroy() {
+        this.registered.forEach((r) => this.unregister(r[0]));
     }
     forType() {
         return TimeTrigger_1.TimeTrigger.prototype.constructor.name;
     }
     getAssociatedJob(trigger) {
-        const entry = this.registered.find(r => r[0] === trigger);
+        const entry = this.registered.find((r) => r[0] === trigger);
         if (entry) {
             return entry[1];
         }
@@ -50,7 +51,7 @@ class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         }
     }
     removeTrigger(trigger) {
-        this.registered = this.registered.filter(r => r[0] !== trigger);
+        this.registered = this.registered.filter((r) => r[0] !== trigger);
     }
     createRecurrenceRule(trigger) {
         const rule = new node_schedule_1.RecurrenceRule();

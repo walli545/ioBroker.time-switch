@@ -1,7 +1,8 @@
 import { Trigger } from '../triggers/Trigger';
 import { UniversalTriggerScheduler } from '../scheduler/UniversalTriggerScheduler';
+import { Destroyable } from '../Destroyable';
 
-export abstract class Schedule {
+export abstract class Schedule implements Destroyable {
 	private enabled = false;
 	private name = 'New Schedule';
 	private triggers: Trigger[] = [];
@@ -17,9 +18,9 @@ export abstract class Schedule {
 	public setEnabled(enabled: boolean): void {
 		if (enabled !== this.enabled) {
 			if (enabled) {
-				this.getTriggers().forEach(t => this.triggerScheduler.register(t));
+				this.getTriggers().forEach((t) => this.triggerScheduler.register(t));
 			} else {
-				this.triggerScheduler.unregisterAll();
+				this.triggerScheduler.destroy();
 			}
 			this.enabled = enabled;
 		}
@@ -56,7 +57,7 @@ export abstract class Schedule {
 	}
 
 	public updateTrigger(trigger: Trigger): void {
-		const index = this.getTriggers().findIndex(t => t.getId() === trigger.getId());
+		const index = this.getTriggers().findIndex((t) => t.getId() === trigger.getId());
 		if (index == -1) {
 			throw new Error(`Cannot update trigger, trigger id ${trigger.getId()} not found`);
 		} else {
@@ -69,7 +70,7 @@ export abstract class Schedule {
 	}
 
 	public removeTrigger(triggerId: string): void {
-		const trigger = this.triggers.find(t => t.getId() === triggerId);
+		const trigger = this.triggers.find((t) => t.getId() === triggerId);
 		if (trigger) {
 			this.removeTriggerAndUnregister(trigger);
 		} else {
@@ -77,9 +78,9 @@ export abstract class Schedule {
 		}
 	}
 
-	public removeAllTriggers(): void {
+	public destroy(): void {
 		if (this.isEnabled()) {
-			this.triggerScheduler.unregisterAll();
+			this.triggerScheduler.destroy();
 		}
 		this.triggers = [];
 	}
@@ -88,10 +89,10 @@ export abstract class Schedule {
 		if (this.isEnabled()) {
 			this.triggerScheduler.unregister(trigger);
 		}
-		this.triggers = this.triggers.filter(t => t.getId() !== trigger.getId());
+		this.triggers = this.triggers.filter((t) => t.getId() !== trigger.getId());
 	}
 
 	private findTriggerById(id: string): Trigger | undefined {
-		return this.getTriggers().find(t => t.getId() === id);
+		return this.getTriggers().find((t) => t.getId() === id);
 	}
 }

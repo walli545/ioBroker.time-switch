@@ -4,7 +4,7 @@
 			super();
 			this.sr = this.createShadowRoot();
 			this.weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(s =>
-				translateWord(s),
+				vis.binds['time-switch'].translate(s),
 			);
 			this.weekdaysShort = this.weekdays.map(s => s.substr(0, 2).toUpperCase());
 			this.addWeekdayElements();

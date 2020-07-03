@@ -1,6 +1,6 @@
 .view {
 	display: block;
-	color: rgb(93, 93, 93);
+	color: var(--ts-widget-weekdays-disabled-fg-color, rgb(93, 93, 93));
 	width: 100%;
 	margin-top: 20px;
 }
@@ -9,7 +9,7 @@
 	font-weight: 500;
 	margin-left: 3px;
 	margin-right: 3px;
-	font-size: 23px;
+	font-size: var(--ts-widget-weekdays-font-size, 23px);
 }
 
 .view span:first-child {
@@ -17,7 +17,7 @@
 }
 
 .view span.active {
-	color: white;
+	color: var(--ts-widget-weekdays-enabled-fg-color, #ffffff);
 }
 
 .edit {

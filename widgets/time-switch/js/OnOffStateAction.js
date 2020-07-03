@@ -43,7 +43,7 @@
 
 		onValueChanged() {
 			const newValue = this.value;
-			const text = translateWord(newValue ? 'on' : 'off').toUpperCase();
+			const text = vis.binds['time-switch'].translate(newValue ? 'on' : 'off').toUpperCase();
 			this.sr.querySelector('.view .value').textContent = text;
 			this.sr.querySelector(`#radio-${newValue ? 'on' : 'off'}`).checked = true;
 		}
@@ -73,11 +73,11 @@
 				<div class="container edit" style="display: none">
                     <div class="md-radio md-radio-inline">
 						<input id="radio-on" type="radio" name="switched-value-group">
-						<label for="radio-on">${translateWord('on')}</label>
+						<label for="radio-on">${vis.binds['time-switch'].translate('on')}</label>
 					</div>
 					<div class="md-radio md-radio-inline">
 						<input id="radio-off" type="radio" name="switched-value-group">
-						<label for="radio-off">${translateWord('off')}</label>
+						<label for="radio-off">${vis.binds['time-switch'].translate('off')}</label>
 					</div>
 				</div>
 			`;
