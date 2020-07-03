@@ -40,7 +40,6 @@ class TimeSwitch extends utils.Adapter {
             new AstroTriggerSerializer_1.AstroTriggerSerializer(this.actionSerializer),
         ]);
         this.on('ready', this.onReady.bind(this));
-        this.on('objectChange', this.onObjectChange.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
@@ -102,19 +101,6 @@ class TimeSwitch extends utils.Adapter {
         }
     }
     /**
-     * Is called if a subscribed object changes
-     */
-    onObjectChange(id, obj) {
-        if (obj) {
-            // The object was changed
-            this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-        }
-        else {
-            // The object was deleted
-            this.log.info(`object ${id} deleted`);
-        }
-    }
-    /**
      * Is called if a subscribed state changes
      */
     onStateChange(id, state) {
@@ -124,8 +110,8 @@ class TimeSwitch extends utils.Adapter {
                 this.log.debug(`state ${id} deleted`);
                 return;
             }
-            if (state.from === 'system.adapter.time-switch.0') {
-                this.log.debug(`change from adapter itself for ${id}`);
+            if (state.ack) {
+                this.log.debug(`Ignoring state change for ${id} with ack=true`);
                 return;
             }
             this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
@@ -140,6 +126,8 @@ class TimeSwitch extends utils.Adapter {
                     const scheduleData = (_a = (yield this.getStateAsync(dataId))) === null || _a === void 0 ? void 0 : _a.val;
                     yield this.onScheduleChange(dataId, scheduleData);
                 }
+                // Confirm state change with ack=true
+                this.stateService.setState(id, state.val, true);
             }
         });
     }

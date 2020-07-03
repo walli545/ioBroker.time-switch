@@ -33,6 +33,18 @@ describe('IoBrokerStateService', () => {
 		it('sets state in adapter', () => {
 			const sut = new IoBrokerStateService(adapterMock.object);
 			sut.setState('test.id.123', 'new value');
+			adapterMock.verify(x => x.setState('test.id.123', 'new value', true), TypeMoq.Times.once());
+		});
+
+		it('sets state in adapter with ack=true', () => {
+			const sut = new IoBrokerStateService(adapterMock.object);
+			sut.setState('test.id.123', 'new value', true);
+			adapterMock.verify(x => x.setState('test.id.123', 'new value', true), TypeMoq.Times.once());
+		});
+
+		it('sets state in adapter with ack=false', () => {
+			const sut = new IoBrokerStateService(adapterMock.object);
+			sut.setState('test.id.123', 'new value', false);
 			adapterMock.verify(x => x.setState('test.id.123', 'new value', false), TypeMoq.Times.once());
 		});
 	});

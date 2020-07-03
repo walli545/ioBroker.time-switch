@@ -11,11 +11,11 @@ export class IoBrokerStateService implements StateService {
 		this.adapter = adapter;
 	}
 
-	setState(id: string, value: string | number | boolean): void {
+	setState(id: string, value: string | number | boolean, ack = true): void {
 		if (id == null || id.length === 0) {
 			throw new Error('id may not be null or empty.');
 		}
-		this.adapter.setState(id, value, false);
+		this.adapter.setState(id, value, ack);
 	}
 
 	setForeignState(id: string, value: string | number | boolean): void {

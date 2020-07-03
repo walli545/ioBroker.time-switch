@@ -53,7 +53,6 @@ export class TimeSwitch extends utils.Adapter {
 			name: 'time-switch',
 		});
 		this.on('ready', this.onReady.bind(this));
-		this.on('objectChange', this.onObjectChange.bind(this));
 		this.on('stateChange', this.onStateChange.bind(this));
 		this.on('message', this.onMessage.bind(this));
 		this.on('unload', this.onUnload.bind(this));
@@ -115,19 +114,6 @@ export class TimeSwitch extends utils.Adapter {
 	}
 
 	/**
-	 * Is called if a subscribed object changes
-	 */
-	private onObjectChange(id: string, obj: ioBroker.Object | null | undefined): void {
-		if (obj) {
-			// The object was changed
-			this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-		} else {
-			// The object was deleted
-			this.log.info(`object ${id} deleted`);
-		}
-	}
-
-	/**
 	 * Is called if a subscribed state changes
 	 */
 	private async onStateChange(id: string, state: ioBroker.State | null | undefined): Promise<void> {
@@ -136,8 +122,8 @@ export class TimeSwitch extends utils.Adapter {
 			return;
 		}
 
-		if (state.from === 'system.adapter.time-switch.0') {
-			this.log.debug(`change from adapter itself for ${id}`);
+		if (state.ack) {
+			this.log.debug(`Ignoring state change for ${id} with ack=true`);
 			return;
 		}
 
@@ -152,6 +138,8 @@ export class TimeSwitch extends utils.Adapter {
 				const scheduleData = (await this.getStateAsync(dataId))?.val;
 				await this.onScheduleChange(dataId, scheduleData as string);
 			}
+			// Confirm state change with ack=true
+			this.stateService.setState(id, state.val as string, true);
 		}
 	}
 
