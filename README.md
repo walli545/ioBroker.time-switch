@@ -17,7 +17,8 @@
 This adapter allows the user to switch devices on and off using time schedules. 
 The schedules can be fully configured by a vis widget.
 One schedule switches one or more ioBroker states and consists of one or more triggers that define when and how the state should be switched. 
-It is possible to configure at which time and on which weekdays the trigger should be triggered. There can be custom on/off values also.
+It is possible to configure at which time and on which weekdays the trigger should be triggered. Astro triggers can also be created.
+There can be custom on/off values also.
 In the widget the schedule can be disabled temporarily and the switched state can be controlled manually.
 
 ![Preview](widgets/time-switch/img/prev/prev-device-schedule.jpg)
@@ -34,6 +35,13 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
 - Switching of arbitrary values
 
 ## Changelog
+
+### 2.1.0
+* (walli545)
+    * Added astro triggers which can trigger on sunrise, noon, sunset with +- 120 min offset (#30)
+    * Added custom styling via css custom properties
+    * Fixed a bug which lead to undefined button behaviour when the widget is used together with material design theme by Uhula (#62)
+    * Changed state listening to be a be ack based and removed unused on object change listener (#6)
 
 ### 2.0.0
 **Attention**: Due to breaking changes in the schedule data structure, schedules created with versions 1.x are not compatible with 2.x.
