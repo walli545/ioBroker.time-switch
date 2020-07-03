@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "time-switch",
-        "version": "2.1.0-pre.4",
+        "version": "2.1.0",
         "news": {
+            "2.1.0": {
+                "en": "Astro trigger, custom designs with css properties",
+                "de": "Astro Trigger, Eigene Designs mit CSS custom properties",
+                "ru": "Astro триггер, нестандартные конструкции со свойствами CSS",
+                "pt": "Astro trigger, designs personalizados com propriedades css",
+                "nl": "Astro trigger, aangepaste ontwerpen met css-eigenschappen",
+                "fr": "Déclenchement astro, conceptions personnalisées avec propriétés CSS",
+                "it": "Astro trigger, design personalizzati con proprietà css",
+                "es": "Astro trigger, diseños personalizados con propiedades css",
+                "pl": "Spust Astro, niestandardowe projekty z właściwościami css",
+                "zh-cn": "Astro触发器，具有CSS属性的自定义设计"
+            },
             "2.0.0": {
                 "en": "Breaking changes, Groups, configuration of switched value type, fixed widget not working on Safari",
                 "de": "Breaking changes, Gruppen, Konfiguration des geschaltenen Wert-Typs, Widget funktioniert nun in Safari",
