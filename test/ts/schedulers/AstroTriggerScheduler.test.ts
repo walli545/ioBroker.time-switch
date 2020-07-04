@@ -47,7 +47,7 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
 			verifyRegisterTimeTrigger(
 				sunriseDate.getHours(),
 				sunriseDate.getMinutes(),
@@ -71,7 +71,7 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
 			sunriseDate.setMinutes(sunriseDate.getMinutes() + 20);
 			verifyRegisterTimeTrigger(
 				sunriseDate.getHours(),
@@ -96,7 +96,7 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
 			sunriseDate.setMinutes(sunriseDate.getMinutes() - 33);
 			verifyRegisterTimeTrigger(
 				sunriseDate.getHours(),
@@ -120,11 +120,11 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 			timeTriggerScheduler.verify(
-				s =>
+				(s) =>
 					s.register(
-						It.is<TimeTrigger>(t => {
+						It.is<TimeTrigger>((t) => {
 							t.getAction().execute();
-							actionMock.verify(a => a.execute(), Times.once());
+							actionMock.verify((a) => a.execute(), Times.once());
 							return true;
 						}),
 					),
@@ -147,8 +147,8 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.never());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			timeTriggerScheduler.verify((s) => s.register(It.isAny()), Times.never());
 		});
 
 		it('should not schedule trigger if astro time is in the past (due to negative shift)', () => {
@@ -166,8 +166,8 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.never());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			timeTriggerScheduler.verify((s) => s.register(It.isAny()), Times.never());
 		});
 
 		it('should not schedule trigger if today is not in weekdays', () => {
@@ -180,13 +180,13 @@ describe('AstroTriggerScheduler', () => {
 					.setId('1')
 					.setAstroTime(AstroTime.Sunrise)
 					.setShift(0)
-					.setWeekdays(AllWeekdays.filter(w => w !== sunriseDate.getDay()))
+					.setWeekdays(AllWeekdays.filter((w) => w !== sunriseDate.getDay()))
 					.setAction(actionMock.object)
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.never());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			timeTriggerScheduler.verify((s) => s.register(It.isAny()), Times.never());
 		});
 
 		it('throws when trigger is already registered', () => {
@@ -232,9 +232,9 @@ describe('AstroTriggerScheduler', () => {
 			sut.unregister(trigger);
 
 			timeTriggerScheduler.verify(
-				t =>
+				(t) =>
 					t.unregister(
-						It.is<TimeTrigger>(t => {
+						It.is<TimeTrigger>((t) => {
 							expect(t.getHour()).to.equal(sunriseDate.getHours());
 							expect(t.getMinute()).to.equal(sunriseDate.getMinutes());
 							expect(t.getWeekdays()).to.deep.equal([sunriseDate.getDay()]);
@@ -244,7 +244,7 @@ describe('AstroTriggerScheduler', () => {
 					),
 				Times.once(),
 			);
-			timeTriggerScheduler.verify(t => t.unregister(It.isAny()), Times.once());
+			timeTriggerScheduler.verify((t) => t.unregister(It.isAny()), Times.once());
 		});
 
 		it('should keep other scheduled triggers', () => {
@@ -275,9 +275,9 @@ describe('AstroTriggerScheduler', () => {
 			sut.unregister(trigger1);
 
 			timeTriggerScheduler.verify(
-				t =>
+				(t) =>
 					t.unregister(
-						It.is<TimeTrigger>(t => {
+						It.is<TimeTrigger>((t) => {
 							expect(t.getHour()).to.equal(sunriseDate.getHours());
 							expect(t.getMinute()).to.equal(sunriseDate.getMinutes());
 							expect(t.getWeekdays()).to.deep.equal([sunriseDate.getDay()]);
@@ -287,7 +287,7 @@ describe('AstroTriggerScheduler', () => {
 					),
 				Times.once(),
 			);
-			timeTriggerScheduler.verify(t => t.unregister(It.isAny()), Times.once());
+			timeTriggerScheduler.verify((t) => t.unregister(It.isAny()), Times.once());
 		});
 
 		it('should not unregister time trigger when not scheduled for today', () => {
@@ -307,14 +307,14 @@ describe('AstroTriggerScheduler', () => {
 
 			sut.unregister(trigger);
 
-			timeTriggerScheduler.verify(t => t.unregister(It.isAny()), Times.never());
+			timeTriggerScheduler.verify((t) => t.unregister(It.isAny()), Times.never());
 		});
 	});
 
 	describe('destroy', () => {
 		it('should destroy time trigger scheduler', () => {
 			sut.destroy();
-			timeTriggerScheduler.verify(s => s.destroy(), Times.once());
+			timeTriggerScheduler.verify((s) => s.destroy(), Times.once());
 		});
 	});
 
@@ -323,9 +323,9 @@ describe('AstroTriggerScheduler', () => {
 			timeTriggerScheduler.reset();
 			sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
 			timeTriggerScheduler.verify(
-				s =>
+				(s) =>
 					s.register(
-						It.is<TimeTrigger>(t => {
+						It.is<TimeTrigger>((t) => {
 							expect(t.getHour()).to.equal(0);
 							expect(t.getMinute()).to.equal(0);
 							expect(t.getWeekdays()).to.deep.equal(AllWeekdays);
@@ -335,13 +335,13 @@ describe('AstroTriggerScheduler', () => {
 					),
 				Times.once(),
 			);
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.once());
+			timeTriggerScheduler.verify((s) => s.register(It.isAny()), Times.once());
 		});
 
 		it('should unregister scheduled triggers from yesterday', () => {
 			let rescheduleAction: Action;
 			timeTriggerScheduler
-				.setup(s => s.register(It.is(t => t.getId() === 'AstroTriggerScheduler-Rescheduler')))
+				.setup((s) => s.register(It.is((t) => t.getId() === 'AstroTriggerScheduler-Rescheduler')))
 				.callback((t: TimeTrigger) => {
 					if (!rescheduleAction) {
 						rescheduleAction = t.getAction();
@@ -372,33 +372,33 @@ describe('AstroTriggerScheduler', () => {
 				[sunriseDate.getDay()],
 				`TimeTriggerForAstroTrigger:${trigger.getId()}`,
 			);
-			timeTriggerScheduler.verify(s => s.unregister(It.isAny()), Times.once());
+			timeTriggerScheduler.verify((s) => s.unregister(It.isAny()), Times.once());
 		});
 	});
 
 	function setupGetTimes(result: GetTimesResult) {
 		getTimesMock
-			.setup(g =>
+			.setup((g) =>
 				g(
-					It.is<Date>(d => verifyDate(d, new Date())),
+					It.is<Date>((d) => verifyDate(d, new Date())),
 					It.isValue(coordinate.getLatitude()),
 					It.isValue(coordinate.getLongitude()),
 				),
 			)
-			.returns(_ => result);
+			.returns((_) => result);
 	}
 
 	function verifyRegisterTimeTrigger(hour: number, minute: number, weekdays: Weekday[], id: string) {
 		console.log(`wanting to verify: hour(${hour}) minute(${minute} weekdays(${weekdays}) id(${id})`);
 		timeTriggerScheduler.verify(
-			s =>
+			(s) =>
 				s.register(
-					It.is<TimeTrigger>(t => {
+					It.is<TimeTrigger>((t) => {
 						return (
 							t.getHour() === hour &&
 							t.getMinute() === minute &&
 							t.getWeekdays().length === weekdays.length &&
-							t.getWeekdays().every(w => weekdays.indexOf(w) !== -1) &&
+							t.getWeekdays().every((w) => weekdays.indexOf(w) !== -1) &&
 							t.getId() === id
 						);
 					}),
@@ -409,14 +409,14 @@ describe('AstroTriggerScheduler', () => {
 
 	function verifyUnRegisterTimeTrigger(hour: number, minute: number, weekdays: Weekday[], id: string) {
 		timeTriggerScheduler.verify(
-			s =>
+			(s) =>
 				s.unregister(
-					It.is<TimeTrigger>(t => {
+					It.is<TimeTrigger>((t) => {
 						return (
 							t.getHour() === hour &&
 							t.getMinute() === minute &&
 							t.getWeekdays().length === weekdays.length &&
-							t.getWeekdays().every(w => weekdays.indexOf(w) !== -1) &&
+							t.getWeekdays().every((w) => weekdays.indexOf(w) !== -1) &&
 							t.getId() === id
 						);
 					}),
