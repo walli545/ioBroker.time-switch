@@ -443,6 +443,7 @@ describe('AstroTriggerScheduler', () => {
 	}
 
 	function verifyRegisterTimeTrigger(hour: number, minute: number, weekdays: Weekday[], id: string) {
+		console.log(`wanting to verify: hour(${hour}) minute(${minute} weekdays(${weekdays}) id(${id})`);
 		timeTriggerScheduler.verify(
 			s =>
 				s.register(
