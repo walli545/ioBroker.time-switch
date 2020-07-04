@@ -34,7 +34,7 @@ describe('AstroTriggerScheduler', () => {
 	describe('register', () => {
 		it('should schedule trigger if astro time is in the future', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 
 			sut.register(
@@ -58,7 +58,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should schedule trigger if astro time is in the future (with positive shift)', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: new Date(sunriseDate) } as any) as GetTimesResult);
 
 			sut.register(
@@ -83,7 +83,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should schedule trigger if astro time is in the future (with negative shift)', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 35);
 			setupGetTimes(({ sunrise: new Date(sunriseDate) } as any) as GetTimesResult);
 
 			sut.register(
@@ -108,7 +108,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should call actions execute() when scheduled time trigger is executed', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: new Date(sunriseDate) } as any) as GetTimesResult);
 
 			sut.register(
@@ -134,7 +134,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should not schedule trigger if astro time is in the past', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() - 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() - 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 
 			sut.register(
@@ -153,7 +153,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should not schedule trigger if astro time is in the past (due to negative shift)', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 
 			sut.register(
@@ -172,7 +172,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should not schedule trigger if today is not in weekdays', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() - 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() - 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 
 			sut.register(
@@ -216,7 +216,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should unregister scheduled time trigger for today', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 			const trigger = new AstroTriggerBuilder()
 				.setId('1')
@@ -249,9 +249,9 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should keep other scheduled triggers', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			const sunsetDate = new Date(sunriseDate);
-			sunsetDate.setHours(sunsetDate.getMinutes() + 1);
+			sunsetDate.setMinutes(sunsetDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: sunriseDate, sunset: sunsetDate } as any) as GetTimesResult);
 			const trigger1 = new AstroTriggerBuilder()
 				.setId('1')
@@ -292,7 +292,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should not unregister time trigger when not scheduled for today', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() - 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() - 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 			const trigger = new AstroTriggerBuilder()
 				.setId('1')
@@ -329,7 +329,7 @@ describe('AstroTriggerScheduler', () => {
 							expect(t.getHour()).to.equal(0);
 							expect(t.getMinute()).to.equal(0);
 							expect(t.getWeekdays()).to.deep.equal(AllWeekdays);
-							expect(t.getId().startsWith('AstroTriggerScheduler-Rescheduler-')).to.be.true;
+							expect(t.getId()).to.equal('AstroTriggerScheduler-Rescheduler');
 							return true;
 						}),
 					),
@@ -338,96 +338,42 @@ describe('AstroTriggerScheduler', () => {
 			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.once());
 		});
 
-		it('should schedule registered triggers for next day', () => {
-			let rescheduleAction: Action;
-			timeTriggerScheduler
-				.setup(s => s.register(It.isAny()))
-				.callback((t: TimeTrigger) => {
-					if (!rescheduleAction) {
-						rescheduleAction = t.getAction();
-					}
-				});
-			sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
-			const triggers = registerEveryAstroTrigger();
-			timeTriggerScheduler.reset();
-
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			rescheduleAction.execute();
-
-			triggers.forEach(a => {
-				verifyRegisterTimeTrigger(
-					a[1].getHours(),
-					a[1].getMinutes(),
-					[a[1].getDay()],
-					`TimeTriggerForAstroTrigger:${a[0].getId()}`,
-				);
-			});
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.exactly(3));
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.exactly(6));
-		});
-
 		it('should unregister scheduled triggers from yesterday', () => {
 			let rescheduleAction: Action;
 			timeTriggerScheduler
-				.setup(s => s.register(It.isAny()))
+				.setup(s => s.register(It.is(t => t.getId() === 'AstroTriggerScheduler-Rescheduler')))
 				.callback((t: TimeTrigger) => {
 					if (!rescheduleAction) {
 						rescheduleAction = t.getAction();
 					}
 				});
+			const sunriseDate = new Date();
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
+			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
+			const trigger = new AstroTriggerBuilder()
+				.setId('1')
+				.setAstroTime(AstroTime.Sunrise)
+				.setShift(0)
+				.setWeekdays(AllWeekdays)
+				.setAction(actionMock.object)
+				.build();
+
 			sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
-			const triggers = registerEveryAstroTrigger();
+			sut.register(trigger);
 			timeTriggerScheduler.reset();
 
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			rescheduleAction.execute();
 
-			triggers.forEach(a => {
-				verifyUnRegisterTimeTrigger(
-					a[1].getHours(),
-					a[1].getMinutes(),
-					[a[1].getDay()],
-					`TimeTriggerForAstroTrigger:${a[0].getId()}`,
-				);
-			});
-			timeTriggerScheduler.verify(s => s.unregister(It.isAny()), Times.exactly(3));
+			verifyUnRegisterTimeTrigger(
+				sunriseDate.getHours(),
+				sunriseDate.getMinutes(),
+				[sunriseDate.getDay()],
+				`TimeTriggerForAstroTrigger:${trigger.getId()}`,
+			);
+			timeTriggerScheduler.verify(s => s.unregister(It.isAny()), Times.once());
 		});
-
-		function registerEveryAstroTrigger(): [AstroTrigger, Date][] {
-			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
-			const noonDate = new Date(sunriseDate);
-			noonDate.setHours(noonDate.getMinutes() + 1);
-			const sunsetDate = new Date(noonDate);
-			sunsetDate.setHours(sunsetDate.getMinutes() + 1);
-			setupGetTimes(({ sunrise: sunriseDate, sunset: sunsetDate, solarNoon: noonDate } as any) as GetTimesResult);
-			const builder = new AstroTriggerBuilder()
-				.setShift(0)
-				.setWeekdays(AllWeekdays)
-				.setAction(actionMock.object);
-			const trigger1 = builder
-				.setId('1')
-				.setAstroTime(AstroTime.Sunrise)
-				.build();
-			const trigger2 = builder
-				.setId('2')
-				.setAstroTime(AstroTime.Sunset)
-				.build();
-			const trigger3 = builder
-				.setId('3')
-				.setAstroTime(AstroTime.SolarNoon)
-				.build();
-			sut.register(trigger1);
-			sut.register(trigger2);
-			sut.register(trigger3);
-			return [
-				[trigger1, sunriseDate],
-				[trigger2, sunsetDate],
-				[trigger3, noonDate],
-			];
-		}
 	});
 
 	function setupGetTimes(result: GetTimesResult) {
