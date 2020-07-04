@@ -29,8 +29,7 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
      
 ## Possible features in the future
 
-- Translations for schedule widget
-- Astro actions (switch on sunrise, etc.)
+- Countdown trigger
 - Conditional actions
 - Switching of arbitrary values
 
