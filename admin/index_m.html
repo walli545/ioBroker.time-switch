@@ -18,7 +18,7 @@
 
 	<script type="text/javascript">
 		let g_onChange;
-		let schedules;
+		let schedules = {onOff: []};
 
 		// This will be called by the admin adapter when the settings page loads
 		function load(settings, onChange) {
