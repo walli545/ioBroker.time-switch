@@ -5,14 +5,12 @@ class UniversalSerializer {
     constructor(serializers) {
         this.serializers = serializers;
     }
-    replaceSerializer(serializer) {
-        const existing = this.serializers.find((s) => s.getType() === serializer.getType());
-        if (existing) {
-            this.serializers = this.serializers.filter((s) => s != existing);
-            this.serializers.push(serializer);
-            return existing;
+    useSerializer(serializer) {
+        if (serializer == null) {
+            throw new Error('Serializer to use may not be null/undefined');
         }
-        throw new Error('Cannot replace non existing serializer');
+        this.serializers = this.serializers.filter((s) => s.getType() !== serializer.getType());
+        this.serializers.push(serializer);
     }
     serialize(object) {
         const serializer = this.serializers.find((s) => s.getType() === object.constructor.name);

@@ -15,7 +15,7 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         this.registered = [];
         this.scheduled = [];
         this.rescheduleTrigger = new TimeTriggerBuilder_1.TimeTriggerBuilder()
-            .setId(`AstroTriggerScheduler-Rescheduler-${new Date().toTimeString()}`)
+            .setId(`AstroTriggerScheduler-Rescheduler`)
             .setWeekdays(Weekday_1.AllWeekdays)
             .setHour(0)
             .setMinute(0)

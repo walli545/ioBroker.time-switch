@@ -12,7 +12,7 @@ export class AstroTriggerScheduler extends TriggerScheduler {
 	private registered: AstroTrigger[] = [];
 	private scheduled: [string, TimeTrigger][] = [];
 	private readonly rescheduleTrigger = new TimeTriggerBuilder()
-		.setId(`AstroTriggerScheduler-Rescheduler-${new Date().toTimeString()}`)
+		.setId(`AstroTriggerScheduler-Rescheduler`)
 		.setWeekdays(AllWeekdays)
 		.setHour(0)
 		.setMinute(0)

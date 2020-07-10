@@ -26,11 +26,10 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
 			const schedule = new OnOffSchedule(onAction, offAction, this.triggerScheduler);
 			schedule.setName(json.name);
 
-			const oldActionSerializer = this.replaceActionSerializerWithReference(schedule);
+			this.useActionReferenceSerializer(schedule);
 			json.triggers.forEach((t: any) => {
 				schedule.addTrigger(this.triggerSerializer.deserialize(JSON.stringify(t)));
 			});
-			this.actionSerializer.replaceSerializer(oldActionSerializer);
 
 			return schedule;
 		} else {
@@ -45,9 +44,8 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
 			onAction: JSON.parse(this.actionSerializer.serialize(schedule.getOnAction())),
 			offAction: JSON.parse(this.actionSerializer.serialize(schedule.getOffAction())),
 		};
-		const oldActionSerializer = this.replaceActionSerializerWithReference(schedule);
+		this.useActionReferenceSerializer(schedule);
 		json.triggers = schedule.getTriggers().map((t) => JSON.parse(this.triggerSerializer.serialize(t)));
-		this.actionSerializer.replaceSerializer(oldActionSerializer);
 		return JSON.stringify(json);
 	}
 
@@ -55,8 +53,16 @@ export class OnOffScheduleSerializer implements Serializer<OnOffSchedule> {
 		return 'OnOffSchedule';
 	}
 
-	private replaceActionSerializerWithReference(schedule: OnOffSchedule): Serializer<Action> {
-		return this.actionSerializer.replaceSerializer(
+	public getTriggerSerializer(schedule: OnOffSchedule): UniversalSerializer<Trigger> {
+		if (schedule == null) {
+			throw new Error('Schedule may not be null/undefined');
+		}
+		this.useActionReferenceSerializer(schedule);
+		return this.triggerSerializer;
+	}
+
+	private useActionReferenceSerializer(schedule: OnOffSchedule): void {
+		this.actionSerializer.useSerializer(
 			new ActionReferenceSerializer(
 				OnOffStateAction.prototype.constructor.name,
 				new Map([
