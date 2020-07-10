@@ -3,14 +3,12 @@ import { Serializer } from './Serializer';
 export class UniversalSerializer<T extends Record<string, any>> implements Serializer<T> {
 	constructor(private serializers: Serializer<T>[]) {}
 
-	replaceSerializer(serializer: Serializer<T>): Serializer<T> {
-		const existing = this.serializers.find((s) => s.getType() === serializer.getType());
-		if (existing) {
-			this.serializers = this.serializers.filter((s) => s != existing);
-			this.serializers.push(serializer);
-			return existing;
+	public useSerializer(serializer: Serializer<T>): void {
+		if (serializer == null) {
+			throw new Error('Serializer to use may not be null/undefined');
 		}
-		throw new Error('Cannot replace non existing serializer');
+		this.serializers = this.serializers.filter((s) => s.getType() !== serializer.getType());
+		this.serializers.push(serializer);
 	}
 
 	public serialize(object: T): string {

@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "time-switch",
-        "version": "2.1.0",
+        "version": "2.2.0-pre.1",
         "news": {
             "2.1.0": {
                 "en": "Astro trigger, custom designs with css properties",
