@@ -59,8 +59,8 @@ describe('ConditionAction', () => {
 				conditionMock.verify((c) => c.evaluate(), Times.once());
 				actionMock.verify((a) => a.execute(), Times.once());
 				done();
-			}, 50);
-		}).timeout(100);
+			}, 100);
+		}).timeout(150);
 
 		it('should not execute action when condition evaluates to false', (done) => {
 			conditionMock.setup((c) => c.evaluate()).returns((_) => Promise.resolve(false));
@@ -70,8 +70,8 @@ describe('ConditionAction', () => {
 				conditionMock.verify((c) => c.evaluate(), Times.once());
 				actionMock.verify((a) => a.execute(), Times.never());
 				done();
-			}, 50);
-		}).timeout(100);
+			}, 100);
+		}).timeout(150);
 
 		it('should log execution when condition evaluates to true', (done) => {
 			const logger = TypeMoq.Mock.ofType<LoggingService>();
@@ -82,8 +82,8 @@ describe('ConditionAction', () => {
 			setTimeout(() => {
 				logger.verify((l) => l.logDebug(It.isAnyString()), Times.once());
 				done();
-			}, 50);
-		}).timeout(100);
+			}, 100);
+		}).timeout(150);
 
 		it('should log execution when condition evaluates to false', (done) => {
 			const logger = TypeMoq.Mock.ofType<LoggingService>();
@@ -94,8 +94,8 @@ describe('ConditionAction', () => {
 			setTimeout(() => {
 				logger.verify((l) => l.logDebug(It.isAnyString()), Times.once());
 				done();
-			}, 50);
-		}).timeout(100);
+			}, 100);
+		}).timeout(150);
 
 		it('should log error when condition evaluation rejects', (done) => {
 			const logger = TypeMoq.Mock.ofType<LoggingService>();
@@ -108,8 +108,8 @@ describe('ConditionAction', () => {
 				actionMock.verify((a) => a.execute(), Times.never());
 				logger.verify((l) => l.logError(It.isAnyString()), Times.once());
 				done();
-			}, 50);
-		}).timeout(100);
+			}, 100);
+		}).timeout(150);
 
 		it('should do nothing when condition evaluation rejects', (done) => {
 			conditionMock.setup((c) => c.evaluate()).returns((_) => Promise.reject('myerror'));
@@ -119,7 +119,7 @@ describe('ConditionAction', () => {
 				conditionMock.verify((c) => c.evaluate(), Times.once());
 				actionMock.verify((a) => a.execute(), Times.never());
 				done();
-			}, 50);
-		}).timeout(100);
+			}, 100);
+		}).timeout(150);
 	});
 });
