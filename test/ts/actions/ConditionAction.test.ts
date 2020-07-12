@@ -7,6 +7,9 @@ import { ConditionAction } from '../../../src/actions/ConditionAction';
 import { LoggingService } from '../../../src/services/LoggingService';
 
 describe('ConditionAction', () => {
+	const specTimeout = 300;
+	const checkTimeout = 200;
+	
 	describe('ctor', () => {
 		const validCondition = TypeMoq.Mock.ofType<Condition>().object;
 		const validAction = TypeMoq.Mock.ofType<Action>().object;
@@ -59,8 +62,8 @@ describe('ConditionAction', () => {
 				conditionMock.verify((c) => c.evaluate(), Times.once());
 				actionMock.verify((a) => a.execute(), Times.once());
 				done();
-			}, 100);
-		}).timeout(150);
+			}, checkTimeout);
+		}).timeout(specTimeout);
 
 		it('should not execute action when condition evaluates to false', (done) => {
 			conditionMock.setup((c) => c.evaluate()).returns((_) => Promise.resolve(false));
@@ -70,8 +73,8 @@ describe('ConditionAction', () => {
 				conditionMock.verify((c) => c.evaluate(), Times.once());
 				actionMock.verify((a) => a.execute(), Times.never());
 				done();
-			}, 100);
-		}).timeout(150);
+			}, checkTimeout);
+		}).timeout(specTimeout);
 
 		it('should log execution when condition evaluates to true', (done) => {
 			const logger = TypeMoq.Mock.ofType<LoggingService>();
@@ -82,8 +85,8 @@ describe('ConditionAction', () => {
 			setTimeout(() => {
 				logger.verify((l) => l.logDebug(It.isAnyString()), Times.once());
 				done();
-			}, 100);
-		}).timeout(150);
+			}, checkTimeout);
+		}).timeout(specTimeout);
 
 		it('should log execution when condition evaluates to false', (done) => {
 			const logger = TypeMoq.Mock.ofType<LoggingService>();
@@ -94,8 +97,8 @@ describe('ConditionAction', () => {
 			setTimeout(() => {
 				logger.verify((l) => l.logDebug(It.isAnyString()), Times.once());
 				done();
-			}, 100);
-		}).timeout(150);
+			}, checkTimeout);
+		}).timeout(specTimeout);
 
 		it('should log error when condition evaluation rejects', (done) => {
 			const logger = TypeMoq.Mock.ofType<LoggingService>();
@@ -108,8 +111,8 @@ describe('ConditionAction', () => {
 				actionMock.verify((a) => a.execute(), Times.never());
 				logger.verify((l) => l.logError(It.isAnyString()), Times.once());
 				done();
-			}, 100);
-		}).timeout(150);
+			}, checkTimeout);
+		}).timeout(specTimeout);
 
 		it('should do nothing when condition evaluation rejects', (done) => {
 			conditionMock.setup((c) => c.evaluate()).returns((_) => Promise.reject('myerror'));
@@ -119,7 +122,7 @@ describe('ConditionAction', () => {
 				conditionMock.verify((c) => c.evaluate(), Times.once());
 				actionMock.verify((a) => a.execute(), Times.never());
 				done();
-			}, 100);
-		}).timeout(150);
+			}, checkTimeout);
+		}).timeout(specTimeout);
 	});
 });
