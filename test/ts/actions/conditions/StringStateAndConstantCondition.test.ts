@@ -3,7 +3,6 @@ import * as TypeMoq from 'typemoq';
 import { StateService } from '../../../../src/services/StateService';
 import { expect } from 'chai';
 import { StringStateAndConstantCondition } from '../../../../src/actions/conditions/StringStateAndConstantCondition';
-import { LoggingService } from '../../../../src/services/LoggingService';
 import { It, Times } from 'typemoq';
 
 describe('StringStateAndConstantCondition', () => {
@@ -76,18 +75,6 @@ describe('StringStateAndConstantCondition', () => {
 
 		it('creates with valid values', () => {
 			const sut = new StringStateAndConstantCondition(validConstant, validStateId, validSign, validStateService);
-			expect(sut).to.be.not.undefined;
-		});
-
-		it('creates with valid values and logger', () => {
-			const logger = TypeMoq.Mock.ofType<LoggingService>().object;
-			const sut = new StringStateAndConstantCondition(
-				validConstant,
-				validStateId,
-				validSign,
-				validStateService,
-				logger,
-			);
 			expect(sut).to.be.not.undefined;
 		});
 	});

@@ -1,6 +1,5 @@
 import { Condition } from './Condition';
 import { StateService } from '../../services/StateService';
-import { LoggingService } from '../../services/LoggingService';
 import { EqualitySign } from './EqualitySign';
 
 export class StringStateAndConstantCondition implements Condition {
@@ -9,13 +8,7 @@ export class StringStateAndConstantCondition implements Condition {
 	private readonly stateService: StateService;
 	private readonly sign: EqualitySign;
 
-	constructor(
-		constant: string,
-		stateId: string,
-		sign: EqualitySign,
-		stateService: StateService,
-		private logger?: LoggingService,
-	) {
+	constructor(constant: string, stateId: string, sign: EqualitySign, stateService: StateService) {
 		if (constant == null) {
 			throw new Error('Constant value may not be null or undefined.');
 		}

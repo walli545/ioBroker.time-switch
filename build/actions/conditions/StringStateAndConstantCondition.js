@@ -12,8 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StringStateAndConstantCondition = void 0;
 const EqualitySign_1 = require("./EqualitySign");
 class StringStateAndConstantCondition {
-    constructor(constant, stateId, sign, stateService, logger) {
-        this.logger = logger;
+    constructor(constant, stateId, sign, stateService) {
         if (constant == null) {
             throw new Error('Constant value may not be null or undefined.');
         }
