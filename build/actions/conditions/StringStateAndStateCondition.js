@@ -44,6 +44,15 @@ class StringStateAndStateCondition {
             return Promise.resolve(result);
         });
     }
+    getStateId1() {
+        return this.stateId1;
+    }
+    getStateId2() {
+        return this.stateId2;
+    }
+    getSign() {
+        return this.sign;
+    }
     toString() {
         return `${this.stateId1} ${this.sign} ${this.stateId2}`;
     }

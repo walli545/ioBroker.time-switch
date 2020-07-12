@@ -43,6 +43,15 @@ class StringStateAndConstantCondition {
             return Promise.resolve(result);
         });
     }
+    getConstant() {
+        return this.constant;
+    }
+    getStateId() {
+        return this.stateId;
+    }
+    getSign() {
+        return this.sign;
+    }
     toString() {
         return `${this.constant} ${this.sign} ${this.stateId}`;
     }

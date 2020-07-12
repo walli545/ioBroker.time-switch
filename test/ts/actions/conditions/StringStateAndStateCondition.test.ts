@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import { StringStateAndStateCondition } from '../../../../src/actions/conditions/StringStateAndStateCondition';
 
 describe('StringStateAndStateCondition', () => {
-	describe('ctor', () => {
+	describe('ctor and getter', () => {
 		const validStateId1 = 'id.of.state.1';
 		const validStateId2 = 'id.of.state.2';
 		const validSign = EqualitySign.Equal;
@@ -67,7 +67,9 @@ describe('StringStateAndStateCondition', () => {
 
 		it('creates with valid values', () => {
 			const sut = new StringStateAndStateCondition(validStateId1, validStateId2, validSign, validStateService);
-			expect(sut).to.be.not.undefined;
+			expect(sut.getStateId1()).to.equal(validStateId1);
+			expect(sut.getStateId2()).to.equal(validStateId2);
+			expect(sut.getSign()).to.equal(validSign);
 		});
 	});
 

@@ -38,6 +38,18 @@ export class StringStateAndConstantCondition implements Condition {
 		return Promise.resolve(result);
 	}
 
+	public getConstant(): string {
+		return this.constant;
+	}
+
+	public getStateId(): string {
+		return this.stateId;
+	}
+
+	public getSign(): EqualitySign {
+		return this.sign;
+	}
+
 	public toString(): string {
 		return `${this.constant} ${this.sign} ${this.stateId}`;
 	}

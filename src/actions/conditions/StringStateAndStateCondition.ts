@@ -44,6 +44,18 @@ export class StringStateAndStateCondition implements Condition {
 		return Promise.resolve(result);
 	}
 
+	public getStateId1(): string {
+		return this.stateId1;
+	}
+
+	public getStateId2(): string {
+		return this.stateId2;
+	}
+
+	public getSign(): EqualitySign {
+		return this.sign;
+	}
+
 	public toString(): string {
 		return `${this.stateId1} ${this.sign} ${this.stateId2}`;
 	}

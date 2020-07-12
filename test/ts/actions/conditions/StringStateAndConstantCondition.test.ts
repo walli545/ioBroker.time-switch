@@ -6,7 +6,7 @@ import { StringStateAndConstantCondition } from '../../../../src/actions/conditi
 import { It, Times } from 'typemoq';
 
 describe('StringStateAndConstantCondition', () => {
-	describe('ctor', () => {
+	describe('ctor and getter', () => {
 		const validConstant = 'val1';
 		const validStateId = 'id.of.state';
 		const validSign = EqualitySign.Equal;
@@ -75,7 +75,9 @@ describe('StringStateAndConstantCondition', () => {
 
 		it('creates with valid values', () => {
 			const sut = new StringStateAndConstantCondition(validConstant, validStateId, validSign, validStateService);
-			expect(sut).to.be.not.undefined;
+			expect(sut.getConstant()).to.equal(validConstant);
+			expect(sut.getStateId()).to.equal(validStateId);
+			expect(sut.getSign()).to.equal(validSign);
 		});
 	});
 
