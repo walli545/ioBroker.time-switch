@@ -17,6 +17,14 @@ export class ConditionAction implements Action {
 		this.action = action;
 	}
 
+	public getAction(): Action {
+		return this.action;
+	}
+
+	public getCondition(): Condition {
+		return this.condition;
+	}
+
 	public execute(): void {
 		this.condition
 			.evaluate()

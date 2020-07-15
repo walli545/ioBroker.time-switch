@@ -13,6 +13,12 @@ class ConditionAction {
         this.condition = condition;
         this.action = action;
     }
+    getAction() {
+        return this.action;
+    }
+    getCondition() {
+        return this.condition;
+    }
     execute() {
         this.condition
             .evaluate()

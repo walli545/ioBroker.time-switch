@@ -7,10 +7,10 @@ import { ConditionAction } from '../../../src/actions/ConditionAction';
 import { LoggingService } from '../../../src/services/LoggingService';
 
 describe('ConditionAction', () => {
-	const specTimeout = 300;
-	const checkTimeout = 200;
-	
-	describe('ctor', () => {
+	const specTimeout = 700;
+	const checkTimeout = 500;
+
+	describe('ctor and getter', () => {
 		const validCondition = TypeMoq.Mock.ofType<Condition>().object;
 		const validAction = TypeMoq.Mock.ofType<Action>().object;
 
@@ -32,13 +32,15 @@ describe('ConditionAction', () => {
 
 		it('creates with valid values', () => {
 			const sut = new ConditionAction(validCondition, validAction);
-			expect(sut).not.to.be.undefined;
+			expect(sut.getAction()).to.equal(validAction);
+			expect(sut.getCondition()).to.equal(validCondition);
 		});
 
 		it('creates with valid values and logger', () => {
 			const logger = TypeMoq.Mock.ofType<LoggingService>();
 			const sut = new ConditionAction(validCondition, validAction, logger.object);
-			expect(sut).not.to.be.undefined;
+			expect(sut.getAction()).to.equal(validAction);
+			expect(sut.getCondition()).to.equal(validCondition);
 		});
 	});
 
