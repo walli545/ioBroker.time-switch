@@ -8,12 +8,7 @@ export class StringStateAndStateCondition implements Condition {
 	private readonly stateService: StateService;
 	private readonly sign: EqualitySign;
 
-	constructor(
-		stateId1: string,
-		stateId2: string,
-		sign: EqualitySign,
-		stateService: StateService,
-	) {
+	constructor(stateId1: string, stateId2: string, sign: EqualitySign, stateService: StateService) {
 		if (stateId1 == null || stateId1.length === 0) {
 			throw new Error('First state id may not be null, undefined or empty.');
 		}
