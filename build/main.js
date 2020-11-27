@@ -27,6 +27,9 @@ const AstroTriggerSerializer_1 = require("./serialization/AstroTriggerSerializer
 const AstroTriggerScheduler_1 = require("./scheduler/AstroTriggerScheduler");
 const suncalc_1 = require("suncalc");
 const Coordinate_1 = require("./Coordinate");
+const ConditionActionSerializer_1 = require("./serialization/ConditionActionSerializer");
+const StringStateAndConstantConditionSerializer_1 = require("./serialization/conditions/StringStateAndConstantConditionSerializer");
+const StringStateAndStateConditionSerializer_1 = require("./serialization/conditions/StringStateAndStateConditionSerializer");
 class TimeSwitch extends utils.Adapter {
     constructor(options = {}) {
         super(Object.assign(Object.assign({}, options), { name: 'time-switch' }));
@@ -280,6 +283,10 @@ class TimeSwitch extends utils.Adapter {
     createNewOnOffScheduleSerializer() {
         return __awaiter(this, void 0, void 0, function* () {
             const actionSerializer = new UniversalSerializer_1.UniversalSerializer([new OnOffStateActionSerializer_1.OnOffStateActionSerializer(this.stateService)]);
+            actionSerializer.useSerializer(new ConditionActionSerializer_1.ConditionActionSerializer(new UniversalSerializer_1.UniversalSerializer([
+                new StringStateAndConstantConditionSerializer_1.StringStateAndConstantConditionSerializer(this.stateService),
+                new StringStateAndStateConditionSerializer_1.StringStateAndStateConditionSerializer(this.stateService),
+            ]), actionSerializer, this.loggingService));
             const triggerSerializer = new UniversalSerializer_1.UniversalSerializer([
                 new TimeTriggerSerializer_1.TimeTriggerSerializer(actionSerializer),
                 new AstroTriggerSerializer_1.AstroTriggerSerializer(actionSerializer),
