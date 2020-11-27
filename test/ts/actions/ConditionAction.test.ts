@@ -5,15 +5,15 @@ import { Action } from '../../../src/actions/Action';
 import { expect } from 'chai';
 import { ConditionAction } from '../../../src/actions/ConditionAction';
 import { LoggingService } from '../../../src/services/LoggingService';
+import exp = require('constants');
 
 describe('ConditionAction', () => {
 	const specTimeout = 700;
 	const checkTimeout = 500;
+	const validCondition = TypeMoq.Mock.ofType<Condition>().object;
+	const validAction = TypeMoq.Mock.ofType<Action>().object;
 
 	describe('ctor and getter', () => {
-		const validCondition = TypeMoq.Mock.ofType<Condition>().object;
-		const validAction = TypeMoq.Mock.ofType<Action>().object;
-
 		it('throws when condition is undefined', () => {
 			expect(() => new ConditionAction(undefined as any, validAction)).to.throw();
 		});
@@ -41,6 +41,26 @@ describe('ConditionAction', () => {
 			const sut = new ConditionAction(validCondition, validAction, logger.object);
 			expect(sut.getAction()).to.equal(validAction);
 			expect(sut.getCondition()).to.equal(validCondition);
+		});
+	});
+
+	describe('setter', () => {
+		const sut = new ConditionAction(validCondition, validAction);
+
+		it('throws when setting action to null', () => {
+			expect(() => sut.setAction(null as any)).to.throw();
+		});
+
+		it('throws when setting action to undefined', () => {
+			expect(() => sut.setAction(undefined as any)).to.throw();
+		});
+
+		it('sets new action', () => {
+			const newAction = TypeMoq.Mock.ofType<Action>().object;
+			expect(sut.getAction()).to.equal(validAction);
+			expect(sut.getAction()).not.to.equal(newAction);
+			sut.setAction(newAction);
+			expect(sut.getAction()).to.equal(newAction);
 		});
 	});
 
