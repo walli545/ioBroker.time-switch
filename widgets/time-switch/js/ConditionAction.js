@@ -256,20 +256,20 @@
 				<div class="container edit" style="display: none">
 					<div class="action"></div>
 					<div class="condition-header">
-						<div>Bedingung</div>
+						<div>${vis.binds['time-switch'].translate('condition')}</div>
 						 <img class="button delete" src="widgets/time-switch/img/delete-24px.svg" width="28px"
-							height="28px" title="${vis.binds['time-switch'].translate('removeTrigger')}"/>
+							height="28px" title="${vis.binds['time-switch'].translate('removeCondition')}"/>
 					</div>
 					<div class="condition-body">
 						<select id="selectConditionStateId1" required></select>
 						<select id="selectSign" required>
-							<option value="==">Equals</option>
-							<option value="!=">Not Equals</option>
+							<option value="==">${vis.binds['time-switch'].translate('equals')}</option>
+							<option value="!=">${vis.binds['time-switch'].translate('equalsNot')}</option>
 						</select>
 						<div id="withConstant" class="md-switch-container">
 							<div class="md-switch-track"></div>
 							<div class="md-switch-handle"></div>
-							<div class="md-switch-label">Mit Konstante</div>
+							<div class="md-switch-label">${vis.binds['time-switch'].translate('withConstant')}</div>
 						</div>
 						<select id="selectConditionStateId2"></select>
 						<input id="inputConditionConstant" type="text" style="display: none;"/>

@@ -8,6 +8,7 @@
     "Tuesday": "martedì",
     "Wednesday": "mercoledì",
     "addAstroTrigger": "Astro trigger",
+    "addCondition": "Aggiungi condizione",
     "addTimeTrigger": "Innesco temporale",
     "addTrigger": "Aggiungi trigger",
     "allOff": "Tutto fuori",
@@ -15,11 +16,14 @@
     "automaticSwitchingEnabled": "Commutazione automatica abilitata",
     "boolean": "booleano",
     "cancelEdit": "Annulla modifica",
+    "condition": "Condizione",
     "currentValue": "Valore corrente",
     "dataId": "Pianifica ID dati",
     "editName": "Modifica nome",
     "editTrigger": "Modifica trigger",
     "enabled": "Abilitato",
+    "equals": "È uguale a",
+    "equalsNot": "Non è uguale",
     "false": "falso",
     "inputAstroTime": "Tempo di Astro:",
     "inputShiftInMinutes": "Spostamento in pochi minuti:",
@@ -36,6 +40,7 @@
     "offValue": "Valore per spento",
     "on": "Su",
     "onValue": "Valore per on",
+    "removeCondition": "Rimuovi condizione",
     "removeSchedule": "Rimuovi programma",
     "removeTrigger": "Rimuovi grilletto",
     "saveChanges": "Salvare le modifiche",
@@ -56,5 +61,6 @@
     "trigger count": "Conteggio dei trigger",
     "true": "vero",
     "useAstroIcons": "Usa le icone astro",
-    "valueType": "Tipo di valore"
+    "valueType": "Tipo di valore",
+    "withConstant": "Con costante"
 }

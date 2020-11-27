@@ -8,6 +8,7 @@
     "Tuesday": "wtorek",
     "Wednesday": "środa",
     "addAstroTrigger": "Spust Astro",
+    "addCondition": "Dodaj warunek",
     "addTimeTrigger": "Wyzwalacz czasowy",
     "addTrigger": "Dodaj wyzwalacz",
     "allOff": "Wszystko wyłączone",
@@ -15,11 +16,14 @@
     "automaticSwitchingEnabled": "Automatyczne przełączanie włączone",
     "boolean": "boolean",
     "cancelEdit": "Anuluj edycję",
+    "condition": "Stan: schorzenie",
     "currentValue": "Aktualna wartość",
     "dataId": "Zaplanuj identyfikator danych",
     "editName": "Zmień imię",
     "editTrigger": "Edytuj wyzwalacz",
     "enabled": "Włączone",
+    "equals": "Równa się",
+    "equalsNot": "Nie równa się",
     "false": "fałszywe",
     "inputAstroTime": "Czas Astro:",
     "inputShiftInMinutes": "Zmiana w minutach:",
@@ -36,6 +40,7 @@
     "offValue": "Wartość wyłączona",
     "on": "Na",
     "onValue": "Wartość dla włączenia",
+    "removeCondition": "Usuń warunek",
     "removeSchedule": "Usuń harmonogram",
     "removeTrigger": "Usuń spust",
     "saveChanges": "Zapisz zmiany",
@@ -56,5 +61,6 @@
     "trigger count": "Liczba wyzwalaczy",
     "true": "prawdziwe",
     "useAstroIcons": "Użyj ikon astro",
-    "valueType": "Typ wartości"
+    "valueType": "Typ wartości",
+    "withConstant": "Ze stałą"
 }

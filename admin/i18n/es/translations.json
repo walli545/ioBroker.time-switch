@@ -8,6 +8,7 @@
     "Tuesday": "martes",
     "Wednesday": "miércoles",
     "addAstroTrigger": "Astro gatillo",
+    "addCondition": "Agregar condición",
     "addTimeTrigger": "Disparador de tiempo",
     "addTrigger": "Agregar disparador",
     "allOff": "Todo apagado",
@@ -15,11 +16,14 @@
     "automaticSwitchingEnabled": "Conmutación automática habilitada",
     "boolean": "booleano",
     "cancelEdit": "Cancelar edición",
+    "condition": "Condición",
     "currentValue": "Valor actual",
     "dataId": "Programar ID de datos",
     "editName": "Editar nombre",
     "editTrigger": "Editar disparador",
     "enabled": "Habilitado",
+    "equals": "Igual",
+    "equalsNot": "Es igual a no",
     "false": "falso",
     "inputAstroTime": "Tiempo astro:",
     "inputShiftInMinutes": "Turno en minutos:",
@@ -36,6 +40,7 @@
     "offValue": "Valor para apagado",
     "on": "En",
     "onValue": "Valor para en",
+    "removeCondition": "Eliminar condición",
     "removeSchedule": "Eliminar horario",
     "removeTrigger": "Eliminar gatillo",
     "saveChanges": "Guardar cambios",
@@ -56,5 +61,6 @@
     "trigger count": "Recuento de disparadores",
     "true": "cierto",
     "useAstroIcons": "Usar íconos astro",
-    "valueType": "Tipo de valor"
+    "valueType": "Tipo de valor",
+    "withConstant": "Con constante"
 }

@@ -185,9 +185,9 @@
 						<div>${vis.binds['time-switch'].translate('switchedValue')}</div>
 						<div class="action"></div>
 						<div class="condition">
-							<div>Bedingung</div>
+							<div>${vis.binds['time-switch'].translate('condition')}</div>
 						 	<img class="button add" src="widgets/time-switch/img/add-24px.svg" width="28px"
-								height="28px" title="${vis.binds['time-switch'].translate('addTrigger')}"/>
+								height="28px" title="${vis.binds['time-switch'].translate('addCondition')}"/>
 						</div>
 						<div>${vis.binds['time-switch'].translate('trigger')}</div>
 						<div class="trigger"></div>
