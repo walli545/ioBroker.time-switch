@@ -21,7 +21,7 @@ export class ConditionAction implements Action {
 		return this.action;
 	}
 
-	public setAction(action: Action): void{
+	public setAction(action: Action): void {
 		if (action == null) {
 			throw new Error('action may not be null or undefined');
 		}
