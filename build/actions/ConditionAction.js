@@ -16,6 +16,12 @@ class ConditionAction {
     getAction() {
         return this.action;
     }
+    setAction(action) {
+        if (action == null) {
+            throw new Error('action may not be null or undefined');
+        }
+        this.action = action;
+    }
     getCondition() {
         return this.condition;
     }

@@ -4,7 +4,7 @@ import { LoggingService } from '../services/LoggingService';
 
 export class ConditionAction implements Action {
 	private readonly condition: Condition;
-	private readonly action: Action;
+	private action: Action;
 
 	constructor(condition: Condition, action: Action, private logger?: LoggingService) {
 		if (condition == null) {
@@ -19,6 +19,13 @@ export class ConditionAction implements Action {
 
 	public getAction(): Action {
 		return this.action;
+	}
+
+	public setAction(action: Action): void{
+		if (action == null) {
+			throw new Error('action may not be null or undefined');
+		}
+		this.action = action;
 	}
 
 	public getCondition(): Condition {
