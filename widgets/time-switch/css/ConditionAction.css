@@ -10,11 +10,10 @@
 
 .view .condition {
     margin-top: 10px;
-    margin-left: 7px;
     width: 58px;
     white-space: nowrap;
     color: var(--ts-widget-condition-fg-color, --ts-widget-fg-color);
-    font-size: var(--ts-widget-condition-font-size, 2em);
+    font-size: var(--ts-widget-condition-font-size, 1em);
     display: var(--ts-widget-condition-display, block);
 }
 
