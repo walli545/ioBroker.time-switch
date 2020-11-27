@@ -50,6 +50,18 @@
 	margin: 10px;
 }
 
+.condition {
+	flex-direction: row;
+	display: flex;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 10px;
+}
+
+.condition div {
+	margin-right: 20px;
+}
+
 /* Buttons */
 
 .button {
