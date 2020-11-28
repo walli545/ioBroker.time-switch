@@ -15,6 +15,10 @@
     align-self: center;
 }
 
+.button.edit {
+    display: var(--ts-widget-edit-name-button-display, block);
+}
+
 .md-switch-container {
     margin: 10px;
 }
