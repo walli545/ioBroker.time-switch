@@ -1,11 +1,11 @@
 <!--
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.2.0-pre.1"
+	version: "2.2.0-pre.2"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 
-	Change counter: 19
+	Change counter: 20
 -->
 <!-- here you can include so many css as you want -->
 <link rel="stylesheet" href="widgets/time-switch/css/style.css" />
@@ -20,6 +20,7 @@
 <script src="widgets/time-switch/js/AstroTrigger.js"></script>
 <script src="widgets/time-switch/js/Weekdays.js"></script>
 <script src="widgets/time-switch/js/OnOffStateAction.js"></script>
+<script src="widgets/time-switch/js/ConditionAction.js"></script>
 <script type="module" src="widgets/time-switch/js/time-switch.js"></script>
 <!-- the full description of format in data-vis-attrs can be found here:
 	https://github.com/ioBroker/ioBroker.vis/blob/master/www/js/visEditInspect.js#L39
@@ -123,7 +124,11 @@
 			offValue/string;
 			onValue/string;
 			statesCount[1]/number,1,10,1;
-			stateId(1-statesCount)/id/onStateIdChange"
+			stateId(1-statesCount)/id/onStateIdChange;
+			showConditionIds[true]/checkbox;
+			conditionStatesCount[1]/number,1,5,1;
+			conditionStateId(1-conditionStatesCount)/id/onConditionStateIdChange;
+			conditionStateAlias(1-conditionStatesCount)/string"
 		data-vis-set="time-switch"
 		data-vis-type="ctrl"
 		data-vis-name="Schedule (On/Off)">

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OnOffSchedule = void 0;
 const OnOffStateAction_1 = require("../actions/OnOffStateAction");
 const Schedule_1 = require("./Schedule");
+const ConditionAction_1 = require("../actions/ConditionAction");
 class OnOffSchedule extends Schedule_1.Schedule {
     constructor(onAction, offAction, triggerScheduler) {
         super(triggerScheduler);
@@ -27,6 +28,14 @@ class OnOffSchedule extends Schedule_1.Schedule {
                     t.setAction(onAction);
                 }
             }
+            else if (action instanceof ConditionAction_1.ConditionAction) {
+                const decoratedAction = action.getAction();
+                if (decoratedAction instanceof OnOffStateAction_1.OnOffStateAction) {
+                    if (decoratedAction.getBooleanValue()) {
+                        action.setAction(onAction);
+                    }
+                }
+            }
         });
     }
     setOffAction(offAction) {
@@ -39,6 +48,14 @@ class OnOffSchedule extends Schedule_1.Schedule {
             if (action instanceof OnOffStateAction_1.OnOffStateAction) {
                 if (!action.getBooleanValue()) {
                     t.setAction(offAction);
+                }
+            }
+            else if (action instanceof ConditionAction_1.ConditionAction) {
+                const decoratedAction = action.getAction();
+                if (decoratedAction instanceof OnOffStateAction_1.OnOffStateAction) {
+                    if (!decoratedAction.getBooleanValue()) {
+                        action.setAction(offAction);
+                    }
                 }
             }
         });

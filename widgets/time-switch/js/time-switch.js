@@ -1,7 +1,7 @@
 /*
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.2.0-pre.1"
+	version: "2.2.0-pre.2"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 */
@@ -20,12 +20,14 @@ $.get('../time-switch.admin/words.js', function(script) {
 
 // export vis binds for widget
 vis.binds['time-switch'] = {
-	version: '2.2.0-pre.1',
+	version: '2.2.0-pre.2',
 	showVersion: showVersion,
 	createOnOffWidget: createOnOffWidget,
 	onOffScheduleWidgets: {},
 	onDataIdChange: onDataIdChange,
 	onStateIdChange: onStateIdChange,
+	onConditionStateIdChange: onConditionStateIdChange,
+	getConditionStateIdsAndAlias: getConditionStateIdsAndAlias,
 	sendMessage: sendMessage,
 	translate: translate,
 };
@@ -123,4 +125,24 @@ function onDataIdChange(widgetId, view, newId, attr, isCss, oldId) {
 function onStateIdChange(widgetId, view, newId, attr, isCss, oldId) {
 	console.log(`onStateIdChange ${widgetId} ${view} ${newId} ${oldId}`);
 	vis.views[view].widgets[widgetId].data.oid2 = newId;
+}
+
+function onConditionStateIdChange(widgetId, view, newId, attr, isCss, oldId) {
+	const conditionStateIds = getConditionStateIdsAndAlias(widgetId, view).map((i) => i.id);
+	for (let i = 0; i < conditionStateIds.length; i++) {
+		vis.views[view].widgets[widgetId].data[`oid${i + 4}`] = conditionStateIds[i];
+	}
+}
+
+function getConditionStateIdsAndAlias(widgetId) {
+	const data = vis.widgets[widgetId].data;
+	const count = Number.parseInt(data.conditionStatesCount, 10);
+	const ids = [];
+	for (let i = 1; i <= count; i++) {
+		const id = data[`conditionStateId${i}`];
+		if (id !== undefined && id !== '') {
+			ids.push({ id: id, alias: data[`conditionStateAlias${i}`] });
+		}
+	}
+	return ids;
 }

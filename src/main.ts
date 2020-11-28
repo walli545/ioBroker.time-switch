@@ -18,6 +18,10 @@ import { AstroTriggerSerializer } from './serialization/AstroTriggerSerializer';
 import { AstroTriggerScheduler } from './scheduler/AstroTriggerScheduler';
 import { getTimes } from 'suncalc';
 import { Coordinate } from './Coordinate';
+import { ConditionActionSerializer } from './serialization/ConditionActionSerializer';
+import { Condition } from './actions/conditions/Condition';
+import { StringStateAndConstantConditionSerializer } from './serialization/conditions/StringStateAndConstantConditionSerializer';
+import { StringStateAndStateConditionSerializer } from './serialization/conditions/StringStateAndStateConditionSerializer';
 
 // Augment the adapter.config object with the actual types
 declare global {
@@ -286,6 +290,16 @@ export class TimeSwitch extends utils.Adapter {
 
 	private async createNewOnOffScheduleSerializer(): Promise<OnOffScheduleSerializer> {
 		const actionSerializer = new UniversalSerializer<Action>([new OnOffStateActionSerializer(this.stateService)]);
+		actionSerializer.useSerializer(
+			new ConditionActionSerializer(
+				new UniversalSerializer<Condition>([
+					new StringStateAndConstantConditionSerializer(this.stateService),
+					new StringStateAndStateConditionSerializer(this.stateService),
+				]),
+				actionSerializer,
+				this.loggingService,
+			),
+		);
 		const triggerSerializer = new UniversalSerializer<Trigger>([
 			new TimeTriggerSerializer(actionSerializer),
 			new AstroTriggerSerializer(actionSerializer),

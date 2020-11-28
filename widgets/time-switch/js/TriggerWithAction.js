@@ -5,6 +5,8 @@
 			this.sr = this.createShadowRoot();
 			this.validationErrors = [];
 			this.triedSaving = false;
+			this.actionBeforeEdit = '';
+			this.triggerBeforeEdit = '';
 		}
 
 		static get observedAttributes() {
@@ -17,6 +19,7 @@
 			this.sr.querySelector('.button.cancel').addEventListener('click', this.toggleEdit.bind(this));
 			this.sr.querySelector('.button.edit').addEventListener('click', this.toggleEdit.bind(this));
 			this.sr.querySelector('.button.save').addEventListener('click', this.onSaveClick.bind(this));
+			this.sr.querySelector('.button.add').addEventListener('click', this.onAddConditionClick.bind(this));
 		}
 
 		attributeChangedCallback(attr, oldValue, newValue) {
@@ -65,6 +68,29 @@
 			);
 		}
 
+		onDeleteConditionClick() {
+			if (this.action.type === 'ConditionAction') {
+				this.setAttribute('action', JSON.stringify(this.action.action));
+			}
+		}
+
+		onAddConditionClick() {
+			if (this.action.type === 'OnOffStateAction') {
+				const conditionAction = {
+					type: 'ConditionAction',
+					condition: {
+						type: 'StringStateAndConstantCondition',
+						constant: 'true',
+						stateId: vis.binds['time-switch'].getConditionStateIdsAndAlias(this.getAttribute('widgetid'))[0]
+							.id,
+						sign: '==',
+					},
+					action: this.action,
+				};
+				this.setAttribute('action', JSON.stringify(conditionAction));
+			}
+		}
+
 		updateValidationErrors() {
 			const errorsWeekdays = JSON.parse(this.getWeekdaysElement().getAttribute('errors'));
 			const errorsTimeTrigger = JSON.parse(this.getTriggerElement(true).getAttribute('errors'));
@@ -80,14 +106,13 @@
 				errors = errors.concat(errorsAction);
 			}
 			this.validationErrors = errors;
-			this.sr.querySelector('.validation-errors-container').style.display =
-				errors.length === 0 ? 'none' : null;
+			this.sr.querySelector('.validation-errors-container').style.display = errors.length === 0 ? 'none' : null;
 
 			const validationErrorsList = this.sr.querySelector('#validation-errors');
 			while (validationErrorsList.firstChild) {
 				validationErrorsList.removeChild(validationErrorsList.firstChild);
 			}
-			this.validationErrors.forEach(e => {
+			this.validationErrors.forEach((e) => {
 				const li = document.createElement('li');
 				li.textContent = e;
 				validationErrorsList.appendChild(li);
@@ -123,6 +148,13 @@
 
 		toggleEdit() {
 			this.edit = !this.edit;
+			if (this.edit) {
+				this.triggerBeforeEdit = JSON.stringify(this.trigger);
+				this.actionBeforeEdit = JSON.stringify(this.action);
+			} else {
+				this.setAttribute('action', this.actionBeforeEdit);
+				this.setAttribute('trigger', this.triggerBeforeEdit);
+			}
 		}
 
 		createShadowRoot() {
@@ -152,6 +184,11 @@
 						</div>
 						<div>${vis.binds['time-switch'].translate('switchedValue')}</div>
 						<div class="action"></div>
+						<div class="condition">
+							<div>${vis.binds['time-switch'].translate('condition')}</div>
+						 	<img class="button add" src="widgets/time-switch/img/add-24px.svg" width="28px"
+								height="28px" title="${vis.binds['time-switch'].translate('addCondition')}"/>
+						</div>
 						<div>${vis.binds['time-switch'].translate('trigger')}</div>
 						<div class="trigger"></div>
 						<app-weekdays edit="true"></app-weekdays>
@@ -182,18 +219,20 @@
 			let triggerView = this.sr.querySelector(`.container.view .trigger ${elementName}`);
 			if (!triggerView) {
 				triggerView = document.createElement(elementName);
+				triggerView.setAttribute('widgetid', this.getAttribute('widgetid'));
 				triggerView.setAttribute('edit', 'false');
 				this.sr.querySelector('.container.view .trigger').appendChild(triggerView);
 			}
 			let triggerEdit = this.sr.querySelector(`.container.edit .trigger ${elementName}`);
 			if (!triggerEdit) {
 				triggerEdit = document.createElement(elementName);
+				triggerEdit.setAttribute('widgetid', this.getAttribute('widgetid'));
 				triggerEdit.setAttribute('edit', 'true');
 				this.sr.querySelector('.container.edit .trigger').appendChild(triggerEdit);
 			}
 			triggerView.setAttribute('data', JSON.stringify(newTrigger));
 			triggerEdit.setAttribute('data', JSON.stringify(newTrigger));
-			this.sr.querySelectorAll('app-weekdays').forEach(w => {
+			this.sr.querySelectorAll('app-weekdays').forEach((w) => {
 				w.setAttribute('selected', JSON.stringify(newTrigger.weekdays));
 			});
 		}
@@ -201,20 +240,26 @@
 		onActionChange() {
 			const newAction = this.action;
 			const elementName = this.getElementNameForActionType(newAction.type);
-			let actionView = this.sr.querySelector(`.container.view .action ${elementName}`);
-			if (!actionView) {
-				actionView = document.createElement(elementName);
-				actionView.setAttribute('edit', 'false');
-				this.sr.querySelector('.container.view .action').appendChild(actionView);
+			const viewAction = this.sr.querySelector('.container.view .action');
+			if (viewAction.firstChild) {
+				viewAction.removeChild(viewAction.firstChild);
 			}
-			let actionEdit = this.sr.querySelector(`.container.edit .action ${elementName}`);
-			if (!actionEdit) {
-				actionEdit = document.createElement(elementName);
-				actionEdit.setAttribute('edit', 'true');
-				this.sr.querySelector('.container.edit .action').appendChild(actionEdit);
+			const actionView = document.createElement(elementName);
+			actionView.setAttribute('widgetid', this.getAttribute('widgetid'));
+			actionView.setAttribute('edit', 'false');
+			viewAction.appendChild(actionView);
+			const editAction = this.sr.querySelector('.container.edit .action');
+			if (editAction.firstChild) {
+				editAction.removeChild(editAction.firstChild);
 			}
+			const actionEdit = document.createElement(elementName);
+			actionEdit.setAttribute('widgetid', this.getAttribute('widgetid'));
+			actionEdit.setAttribute('edit', 'true');
+			actionEdit.addEventListener('delete-condition', this.onDeleteConditionClick.bind(this));
+			editAction.appendChild(actionEdit);
 			actionView.setAttribute('data', JSON.stringify(newAction));
 			actionEdit.setAttribute('data', JSON.stringify(newAction));
+			this.sr.querySelector('.condition').style.display = newAction.type === 'ConditionAction' ? 'none' : null;
 		}
 
 		getElementNameForTriggerType(type) {
@@ -230,6 +275,8 @@
 		getElementNameForActionType(type) {
 			if (type === 'OnOffStateAction') {
 				return 'app-on-off-state-action';
+			} else if (type === 'ConditionAction') {
+				return 'app-condition-action';
 			} else {
 				throw Error('No widget for action found');
 			}

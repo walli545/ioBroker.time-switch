@@ -1,6 +1,7 @@
 import { OnOffStateAction } from '../actions/OnOffStateAction';
 import { Schedule } from './Schedule';
 import { UniversalTriggerScheduler } from '../scheduler/UniversalTriggerScheduler';
+import { ConditionAction } from '../actions/ConditionAction';
 
 export class OnOffSchedule extends Schedule {
 	private onAction: OnOffStateAction<string | boolean | number>;
@@ -33,6 +34,13 @@ export class OnOffSchedule extends Schedule {
 				if (action.getBooleanValue()) {
 					t.setAction(onAction);
 				}
+			} else if (action instanceof ConditionAction) {
+				const decoratedAction = action.getAction();
+				if (decoratedAction instanceof OnOffStateAction) {
+					if (decoratedAction.getBooleanValue()) {
+						action.setAction(onAction);
+					}
+				}
 			}
 		});
 	}
@@ -47,6 +55,13 @@ export class OnOffSchedule extends Schedule {
 			if (action instanceof OnOffStateAction) {
 				if (!action.getBooleanValue()) {
 					t.setAction(offAction);
+				}
+			} else if (action instanceof ConditionAction) {
+				const decoratedAction = action.getAction();
+				if (decoratedAction instanceof OnOffStateAction) {
+					if (!decoratedAction.getBooleanValue()) {
+						action.setAction(offAction);
+					}
 				}
 			}
 		});

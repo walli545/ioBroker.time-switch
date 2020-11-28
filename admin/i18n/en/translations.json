@@ -8,6 +8,7 @@
     "Tuesday": "Tuesday",
     "Wednesday": "Wednesday",
     "addAstroTrigger": "Astro trigger",
+    "addCondition": "Add condition",
     "addTimeTrigger": "Time trigger",
     "addTrigger": "Add trigger",
     "allOff": "All off",
@@ -15,11 +16,14 @@
     "automaticSwitchingEnabled": "Automatic switching enabled",
     "boolean": "boolean",
     "cancelEdit": "Cancel edit",
+    "condition": "Condition",
     "currentValue": "Current value",
     "dataId": "Schedule data id",
     "editName": "Edit name",
     "editTrigger": "Edit trigger",
     "enabled": "Enabled",
+    "equals": "Equals",
+    "equalsNot": "Equals not",
     "false": "false",
     "inputAstroTime": "Astro time: ",
     "inputShiftInMinutes": "Shift in minutes:",
@@ -36,6 +40,7 @@
     "offValue": "Value for off",
     "on": "On",
     "onValue": "Value for on",
+    "removeCondition": "Remove condition",
     "removeSchedule": "Remove schedule",
     "removeTrigger": "Remove trigger",
     "saveChanges": "Save changes",
@@ -56,5 +61,6 @@
     "trigger count": "Trigger count",
     "true": "true",
     "useAstroIcons": "Use astro icons",
-    "valueType": "Value type"
+    "valueType": "Value type",
+    "withConstant": "With constant"
 }

@@ -8,6 +8,7 @@
     "Tuesday": "星期二",
     "Wednesday": "星期三",
     "addAstroTrigger": "天文触发器",
+    "addCondition": "添加条件",
     "addTimeTrigger": "时间触发",
     "addTrigger": "添加触发器",
     "allOff": "全部关闭",
@@ -15,11 +16,14 @@
     "automaticSwitchingEnabled": "启用自动切换",
     "boolean": "布尔值",
     "cancelEdit": "取消编辑",
+    "condition": "健康）状况",
     "currentValue": "当前值",
     "dataId": "时间表资料编号",
     "editName": "编辑名称",
     "editTrigger": "编辑触发器",
     "enabled": "已启用",
+    "equals": "等于",
+    "equalsNot": "不等于",
     "false": "假",
     "inputAstroTime": "太空时间：",
     "inputShiftInMinutes": "上班时间：",
@@ -36,6 +40,7 @@
     "offValue": "折价",
     "on": "上",
     "onValue": "的价值",
+    "removeCondition": "删除条件",
     "removeSchedule": "删除时间表",
     "removeTrigger": "删除触发器",
     "saveChanges": "保存更改",
@@ -56,5 +61,6 @@
     "trigger count": "触发计数",
     "true": "真正",
     "useAstroIcons": "使用astro图标",
-    "valueType": "值类型"
+    "valueType": "值类型",
+    "withConstant": "不变"
 }

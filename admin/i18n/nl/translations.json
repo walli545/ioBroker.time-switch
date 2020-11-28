@@ -8,6 +8,7 @@
     "Tuesday": "dinsdag",
     "Wednesday": "woensdag",
     "addAstroTrigger": "Astro-trigger",
+    "addCondition": "Voorwaarde toevoegen",
     "addTimeTrigger": "Tijd trigger",
     "addTrigger": "Trigger toevoegen",
     "allOff": "Allemaal uit",
@@ -15,11 +16,14 @@
     "automaticSwitchingEnabled": "Automatisch schakelen ingeschakeld",
     "boolean": "boolean",
     "cancelEdit": "Bewerken annuleren",
+    "condition": "Staat",
     "currentValue": "Huidige waarde",
     "dataId": "Plan gegevens-ID",
     "editName": "Naam bewerken",
     "editTrigger": "Trigger bewerken",
     "enabled": "Ingeschakeld",
+    "equals": "Gelijk aan",
+    "equalsNot": "Is gelijk aan niet",
     "false": "false",
     "inputAstroTime": "Astrotijd:",
     "inputShiftInMinutes": "Verschuiving in minuten:",
@@ -36,6 +40,7 @@
     "offValue": "Waarde voor uit",
     "on": "Aan",
     "onValue": "Waarde voor op",
+    "removeCondition": "Voorwaarde verwijderen",
     "removeSchedule": "Schema verwijderen",
     "removeTrigger": "Trigger verwijderen",
     "saveChanges": "Wijzigingen opslaan",
@@ -56,5 +61,6 @@
     "trigger count": "Aantal triggers",
     "true": "waar",
     "useAstroIcons": "Gebruik astropictogrammen",
-    "valueType": "Waarde type"
+    "valueType": "Waarde type",
+    "withConstant": "Met constant"
 }

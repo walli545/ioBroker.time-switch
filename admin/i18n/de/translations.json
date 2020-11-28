@@ -8,6 +8,7 @@
     "Tuesday": "Dienstag",
     "Wednesday": "Mittwoch",
     "addAstroTrigger": "Astro Trigger",
+    "addCondition": "Bedingung hinzufügen",
     "addTimeTrigger": "Time trigger",
     "addTrigger": "Auslöser hinzufügen",
     "allOff": "Alle aus",
@@ -15,11 +16,14 @@
     "automaticSwitchingEnabled": "Automatisches Schalten aktiviert",
     "boolean": "Wahrheitswert",
     "cancelEdit": "Bearbeiten abbrechen",
+    "condition": "Bedingung",
     "currentValue": "Aktueller Wert",
     "dataId": "Id für Schaltplandaten",
     "editName": "Namen bearbeiten",
     "editTrigger": "Auslöser bearbeiten",
     "enabled": "Aktiv",
+    "equals": "Gleich",
+    "equalsNot": "Ungleich",
     "false": "nein",
     "inputAstroTime": "Astrozeit:",
     "inputShiftInMinutes": "Verschoben um (in Minuten):",
@@ -36,6 +40,7 @@
     "offValue": "Wert für aus",
     "on": "an",
     "onValue": "Wert für an",
+    "removeCondition": "Bedingung entfernen",
     "removeSchedule": "Zeitplan entfernen",
     "removeTrigger": "Auslöser entfernen",
     "saveChanges": "Änderungen speichern",
@@ -56,5 +61,6 @@
     "trigger count": "Anzahl Auslöser",
     "true": "ja",
     "useAstroIcons": "Astro Icons verwenden",
-    "valueType": "Werttyp"
+    "valueType": "Werttyp",
+    "withConstant": "Mit Konstante"
 }

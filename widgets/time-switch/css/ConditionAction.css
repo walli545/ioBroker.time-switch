@@ -1,0 +1,54 @@
+.button {
+    filter:  var(--ts-widget-img-btn-filter, invert(1));
+    align-self: center;
+    cursor: pointer;
+}
+
+.button:active {
+    animation: ripple 0.2s linear forwards;
+}
+
+.view .condition {
+    margin-top: 10px;
+    width: 58px;
+    white-space: nowrap;
+    color: var(--ts-widget-condition-fg-color, --ts-widget-fg-color);
+    font-size: var(--ts-widget-condition-font-size, 1em);
+    display: var(--ts-widget-condition-display, block);
+}
+
+.condition-header {
+    flex-direction: row;
+    display: flex;
+    margin-top: 20px;
+}
+
+.condition-header div {
+    margin-right: 20px;
+}
+
+.condition-body {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 10px 20px 20px;
+}
+
+#selectConditionStateId1,#selectConditionStateId2,#selectSign {
+    font-size: 1.2rem;
+    height: 28px;
+}
+
+#inputConditionConstant {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+#selectSign {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#withConstant {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
