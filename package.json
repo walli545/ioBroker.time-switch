@@ -71,7 +71,7 @@
     "test": "npm run test:ts && npm run test:package",
     "coverage": "nyc npm run test:ts",
     "lint": "eslint --ext .ts src",
-    "depoly-docker": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./test.ps1"
+    "deploy-docker": "./deploy-docker.sh"
   },
   "nyc": {
     "include": [

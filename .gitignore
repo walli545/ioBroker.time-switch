@@ -2,6 +2,7 @@
 .idea
 node_modules
 nbproject
+iobroker-container-data
 
 # Sourcemaps
 maps/
@@ -18,7 +19,3 @@ coverage
 # i18n intermediate files
 admin/i18n/flat.txt
 admin/i18n/*/flat.txt
-
-# Upload scripts to dev env
-go_dev.sh
-go_dev_docker.sh
