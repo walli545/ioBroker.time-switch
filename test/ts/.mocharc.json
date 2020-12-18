@@ -1,0 +1,5 @@
+{
+	"require": ["test/mocha.setup.js", "ts-node/register", "source-map-support/register"],
+	"watch-extensions": "ts",
+	"spec": "test/ts/**/*.test.ts"
+}
