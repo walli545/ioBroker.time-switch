@@ -13,23 +13,23 @@ exports.TimeSwitch = void 0;
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require("@iobroker/adapter-core");
-const IoBrokerStateService_1 = require("./services/IoBrokerStateService");
-const TimeTriggerScheduler_1 = require("./scheduler/TimeTriggerScheduler");
-const TimeTriggerSerializer_1 = require("./serialization/TimeTriggerSerializer");
-const UniversalTriggerScheduler_1 = require("./scheduler/UniversalTriggerScheduler");
-const UniversalSerializer_1 = require("./serialization/UniversalSerializer");
-const IoBrokerLoggingService_1 = require("./services/IoBrokerLoggingService");
-const MessageService_1 = require("./services/MessageService");
-const OnOffStateActionSerializer_1 = require("./serialization/OnOffStateActionSerializer");
-const OnOffScheduleSerializer_1 = require("./serialization/OnOffScheduleSerializer");
 const node_schedule_1 = require("node-schedule");
-const AstroTriggerSerializer_1 = require("./serialization/AstroTriggerSerializer");
-const AstroTriggerScheduler_1 = require("./scheduler/AstroTriggerScheduler");
 const suncalc_1 = require("suncalc");
 const Coordinate_1 = require("./Coordinate");
+const AstroTriggerScheduler_1 = require("./scheduler/AstroTriggerScheduler");
+const TimeTriggerScheduler_1 = require("./scheduler/TimeTriggerScheduler");
+const UniversalTriggerScheduler_1 = require("./scheduler/UniversalTriggerScheduler");
+const AstroTriggerSerializer_1 = require("./serialization/AstroTriggerSerializer");
 const ConditionActionSerializer_1 = require("./serialization/ConditionActionSerializer");
 const StringStateAndConstantConditionSerializer_1 = require("./serialization/conditions/StringStateAndConstantConditionSerializer");
 const StringStateAndStateConditionSerializer_1 = require("./serialization/conditions/StringStateAndStateConditionSerializer");
+const OnOffScheduleSerializer_1 = require("./serialization/OnOffScheduleSerializer");
+const OnOffStateActionSerializer_1 = require("./serialization/OnOffStateActionSerializer");
+const TimeTriggerSerializer_1 = require("./serialization/TimeTriggerSerializer");
+const UniversalSerializer_1 = require("./serialization/UniversalSerializer");
+const IoBrokerLoggingService_1 = require("./services/IoBrokerLoggingService");
+const IoBrokerStateService_1 = require("./services/IoBrokerStateService");
+const MessageService_1 = require("./services/MessageService");
 class TimeSwitch extends utils.Adapter {
     constructor(options = {}) {
         super(Object.assign(Object.assign({}, options), { name: 'time-switch' }));
@@ -293,7 +293,7 @@ class TimeSwitch extends utils.Adapter {
             ]);
             return new OnOffScheduleSerializer_1.OnOffScheduleSerializer(new UniversalTriggerScheduler_1.UniversalTriggerScheduler([
                 new TimeTriggerScheduler_1.TimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService),
-                new AstroTriggerScheduler_1.AstroTriggerScheduler(new TimeTriggerScheduler_1.TimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService), suncalc_1.getTimes, yield this.getCoordinate()),
+                new AstroTriggerScheduler_1.AstroTriggerScheduler(new TimeTriggerScheduler_1.TimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService), suncalc_1.getTimes, yield this.getCoordinate(), this.loggingService),
             ]), actionSerializer, triggerSerializer);
         });
     }
