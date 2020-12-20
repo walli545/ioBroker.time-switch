@@ -22,6 +22,10 @@ class AstroTrigger extends BaseDailyTrigger_1.BaseDailyTrigger {
     getShiftInMinutes() {
         return this.shiftInMinutes;
     }
+    toString() {
+        return (`AstroTrigger {id=${this.getId()}, astroTime=${this.getAstroTime()},` +
+            ` shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`);
+    }
 }
 exports.AstroTrigger = AstroTrigger;
 AstroTrigger.MAX_SHIFT = 120;

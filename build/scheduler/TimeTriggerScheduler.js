@@ -13,14 +13,12 @@ class TimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         this.registered = [];
     }
     register(trigger) {
-        var _a;
         if (this.getAssociatedJob(trigger)) {
             throw new Error('Trigger is already registered.');
         }
-        (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Scheduling trigger ${trigger.getId()} at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`);
+        this.logger.logDebug(`Scheduling trigger ${trigger.getId()} at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`);
         const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
-            var _a;
-            (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Executing trigger with id ${trigger.getId()}`);
+            this.logger.logDebug(`Executing trigger with id ${trigger.getId()}`);
             trigger.getAction().execute();
         });
         this.registered.push([trigger, newJob]);

@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import * as TypeMoq from 'typemoq';
+import { Action } from '../../../src/actions/Action';
 import { AstroTime } from '../../../src/triggers/AstroTime';
 import { AstroTrigger } from '../../../src/triggers/AstroTrigger';
-import { AllWeekdays, Weekday } from '../../../src/triggers/Weekday';
 import { AstroTriggerBuilder } from '../../../src/triggers/AstroTriggerBuilder';
-import { Action } from '../../../src/actions/Action';
+import { AllWeekdays, Weekday } from '../../../src/triggers/Weekday';
 
 describe('AstroTrigger', () => {
 	describe('ctor and getter', () => {
@@ -173,6 +173,17 @@ describe('AstroTrigger', () => {
 			expect(have.getAstroTime()).to.equal(AstroTime.SolarNoon);
 			expect(have.getShiftInMinutes()).to.equal(-120);
 			expect(have.getWeekdays()).to.deep.equal([Weekday.Monday, Weekday.Wednesday, Weekday.Friday]);
+		});
+
+		it('toString', () => {
+			const have = new AstroTriggerBuilder()
+				.setId('8')
+				.setAction(actionMock)
+				.setAstroTime(AstroTime.SolarNoon)
+				.setShift(-120)
+				.setWeekdays([Weekday.Monday, Weekday.Wednesday, Weekday.Friday])
+				.build();
+			expect(have.toString()).to.equal('AstroTrigger {id=8, astroTime=solarNoon, shift=-120, weekdays=[1,3,5]}');
 		});
 	});
 

@@ -1,7 +1,7 @@
 <!--
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.2.0-pre.4"
+	version: "2.2.0-pre.5"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 
@@ -111,11 +111,12 @@
 	You can do "if" conditions and "for" cycles.
 
 -->
-<script id="tplTime-switchDevicePlan"
-		type="text/ejs"
-		class="vis-tpl"
-		data-vis-prev='<img src="widgets/time-switch/img/prev/prev-device-schedule.jpg" width="110px"></img>'
-		data-vis-attrs="
+<script
+	id="tplTime-switchDevicePlan"
+	type="text/ejs"
+	class="vis-tpl"
+	data-vis-prev='<img src="widgets/time-switch/img/prev/prev-device-schedule.jpg" width="110px"></img>'
+	data-vis-attrs="
 			dataId/id/onDataIdChange;
 			showId[true]/checkbox;
 			showManualSwitch[true]/checkbox;
@@ -129,9 +130,10 @@
 			conditionStatesCount[1]/number,1,5,1;
 			conditionStateId(1-conditionStatesCount)/id/onConditionStateIdChange;
 			conditionStateAlias(1-conditionStatesCount)/string"
-		data-vis-set="time-switch"
-		data-vis-type="ctrl"
-		data-vis-name="Schedule (On/Off)">
+	data-vis-set="time-switch"
+	data-vis-type="ctrl"
+	data-vis-name="Schedule (On/Off)"
+>
 	<% vis.binds['time-switch'].createOnOffWidget(this.data.wid, this.view, this.data, this.style); %>
 		<div style="width:300px; height: auto;" id="<%= this.data.attr('wid')%>" class="time-switch-widget vis-widget"></div>
 </script>

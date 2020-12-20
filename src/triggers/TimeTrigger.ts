@@ -1,6 +1,6 @@
+import { Action } from '../actions/Action';
 import { BaseDailyTrigger } from './BaseDailyTrigger';
 import { Weekday } from './Weekday';
-import { Action } from '../actions/Action';
 
 export class TimeTrigger extends BaseDailyTrigger {
 	private readonly hours: number;
@@ -24,5 +24,12 @@ export class TimeTrigger extends BaseDailyTrigger {
 
 	public getMinute(): number {
 		return this.minutes;
+	}
+
+	public toString(): string {
+		return (
+			`TimeTrigger {id=${this.getId()}, hour=${this.getHour()},` +
+			` minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`
+		);
 	}
 }
