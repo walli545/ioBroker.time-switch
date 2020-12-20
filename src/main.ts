@@ -1,27 +1,27 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from '@iobroker/adapter-core';
-import { IoBrokerStateService } from './services/IoBrokerStateService';
-import { TimeTriggerScheduler } from './scheduler/TimeTriggerScheduler';
-import { TimeTriggerSerializer } from './serialization/TimeTriggerSerializer';
-import { Trigger } from './triggers/Trigger';
-import { UniversalTriggerScheduler } from './scheduler/UniversalTriggerScheduler';
-import { Action } from './actions/Action';
-import { UniversalSerializer } from './serialization/UniversalSerializer';
-import { IoBrokerLoggingService } from './services/IoBrokerLoggingService';
-import { MessageService } from './services/MessageService';
-import { Schedule } from './schedules/Schedule';
-import { OnOffStateActionSerializer } from './serialization/OnOffStateActionSerializer';
-import { OnOffScheduleSerializer } from './serialization/OnOffScheduleSerializer';
 import { cancelJob, scheduleJob } from 'node-schedule';
-import { AstroTriggerSerializer } from './serialization/AstroTriggerSerializer';
-import { AstroTriggerScheduler } from './scheduler/AstroTriggerScheduler';
 import { getTimes } from 'suncalc';
-import { Coordinate } from './Coordinate';
-import { ConditionActionSerializer } from './serialization/ConditionActionSerializer';
+import { Action } from './actions/Action';
 import { Condition } from './actions/conditions/Condition';
+import { Coordinate } from './Coordinate';
+import { AstroTriggerScheduler } from './scheduler/AstroTriggerScheduler';
+import { TimeTriggerScheduler } from './scheduler/TimeTriggerScheduler';
+import { UniversalTriggerScheduler } from './scheduler/UniversalTriggerScheduler';
+import { Schedule } from './schedules/Schedule';
+import { AstroTriggerSerializer } from './serialization/AstroTriggerSerializer';
+import { ConditionActionSerializer } from './serialization/ConditionActionSerializer';
 import { StringStateAndConstantConditionSerializer } from './serialization/conditions/StringStateAndConstantConditionSerializer';
 import { StringStateAndStateConditionSerializer } from './serialization/conditions/StringStateAndStateConditionSerializer';
+import { OnOffScheduleSerializer } from './serialization/OnOffScheduleSerializer';
+import { OnOffStateActionSerializer } from './serialization/OnOffStateActionSerializer';
+import { TimeTriggerSerializer } from './serialization/TimeTriggerSerializer';
+import { UniversalSerializer } from './serialization/UniversalSerializer';
+import { IoBrokerLoggingService } from './services/IoBrokerLoggingService';
+import { IoBrokerStateService } from './services/IoBrokerStateService';
+import { MessageService } from './services/MessageService';
+import { Trigger } from './triggers/Trigger';
 
 // Augment the adapter.config object with the actual types
 declare global {
@@ -311,6 +311,7 @@ export class TimeSwitch extends utils.Adapter {
 					new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
 					getTimes,
 					await this.getCoordinate(),
+					this.loggingService,
 				),
 			]),
 			actionSerializer,

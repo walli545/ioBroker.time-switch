@@ -1,28 +1,30 @@
+import { expect } from 'chai';
+import { GetTimesResult } from 'suncalc';
 import * as TypeMoq from 'typemoq';
 import { It, Times } from 'typemoq';
-import { AstroTriggerScheduler } from '../../../src/scheduler/AstroTriggerScheduler';
-import { Coordinate } from '../../../src/Coordinate';
-import { TimeTriggerScheduler } from '../../../src/scheduler/TimeTriggerScheduler';
-import { GetTimesResult } from 'suncalc';
-import { TimeTrigger } from '../../../src/triggers/TimeTrigger';
-import { expect } from 'chai';
-import { AllWeekdays, Weekday } from '../../../src/triggers/Weekday';
-import { AstroTime } from '../../../src/triggers/AstroTime';
-import { AstroTrigger } from '../../../src/triggers/AstroTrigger';
 import { Action } from '../../../src/actions/Action';
+import { Coordinate } from '../../../src/Coordinate';
+import { AstroTriggerScheduler } from '../../../src/scheduler/AstroTriggerScheduler';
+import { TimeTriggerScheduler } from '../../../src/scheduler/TimeTriggerScheduler';
+import { LoggingService } from '../../../src/services/LoggingService';
+import { AstroTime } from '../../../src/triggers/AstroTime';
 import { AstroTriggerBuilder } from '../../../src/triggers/AstroTriggerBuilder';
+import { TimeTrigger } from '../../../src/triggers/TimeTrigger';
+import { AllWeekdays, Weekday } from '../../../src/triggers/Weekday';
 
 describe('AstroTriggerScheduler', () => {
 	let sut: AstroTriggerScheduler;
 	let timeTriggerScheduler: TypeMoq.IMock<TimeTriggerScheduler>;
 	let getTimesMock: TypeMoq.IMock<(date: Date, latitude: number, longitude: number) => GetTimesResult>;
 	let actionMock: TypeMoq.IMock<Action>;
+	let logMock: TypeMoq.IMock<LoggingService>;
 	const coordinate = new Coordinate(30, 50);
 
 	beforeEach(() => {
 		timeTriggerScheduler = TypeMoq.Mock.ofType<TimeTriggerScheduler>();
 		getTimesMock = TypeMoq.Mock.ofType<(date: Date, latitude: number, longitude: number) => GetTimesResult>();
-		sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
+		logMock = TypeMoq.Mock.ofType<LoggingService>();
+		sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate, logMock.object);
 		actionMock = TypeMoq.Mock.ofType<Action>();
 		timeTriggerScheduler.reset();
 	});
@@ -319,14 +321,19 @@ describe('AstroTriggerScheduler', () => {
 	});
 
 	describe('reschedule', () => {
-		it('registers reschedule on 00:00', () => {
+		it('registers reschedule on 01:00', () => {
 			timeTriggerScheduler.reset();
-			sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
+			sut = new AstroTriggerScheduler(
+				timeTriggerScheduler.object,
+				getTimesMock.object,
+				coordinate,
+				logMock.object,
+			);
 			timeTriggerScheduler.verify(
 				(s) =>
 					s.register(
 						It.is<TimeTrigger>((t) => {
-							expect(t.getHour()).to.equal(0);
+							expect(t.getHour()).to.equal(1);
 							expect(t.getMinute()).to.equal(0);
 							expect(t.getWeekdays()).to.deep.equal(AllWeekdays);
 							expect(t.getId()).to.equal('AstroTriggerScheduler-Rescheduler');
@@ -358,7 +365,12 @@ describe('AstroTriggerScheduler', () => {
 				.setAction(actionMock.object)
 				.build();
 
-			sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
+			sut = new AstroTriggerScheduler(
+				timeTriggerScheduler.object,
+				getTimesMock.object,
+				coordinate,
+				logMock.object,
+			);
 			sut.register(trigger);
 			timeTriggerScheduler.reset();
 
