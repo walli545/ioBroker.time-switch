@@ -1,7 +1,7 @@
 /*
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.2.0-pre.4"
+	version: "2.2.0-pre.5"
 
 	Copyright 2019 walli545 walli5446@gmail.com
 */
@@ -10,7 +10,7 @@
 // add translations for edit mode
 const iobSystemDic = systemDictionary;
 let timeSwitchDic;
-$.get('../time-switch.admin/words.js', function(script) {
+$.get('../time-switch.admin/words.js', function (script) {
 	let translation = script.substring(script.indexOf('{'), script.length);
 	translation = translation.substring(0, translation.lastIndexOf(';'));
 	timeSwitchDic = JSON.parse(translation);
@@ -20,7 +20,7 @@ $.get('../time-switch.admin/words.js', function(script) {
 
 // export vis binds for widget
 vis.binds['time-switch'] = {
-	version: '2.2.0-pre.4',
+	version: '2.2.0-pre.5',
 	showVersion: showVersion,
 	createOnOffWidget: createOnOffWidget,
 	onOffScheduleWidgets: {},
@@ -53,7 +53,7 @@ function createOnOffWidget(widgetId, view, data, style) {
 	const widgetElement = document.querySelector(`#${widgetId}`);
 	if (!widgetElement) {
 		console.warn('Widget not found, waiting ...');
-		return setTimeout(function() {
+		return setTimeout(function () {
 			vis.binds['time-switch'].createOnOffWidget(widgetId, view, data, style);
 		}, 100);
 	}
