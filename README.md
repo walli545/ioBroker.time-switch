@@ -30,10 +30,16 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
 ## Possible features in the future
 
 - Countdown trigger
-- Conditional actions
 - Switching of arbitrary values
 
 ## Changelog
+
+### 2.2.0
+* (walli545)
+    * (New) Conditional triggers that only execute when a certain condition is met. See xxx for more details. (#31)
+    * (New) Option to hide edit name button in widget (#119)
+    * (Fix) Astro triggers not executing on days after initial creation (#123)
+    * (Fix) Improved error handling (#61)
 
 ### 2.1.0
 * (walli545)
@@ -69,7 +75,7 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
 ## License
 MIT License
 
-Copyright (c) 2020 walli545 <walli5446@gmail.com>
+Copyright (c) 2019-2021 walli545 <walli5446@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,9 +1,9 @@
 /*
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.2.0-pre.5"
+	version: "2.2.0"
 
-	Copyright 2019 walli545 walli5446@gmail.com
+	Copyright 2019-2020 walli545 walli5446@gmail.com
 */
 'use strict';
 
@@ -20,7 +20,7 @@ $.get('../time-switch.admin/words.js', function (script) {
 
 // export vis binds for widget
 vis.binds['time-switch'] = {
-	version: '2.2.0-pre.5',
+	version: '2.2.0',
 	showVersion: showVersion,
 	createOnOffWidget: createOnOffWidget,
 	onOffScheduleWidgets: {},

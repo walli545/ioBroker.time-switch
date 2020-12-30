@@ -6,7 +6,7 @@ else
   container="iobroker"
 fi
 
-version="2.2.0-pre.5"
+version="2.2.0"
 
 echo "[1] Build..."
 npm run-script build | sed 's/^/  /'
