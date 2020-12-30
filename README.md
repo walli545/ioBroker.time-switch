@@ -36,7 +36,7 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
 
 ### 2.2.0
 * (walli545)
-    * (New) Conditional triggers that only execute when a certain condition is met. See xxx for more details. (#31)
+    * (New) Conditional triggers that only execute when a certain condition is met (#31)
     * (New) Option to hide edit name button in widget (#119)
     * (Fix) Astro triggers not executing on days after initial creation (#123)
     * (Fix) Improved error handling (#61)
@@ -56,7 +56,7 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
     * Value type can now be configured, this enables switching of real booleans and numbers (#19)
     * Added a new state for each schedule to disable/enable automatic switching (#24)
     * Added option to hide current value switch in widget (#23)
-    * Switching of multiple states with one schedule. This allows the creation of groups for devices of the same type.
+    * Switching of multiple states with one schedule. This allows the creation of groups for devices of the same type
     * Added translations to widget (#35)
     * Fixed widget not working on Safari and fully browser
 
