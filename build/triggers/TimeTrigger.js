@@ -20,5 +20,9 @@ class TimeTrigger extends BaseDailyTrigger_1.BaseDailyTrigger {
     getMinute() {
         return this.minutes;
     }
+    toString() {
+        return (`TimeTrigger {id=${this.getId()}, hour=${this.getHour()},` +
+            ` minute=${this.getMinute()}, weekdays=[${this.getWeekdays()}]}`);
+    }
 }
 exports.TimeTrigger = TimeTrigger;

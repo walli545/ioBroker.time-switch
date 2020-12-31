@@ -1,7 +1,7 @@
+import { Action } from '../actions/Action';
 import { AstroTime } from './AstroTime';
 import { BaseDailyTrigger } from './BaseDailyTrigger';
 import { Weekday } from './Weekday';
-import { Action } from '../actions/Action';
 
 export class AstroTrigger extends BaseDailyTrigger {
 	public static readonly MAX_SHIFT = 120;
@@ -32,5 +32,12 @@ export class AstroTrigger extends BaseDailyTrigger {
 
 	public getShiftInMinutes(): number {
 		return this.shiftInMinutes;
+	}
+
+	public toString(): string {
+		return (
+			`AstroTrigger {id=${this.getId()}, astroTime=${this.getAstroTime()},` +
+			` shift=${this.getShiftInMinutes()}, weekdays=[${this.getWeekdays()}]}`
+		);
 	}
 }

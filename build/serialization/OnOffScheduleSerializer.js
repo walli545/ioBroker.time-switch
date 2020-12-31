@@ -20,11 +20,10 @@ class OnOffScheduleSerializer {
         if (onAction instanceof OnOffStateAction_1.OnOffStateAction && offAction instanceof OnOffStateAction_1.OnOffStateAction) {
             const schedule = new OnOffSchedule_1.OnOffSchedule(onAction, offAction, this.triggerScheduler);
             schedule.setName(json.name);
-            const oldActionSerializer = this.replaceActionSerializerWithReference(schedule);
+            this.useActionReferenceSerializer(schedule);
             json.triggers.forEach((t) => {
                 schedule.addTrigger(this.triggerSerializer.deserialize(JSON.stringify(t)));
             });
-            this.actionSerializer.replaceSerializer(oldActionSerializer);
             return schedule;
         }
         else {
@@ -38,16 +37,22 @@ class OnOffScheduleSerializer {
             onAction: JSON.parse(this.actionSerializer.serialize(schedule.getOnAction())),
             offAction: JSON.parse(this.actionSerializer.serialize(schedule.getOffAction())),
         };
-        const oldActionSerializer = this.replaceActionSerializerWithReference(schedule);
+        this.useActionReferenceSerializer(schedule);
         json.triggers = schedule.getTriggers().map((t) => JSON.parse(this.triggerSerializer.serialize(t)));
-        this.actionSerializer.replaceSerializer(oldActionSerializer);
         return JSON.stringify(json);
     }
     getType() {
         return 'OnOffSchedule';
     }
-    replaceActionSerializerWithReference(schedule) {
-        return this.actionSerializer.replaceSerializer(new ActionReferenceSerializer_1.ActionReferenceSerializer(OnOffStateAction_1.OnOffStateAction.prototype.constructor.name, new Map([
+    getTriggerSerializer(schedule) {
+        if (schedule == null) {
+            throw new Error('Schedule may not be null/undefined');
+        }
+        this.useActionReferenceSerializer(schedule);
+        return this.triggerSerializer;
+    }
+    useActionReferenceSerializer(schedule) {
+        this.actionSerializer.useSerializer(new ActionReferenceSerializer_1.ActionReferenceSerializer(OnOffStateAction_1.OnOffStateAction.prototype.constructor.name, new Map([
             ['On', schedule.getOnAction()],
             ['Off', schedule.getOffAction()],
         ])));

@@ -95,6 +95,7 @@
 			}
 			triggers.forEach(t => {
 				const element = document.createElement('app-trigger-with-action');
+				element.setAttribute('widgetid', this.widgetId);
 				element.setAttribute('action', JSON.stringify(t.action));
 				delete t.action;
 				element.setAttribute('trigger', JSON.stringify(t));

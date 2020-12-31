@@ -1,16 +1,16 @@
 /*
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.1.0"
+	version: "2.2.0"
 
-	Copyright 2019 walli545 walli5446@gmail.com
+	Copyright 2019-2020 walli545 walli5446@gmail.com
 */
 'use strict';
 
 // add translations for edit mode
 const iobSystemDic = systemDictionary;
 let timeSwitchDic;
-$.get('../time-switch.admin/words.js', function(script) {
+$.get('../time-switch.admin/words.js', function (script) {
 	let translation = script.substring(script.indexOf('{'), script.length);
 	translation = translation.substring(0, translation.lastIndexOf(';'));
 	timeSwitchDic = JSON.parse(translation);
@@ -20,12 +20,14 @@ $.get('../time-switch.admin/words.js', function(script) {
 
 // export vis binds for widget
 vis.binds['time-switch'] = {
-	version: '2.1.0',
+	version: '2.2.0',
 	showVersion: showVersion,
 	createOnOffWidget: createOnOffWidget,
 	onOffScheduleWidgets: {},
 	onDataIdChange: onDataIdChange,
 	onStateIdChange: onStateIdChange,
+	onConditionStateIdChange: onConditionStateIdChange,
+	getConditionStateIdsAndAlias: getConditionStateIdsAndAlias,
 	sendMessage: sendMessage,
 	translate: translate,
 };
@@ -51,7 +53,7 @@ function createOnOffWidget(widgetId, view, data, style) {
 	const widgetElement = document.querySelector(`#${widgetId}`);
 	if (!widgetElement) {
 		console.warn('Widget not found, waiting ...');
-		return setTimeout(function() {
+		return setTimeout(function () {
 			vis.binds['time-switch'].createOnOffWidget(widgetId, view, data, style);
 		}, 100);
 	}
@@ -123,4 +125,24 @@ function onDataIdChange(widgetId, view, newId, attr, isCss, oldId) {
 function onStateIdChange(widgetId, view, newId, attr, isCss, oldId) {
 	console.log(`onStateIdChange ${widgetId} ${view} ${newId} ${oldId}`);
 	vis.views[view].widgets[widgetId].data.oid2 = newId;
+}
+
+function onConditionStateIdChange(widgetId, view, newId, attr, isCss, oldId) {
+	const conditionStateIds = getConditionStateIdsAndAlias(widgetId, view).map((i) => i.id);
+	for (let i = 0; i < conditionStateIds.length; i++) {
+		vis.views[view].widgets[widgetId].data[`oid${i + 4}`] = conditionStateIds[i];
+	}
+}
+
+function getConditionStateIdsAndAlias(widgetId) {
+	const data = vis.widgets[widgetId].data;
+	const count = Number.parseInt(data.conditionStatesCount, 10);
+	const ids = [];
+	for (let i = 1; i <= count; i++) {
+		const id = data[`conditionStateId${i}`];
+		if (id !== undefined && id !== '') {
+			ids.push({ id: id, alias: data[`conditionStateAlias${i}`] });
+		}
+	}
+	return ids;
 }

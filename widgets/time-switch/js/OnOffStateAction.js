@@ -30,6 +30,7 @@
 			const data = JSON.parse(this.getAttribute('data'));
 			data.name = val ? 'On' : 'Off';
 			this.setAttribute('data', JSON.stringify(data));
+			this.sr.dispatchEvent(new CustomEvent('data', { composed: true }));
 		}
 
 		get edit() {

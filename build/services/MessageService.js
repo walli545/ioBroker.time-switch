@@ -12,20 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageService = void 0;
 const TimeTriggerBuilder_1 = require("../triggers/TimeTriggerBuilder");
 const Weekday_1 = require("../triggers/Weekday");
-const OnOffStateAction_1 = require("../actions/OnOffStateAction");
 const OnOffSchedule_1 = require("../schedules/OnOffSchedule");
 const main_1 = require("../main");
-const ActionReferenceSerializer_1 = require("../serialization/ActionReferenceSerializer");
 const AstroTriggerBuilder_1 = require("../triggers/AstroTriggerBuilder");
 const AstroTime_1 = require("../triggers/AstroTime");
 class MessageService {
-    constructor(stateService, logger, scheduleIdToSchedule, triggerSerializer, actionSerializer, onOffScheduleSerializer) {
+    constructor(stateService, logger, scheduleIdToSchedule, createOnOffScheduleSerializer) {
         this.stateService = stateService;
         this.logger = logger;
         this.scheduleIdToSchedule = scheduleIdToSchedule;
-        this.triggerSerializer = triggerSerializer;
-        this.actionSerializer = actionSerializer;
-        this.onOffScheduleSerializer = onOffScheduleSerializer;
+        this.createOnOffScheduleSerializer = createOnOffScheduleSerializer;
         this.currentMessage = null;
     }
     handleMessage(message) {
@@ -73,10 +69,10 @@ class MessageService {
                     throw new Error('Unknown command received');
             }
             if (schedule instanceof OnOffSchedule_1.OnOffSchedule) {
-                yield this.stateService.setState(data.dataId, this.onOffScheduleSerializer.serialize(schedule));
+                yield this.stateService.setState(data.dataId, (yield this.createOnOffScheduleSerializer()).serialize(schedule));
             }
             else {
-                throw new Error('Cannot update schedule state after message, not serializer found for schedule');
+                throw new Error('Cannot update schedule state after message, no serializer found for schedule');
             }
             this.logger.logDebug('Finished message ' + message.command);
             this.currentMessage = null;
@@ -109,16 +105,12 @@ class MessageService {
         return __awaiter(this, void 0, void 0, function* () {
             let updated;
             if (schedule instanceof OnOffSchedule_1.OnOffSchedule) {
-                const oldActionSerializer = this.replaceActionSerializerWithReference(schedule);
-                try {
-                    updated = this.triggerSerializer.deserialize(triggerString);
-                }
-                finally {
-                    this.actionSerializer.replaceSerializer(oldActionSerializer);
-                }
+                updated = (yield this.createOnOffScheduleSerializer())
+                    .getTriggerSerializer(schedule)
+                    .deserialize(triggerString);
             }
             else {
-                updated = this.triggerSerializer.deserialize(triggerString);
+                throw new Error(`Can not deserialize trigger for schedule of type ${typeof schedule}`);
             }
             schedule.updateTrigger(updated);
         });
@@ -168,12 +160,6 @@ class MessageService {
             }
         }
         return newId.toString();
-    }
-    replaceActionSerializerWithReference(schedule) {
-        return this.actionSerializer.replaceSerializer(new ActionReferenceSerializer_1.ActionReferenceSerializer(OnOffStateAction_1.OnOffStateAction.prototype.constructor.name, new Map([
-            ['On', schedule.getOnAction()],
-            ['Off', schedule.getOffAction()],
-        ])));
     }
 }
 exports.MessageService = MessageService;

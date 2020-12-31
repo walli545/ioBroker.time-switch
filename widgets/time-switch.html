@@ -1,11 +1,11 @@
 <!--
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.1.0"
+	version: "2.2.0"
 
-	Copyright 2019 walli545 walli5446@gmail.com
+	Copyright 2019-2021 walli545 walli5446@gmail.com
 
-	Change counter: 19
+	Change counter: 21
 -->
 <!-- here you can include so many css as you want -->
 <link rel="stylesheet" href="widgets/time-switch/css/style.css" />
@@ -20,6 +20,7 @@
 <script src="widgets/time-switch/js/AstroTrigger.js"></script>
 <script src="widgets/time-switch/js/Weekdays.js"></script>
 <script src="widgets/time-switch/js/OnOffStateAction.js"></script>
+<script src="widgets/time-switch/js/ConditionAction.js"></script>
 <script type="module" src="widgets/time-switch/js/time-switch.js"></script>
 <!-- the full description of format in data-vis-attrs can be found here:
 	https://github.com/ioBroker/ioBroker.vis/blob/master/www/js/visEditInspect.js#L39
@@ -110,11 +111,12 @@
 	You can do "if" conditions and "for" cycles.
 
 -->
-<script id="tplTime-switchDevicePlan"
-		type="text/ejs"
-		class="vis-tpl"
-		data-vis-prev='<img src="widgets/time-switch/img/prev/prev-device-schedule.jpg" width="110px"></img>'
-		data-vis-attrs="
+<script
+	id="tplTime-switchDevicePlan"
+	type="text/ejs"
+	class="vis-tpl"
+	data-vis-prev='<img src="widgets/time-switch/img/prev/prev-device-schedule.jpg" width="110px"></img>'
+	data-vis-attrs="
 			dataId/id/onDataIdChange;
 			showId[true]/checkbox;
 			showManualSwitch[true]/checkbox;
@@ -123,10 +125,15 @@
 			offValue/string;
 			onValue/string;
 			statesCount[1]/number,1,10,1;
-			stateId(1-statesCount)/id/onStateIdChange"
-		data-vis-set="time-switch"
-		data-vis-type="ctrl"
-		data-vis-name="Schedule (On/Off)">
+			stateId(1-statesCount)/id/onStateIdChange;
+			showConditionIds[true]/checkbox;
+			conditionStatesCount[1]/number,1,5,1;
+			conditionStateId(1-conditionStatesCount)/id/onConditionStateIdChange;
+			conditionStateAlias(1-conditionStatesCount)/string"
+	data-vis-set="time-switch"
+	data-vis-type="ctrl"
+	data-vis-name="Schedule (On/Off)"
+>
 	<% vis.binds['time-switch'].createOnOffWidget(this.data.wid, this.view, this.data, this.style); %>
 		<div style="width:300px; height: auto;" id="<%= this.data.attr('wid')%>" class="time-switch-widget vis-widget"></div>
 </script>

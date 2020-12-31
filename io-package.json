@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "time-switch",
-        "version": "2.1.0",
+        "version": "2.2.0",
         "news": {
+            "2.2.0": {
+                "en": "Conditional trigger, fix for astro trigger and option to hide edit name button",
+                "de": "Bedingte Trigger, Fix für Astro Trigger und Option, den Button zum Ändern des Namens auszublenden.",
+                "ru": "Условный триггер, исправление для астрономического триггера и возможность скрыть кнопку редактирования имени",
+                "pt": "Gatilho condicional, correção para gatilho astro e opção para ocultar o botão de edição de nome",
+                "nl": "Voorwaardelijke trigger, fix voor astro-trigger en optie om de knop voor het bewerken van de naam te verbergen",
+                "fr": "Déclenchement conditionnel, correction du déclencheur astro et option pour masquer le bouton de modification du nom",
+                "it": "Trigger condizionale, correzione per trigger astro e opzione per nascondere il pulsante di modifica del nome",
+                "es": "Disparador condicional, corrección para el disparador astro y opción para ocultar el botón de editar nombre",
+                "pl": "Wyzwalacz warunkowy, poprawka dla wyzwalacza astro i opcja ukrycia przycisku edycji nazwy",
+                "zh-cn": "有条件的触发器，修复了astro触发器，并提供了隐藏编辑名称按钮的选项"
+            },
             "2.1.0": {
                 "en": "Astro trigger, custom designs with css properties",
                 "de": "Astro Trigger, Eigene Designs mit CSS custom properties",

@@ -4,14 +4,10 @@ import { LoggingService } from './LoggingService';
 import { Trigger } from '../triggers/Trigger';
 import { TimeTriggerBuilder } from '../triggers/TimeTriggerBuilder';
 import { AllWeekdays } from '../triggers/Weekday';
-import { UniversalSerializer } from '../serialization/UniversalSerializer';
 import { OnOffStateAction } from '../actions/OnOffStateAction';
 import { OnOffSchedule } from '../schedules/OnOffSchedule';
 import { OnOffScheduleSerializer } from '../serialization/OnOffScheduleSerializer';
 import { TimeSwitch } from '../main';
-import { Serializer } from '../serialization/Serializer';
-import { Action } from '../actions/Action';
-import { ActionReferenceSerializer } from '../serialization/ActionReferenceSerializer';
 import { DailyTriggerBuilder } from '../triggers/DailyTriggerBuilder';
 import { AstroTriggerBuilder } from '../triggers/AstroTriggerBuilder';
 import { AstroTime } from '../triggers/AstroTime';
@@ -23,9 +19,7 @@ export class MessageService {
 		private stateService: StateService,
 		private logger: LoggingService,
 		private scheduleIdToSchedule: Map<string, Schedule>,
-		private triggerSerializer: UniversalSerializer<Trigger>,
-		private actionSerializer: UniversalSerializer<Action>,
-		private onOffScheduleSerializer: OnOffScheduleSerializer,
+		private createOnOffScheduleSerializer: () => Promise<OnOffScheduleSerializer>,
 	) {}
 
 	public async handleMessage(message: ioBroker.Message): Promise<void> {
@@ -72,9 +66,12 @@ export class MessageService {
 				throw new Error('Unknown command received');
 		}
 		if (schedule instanceof OnOffSchedule) {
-			await this.stateService.setState(data.dataId, this.onOffScheduleSerializer.serialize(schedule));
+			await this.stateService.setState(
+				data.dataId,
+				(await this.createOnOffScheduleSerializer()).serialize(schedule),
+			);
 		} else {
-			throw new Error('Cannot update schedule state after message, not serializer found for schedule');
+			throw new Error('Cannot update schedule state after message, no serializer found for schedule');
 		}
 		this.logger.logDebug('Finished message ' + message.command);
 		this.currentMessage = null;
@@ -107,14 +104,11 @@ export class MessageService {
 	private async updateTrigger(schedule: Schedule, triggerString: string): Promise<void> {
 		let updated;
 		if (schedule instanceof OnOffSchedule) {
-			const oldActionSerializer = this.replaceActionSerializerWithReference(schedule);
-			try {
-				updated = this.triggerSerializer.deserialize(triggerString);
-			} finally {
-				this.actionSerializer.replaceSerializer(oldActionSerializer);
-			}
+			updated = (await this.createOnOffScheduleSerializer())
+				.getTriggerSerializer(schedule)
+				.deserialize(triggerString);
 		} else {
-			updated = this.triggerSerializer.deserialize(triggerString);
+			throw new Error(`Can not deserialize trigger for schedule of type ${typeof schedule}`);
 		}
 		schedule.updateTrigger(updated);
 	}
@@ -169,17 +163,5 @@ export class MessageService {
 			}
 		}
 		return newId.toString();
-	}
-
-	private replaceActionSerializerWithReference(schedule: OnOffSchedule): Serializer<Action> {
-		return this.actionSerializer.replaceSerializer(
-			new ActionReferenceSerializer(
-				OnOffStateAction.prototype.constructor.name,
-				new Map([
-					['On', schedule.getOnAction()],
-					['Off', schedule.getOffAction()],
-				]),
-			),
-		);
 	}
 }

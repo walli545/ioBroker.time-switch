@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AstroTriggerScheduler = void 0;
-const TriggerScheduler_1 = require("./TriggerScheduler");
 const AstroTrigger_1 = require("../triggers/AstroTrigger");
 const TimeTriggerBuilder_1 = require("../triggers/TimeTriggerBuilder");
 const Weekday_1 = require("../triggers/Weekday");
+const TriggerScheduler_1 = require("./TriggerScheduler");
 class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
     constructor(timeTriggerScheduler, getTimes, coordinate, logger) {
         super();
@@ -15,15 +15,13 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         this.registered = [];
         this.scheduled = [];
         this.rescheduleTrigger = new TimeTriggerBuilder_1.TimeTriggerBuilder()
-            .setId(`AstroTriggerScheduler-Rescheduler-${new Date().toTimeString()}`)
+            .setId(`AstroTriggerScheduler-Rescheduler`)
             .setWeekdays(Weekday_1.AllWeekdays)
-            .setHour(0)
+            .setHour(1)
             .setMinute(0)
             .setAction({
             execute: () => {
-                var _a;
-                /* istanbul ignore next */
-                (_a = this.logger) === null || _a === void 0 ? void 0 : _a.logDebug(`Rescheduling astro triggers`);
+                this.logger.logDebug(`Rescheduling astro triggers`);
                 this.scheduled.forEach((s) => this.timeTriggerScheduler.unregister(s[1]));
                 this.registered.forEach((r) => this.tryScheduleTriggerToday(r));
             },
@@ -32,13 +30,15 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         this.timeTriggerScheduler.register(this.rescheduleTrigger);
     }
     register(trigger) {
+        this.logger.logDebug(`Register trigger ${trigger}`);
         if (this.isRegistered(trigger)) {
-            throw new Error('Trigger is already registered.');
+            throw new Error(`Trigger ${trigger} is already registered.`);
         }
         this.registered.push(trigger);
         this.tryScheduleTriggerToday(trigger);
     }
     unregister(trigger) {
+        this.logger.logDebug(`Unregister trigger ${trigger}`);
         if (this.isRegistered(trigger)) {
             this.registered = this.registered.filter((t) => t.getId() !== trigger.getId());
             if (this.isScheduledToday(trigger)) {
@@ -52,7 +52,7 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
             }
         }
         else {
-            throw new Error('Trigger is not registered.');
+            throw new Error(`Trigger ${trigger} is not registered.`);
         }
     }
     destroy() {
@@ -66,6 +66,7 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
     tryScheduleTriggerToday(trigger) {
         const now = new Date();
         const next = this.nextDate(trigger);
+        this.logger.logDebug(`Trying to schedule ${trigger} at ${next} (now is ${now}, day ${now.getDay()})`);
         if (next >= now && trigger.getWeekdays().includes(now.getDay())) {
             const timeTrigger = new TimeTriggerBuilder_1.TimeTriggerBuilder()
                 .setId(`TimeTriggerForAstroTrigger:${trigger.getId()}`)
@@ -74,12 +75,17 @@ class AstroTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
                 .setWeekdays([next.getDay()])
                 .setAction({
                 execute: () => {
+                    this.logger.logDebug(`Executing trigger ${trigger}`);
                     trigger.getAction().execute();
                 },
             })
                 .build();
+            this.logger.logDebug(`Scheduled with ${timeTrigger}`);
             this.timeTriggerScheduler.register(timeTrigger);
             this.scheduled.push([trigger.getId(), timeTrigger]);
+        }
+        else {
+            this.logger.logDebug(`Didn't schedule`);
         }
     }
     isRegistered(trigger) {

@@ -1,8 +1,8 @@
-import * as TypeMoq from 'typemoq';
 import { expect } from 'chai';
-import { Weekday } from '../../../src/triggers/Weekday';
-import { TimeTriggerBuilder } from '../../../src/triggers/TimeTriggerBuilder';
+import * as TypeMoq from 'typemoq';
 import { Action } from '../../../src/actions/Action';
+import { TimeTriggerBuilder } from '../../../src/triggers/TimeTriggerBuilder';
+import { Weekday } from '../../../src/triggers/Weekday';
 
 describe('TimeTrigger', () => {
 	describe('ctor, getter and setter', () => {
@@ -255,6 +255,17 @@ describe('TimeTrigger', () => {
 			expect(have.getMinute()).to.equal(30);
 			expect(have.getWeekdays().length).to.equal(3);
 			expect(have.getAction()).to.equal(dummyAction);
+		});
+
+		it('toString', () => {
+			const have = new TimeTriggerBuilder()
+				.setId('0')
+				.setHour(12)
+				.setMinute(30)
+				.setWeekdays([Weekday.Monday, Weekday.Wednesday, Weekday.Friday])
+				.setAction(dummyAction)
+				.build();
+			expect(have.toString()).to.equal('TimeTrigger {id=0, hour=12, minute=30, weekdays=[1,3,5]}');
 		});
 
 		it('sets another action', () => {

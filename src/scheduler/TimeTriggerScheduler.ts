@@ -1,8 +1,8 @@
 import { Job, JobCallback, RecurrenceRule } from 'node-schedule';
+import { LoggingService } from '../services/LoggingService';
 import { TimeTrigger } from '../triggers/TimeTrigger';
 import { Trigger } from '../triggers/Trigger';
 import { TriggerScheduler } from './TriggerScheduler';
-import { LoggingService } from '../services/LoggingService';
 
 export class TimeTriggerScheduler extends TriggerScheduler {
 	private registered: [TimeTrigger, Job][] = [];
@@ -10,32 +10,31 @@ export class TimeTriggerScheduler extends TriggerScheduler {
 	constructor(
 		private scheduleJob: (rule: RecurrenceRule, callback: JobCallback) => Job,
 		private cancelJob: (job: Job) => boolean,
-		private logger?: LoggingService,
+		private logger: LoggingService,
 	) {
 		super();
 	}
 
 	public register(trigger: TimeTrigger): void {
+		this.logger.logDebug(`Register trigger ${trigger}`);
 		if (this.getAssociatedJob(trigger)) {
-			throw new Error('Trigger is already registered.');
+			throw new Error(`Trigger ${trigger} is already registered.`);
 		}
-		this.logger?.logDebug(
-			`Scheduling trigger ${trigger.getId()} at ${trigger.getHour()}:${trigger.getMinute()} on ${trigger.getWeekdays()}`,
-		);
 		const newJob = this.scheduleJob(this.createRecurrenceRule(trigger), () => {
-			this.logger?.logDebug(`Executing trigger with id ${trigger.getId()}`);
+			this.logger.logDebug(`Executing trigger ${trigger}`);
 			trigger.getAction().execute();
 		});
 		this.registered.push([trigger, newJob]);
 	}
 
 	public unregister(trigger: TimeTrigger): void {
+		this.logger.logDebug(`Unregister trigger ${trigger}`);
 		const job = this.getAssociatedJob(trigger);
 		if (job) {
 			this.cancelJob(job);
 			this.removeTrigger(trigger);
 		} else {
-			throw new Error('Trigger is not registered.');
+			throw new Error(`Trigger ${trigger} is not registered.`);
 		}
 	}
 

@@ -8,6 +8,8 @@ import { Trigger } from '../../../src/triggers/Trigger';
 import { OnOffStateActionBuilder } from '../../../src/actions/OnOffStateActionBuilder';
 import { StateService } from '../../../src/services/StateService';
 import { Action } from '../../../src/actions/Action';
+import { ConditionAction } from '../../../src/actions/ConditionAction';
+import { Condition } from '../../../src/actions/conditions/Condition';
 
 describe('OnOffSchedule', () => {
 	let onAction: TypeMoq.IMock<OnOffStateAction<number>>;
@@ -84,11 +86,11 @@ describe('OnOffSchedule', () => {
 
 			sut.setEnabled(true);
 
-			triggerScheduler.verify(s => s.register(t1.object), Times.once());
-			triggerScheduler.verify(s => s.register(t2.object), Times.once());
-			triggerScheduler.verify(s => s.register(It.isAny()), Times.exactly(2));
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.destroy(), Times.never());
+			triggerScheduler.verify((s) => s.register(t1.object), Times.once());
+			triggerScheduler.verify((s) => s.register(t2.object), Times.once());
+			triggerScheduler.verify((s) => s.register(It.isAny()), Times.exactly(2));
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.destroy(), Times.never());
 			expect(sut.isEnabled()).to.be.true;
 		});
 
@@ -102,9 +104,9 @@ describe('OnOffSchedule', () => {
 
 			sut.setEnabled(false);
 
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.destroy(), Times.never());
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.destroy(), Times.never());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
 			expect(sut.isEnabled()).to.be.false;
 		});
 
@@ -118,9 +120,9 @@ describe('OnOffSchedule', () => {
 
 			sut.setEnabled(false);
 
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.destroy(), Times.once());
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.destroy(), Times.once());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
 			expect(sut.isEnabled()).to.be.false;
 		});
 
@@ -134,9 +136,9 @@ describe('OnOffSchedule', () => {
 
 			sut.setEnabled(true);
 
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.destroy(), Times.never());
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.destroy(), Times.never());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
 			expect(sut.isEnabled()).to.be.true;
 		});
 	});
@@ -170,14 +172,14 @@ describe('OnOffSchedule', () => {
 			sut.setEnabled(true);
 			const t = createMockTrigger('1');
 			sut.addTrigger(t.object);
-			triggerScheduler.verify(s => s.register(t.object), Times.once());
+			triggerScheduler.verify((s) => s.register(t.object), Times.once());
 		});
 
 		it('should not register trigger when disabled', () => {
 			sut.setEnabled(false);
 			const t = createMockTrigger('1');
 			sut.addTrigger(t.object);
-			triggerScheduler.verify(s => s.register(t.object), Times.never());
+			triggerScheduler.verify((s) => s.register(t.object), Times.never());
 		});
 	});
 
@@ -201,9 +203,9 @@ describe('OnOffSchedule', () => {
 			const t = createMockTrigger('1');
 			sut.addTrigger(t.object);
 			sut.removeTrigger('1');
-			triggerScheduler.verify(s => s.unregister(t.object), Times.once());
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.once());
-			triggerScheduler.verify(s => s.destroy(), Times.never());
+			triggerScheduler.verify((s) => s.unregister(t.object), Times.once());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.once());
+			triggerScheduler.verify((s) => s.destroy(), Times.never());
 		});
 
 		it('should not unregister trigger when disabled', () => {
@@ -211,8 +213,8 @@ describe('OnOffSchedule', () => {
 			const t = createMockTrigger('1');
 			sut.addTrigger(t.object);
 			sut.removeTrigger('1');
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.destroy(), Times.never());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.destroy(), Times.never());
 		});
 	});
 
@@ -254,9 +256,9 @@ describe('OnOffSchedule', () => {
 
 			sut.updateTrigger(newTrigger.object);
 
-			triggerScheduler.verify(s => s.unregister(oldTrigger.object), Times.once());
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.once());
-			triggerScheduler.verify(s => s.destroy(), Times.never());
+			triggerScheduler.verify((s) => s.unregister(oldTrigger.object), Times.once());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.once());
+			triggerScheduler.verify((s) => s.destroy(), Times.never());
 		});
 
 		it('should not unregister old trigger when disabled', () => {
@@ -268,8 +270,8 @@ describe('OnOffSchedule', () => {
 
 			sut.updateTrigger(newTrigger.object);
 
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
-			triggerScheduler.verify(s => s.destroy(), Times.never());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.destroy(), Times.never());
 		});
 
 		it('should register new trigger when enabled', () => {
@@ -281,8 +283,8 @@ describe('OnOffSchedule', () => {
 
 			sut.updateTrigger(newTrigger.object);
 
-			triggerScheduler.verify(s => s.register(newTrigger.object), Times.once());
-			triggerScheduler.verify(s => s.register(It.isAny()), Times.once());
+			triggerScheduler.verify((s) => s.register(newTrigger.object), Times.once());
+			triggerScheduler.verify((s) => s.register(It.isAny()), Times.once());
 		});
 
 		it('should not register new trigger when disabled', () => {
@@ -294,7 +296,7 @@ describe('OnOffSchedule', () => {
 
 			sut.updateTrigger(newTrigger.object);
 
-			triggerScheduler.verify(s => s.register(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.register(It.isAny()), Times.never());
 		});
 	});
 
@@ -319,8 +321,8 @@ describe('OnOffSchedule', () => {
 
 			sut.destroy();
 
-			triggerScheduler.verify(s => s.destroy(), Times.once());
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.destroy(), Times.once());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
 		});
 
 		it('should not unregister all triggers when disabled', () => {
@@ -333,8 +335,8 @@ describe('OnOffSchedule', () => {
 
 			sut.destroy();
 
-			triggerScheduler.verify(s => s.destroy(), Times.never());
-			triggerScheduler.verify(s => s.unregister(It.isAny()), Times.never());
+			triggerScheduler.verify((s) => s.destroy(), Times.never());
+			triggerScheduler.verify((s) => s.unregister(It.isAny()), Times.never());
 		});
 	});
 
@@ -362,12 +364,12 @@ describe('OnOffSchedule', () => {
 				.setIdsOfStatesToSet(['ids'])
 				.setStateService(TypeMoq.Mock.ofType<StateService>().object)
 				.build();
-			trigger.setup(t => t.getAction()).returns(_ => action);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
 			sut.addTrigger(trigger.object);
 
 			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
 			sut.setOnAction(newAction);
-			trigger.verify(t => t.setAction(newAction), Times.once());
+			trigger.verify((t) => t.setAction(newAction), Times.once());
 		});
 
 		it('should not set new on action to triggers with OnOffStateActions with boolean value false', () => {
@@ -379,23 +381,79 @@ describe('OnOffSchedule', () => {
 				.setIdsOfStatesToSet(['ids'])
 				.setStateService(TypeMoq.Mock.ofType<StateService>().object)
 				.build();
-			trigger.setup(t => t.getAction()).returns(_ => action);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
 			sut.addTrigger(trigger.object);
 
 			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
 			sut.setOnAction(newAction);
-			trigger.verify(t => t.setAction(It.isAny()), Times.never());
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
 		});
 
 		it('should not set new on action to triggers with another type of action', () => {
 			const trigger = createMockTrigger('1');
 			const action = TypeMoq.Mock.ofType<Action>();
-			trigger.setup(t => t.getAction()).returns(_ => action.object);
+			trigger.setup((t) => t.getAction()).returns((_) => action.object);
 			sut.addTrigger(trigger.object);
 
 			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
 			sut.setOnAction(newAction);
-			trigger.verify(t => t.setAction(It.isAny()), Times.never());
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
+		});
+
+		it('should set new on action to triggers with ConditionActions decorating OnOffStateActions with boolean value true', () => {
+			const trigger = createMockTrigger('1');
+			const onOffStateAction = new OnOffStateActionBuilder()
+				.setOnValue('on')
+				.setOffValue('off')
+				.setBooleanValue(true)
+				.setIdsOfStatesToSet(['ids'])
+				.setStateService(TypeMoq.Mock.ofType<StateService>().object)
+				.build();
+			const conditionMock = TypeMoq.Mock.ofType<Condition>();
+			const action = new ConditionAction(conditionMock.object, onOffStateAction);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
+			sut.addTrigger(trigger.object);
+
+			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
+			sut.setOnAction(newAction);
+			expect(action.getAction()).to.equal(newAction);
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
+		});
+
+		it('should not set new on action to triggers with ConditionActions decorating OnOffStateActions with boolean value false', () => {
+			const trigger = createMockTrigger('1');
+			const onOffStateAction = new OnOffStateActionBuilder()
+				.setOnValue('on')
+				.setOffValue('off')
+				.setBooleanValue(false)
+				.setIdsOfStatesToSet(['ids'])
+				.setStateService(TypeMoq.Mock.ofType<StateService>().object)
+				.build();
+			const conditionMock = TypeMoq.Mock.ofType<Condition>();
+			const action = new ConditionAction(conditionMock.object, onOffStateAction);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
+			sut.addTrigger(trigger.object);
+
+			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
+			sut.setOnAction(newAction);
+			expect(action.getAction()).not.to.equal(newAction);
+			expect(action.getAction()).to.equal(onOffStateAction);
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
+		});
+
+		it('should not set new on action to triggers with ConditionActions decorating another type of action', () => {
+			const trigger = createMockTrigger('1');
+			const decoratedAction = TypeMoq.Mock.ofType<Action>().object;
+			const conditionMock = TypeMoq.Mock.ofType<Condition>();
+			const action = new ConditionAction(conditionMock.object, decoratedAction);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
+			sut.addTrigger(trigger.object);
+
+			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
+			sut.setOnAction(newAction);
+			expect(action.getAction()).not.to.equal(newAction);
+			expect(action.getAction()).to.equal(decoratedAction);
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
 		});
 	});
 
@@ -423,12 +481,12 @@ describe('OnOffSchedule', () => {
 				.setIdsOfStatesToSet(['ids'])
 				.setStateService(TypeMoq.Mock.ofType<StateService>().object)
 				.build();
-			trigger.setup(t => t.getAction()).returns(_ => action);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
 			sut.addTrigger(trigger.object);
 
 			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
 			sut.setOffAction(newAction);
-			trigger.verify(t => t.setAction(newAction), Times.once());
+			trigger.verify((t) => t.setAction(newAction), Times.once());
 		});
 
 		it('should not set new off action to triggers with OnOffStateActions with boolean value true', () => {
@@ -440,29 +498,85 @@ describe('OnOffSchedule', () => {
 				.setIdsOfStatesToSet(['ids'])
 				.setStateService(TypeMoq.Mock.ofType<StateService>().object)
 				.build();
-			trigger.setup(t => t.getAction()).returns(_ => action);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
 			sut.addTrigger(trigger.object);
 
 			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
 			sut.setOffAction(newAction);
-			trigger.verify(t => t.setAction(It.isAny()), Times.never());
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
 		});
 
 		it('should not set new off action to triggers with another type of action', () => {
 			const trigger = createMockTrigger('1');
 			const action = TypeMoq.Mock.ofType<Action>();
-			trigger.setup(t => t.getAction()).returns(_ => action.object);
+			trigger.setup((t) => t.getAction()).returns((_) => action.object);
 			sut.addTrigger(trigger.object);
 
 			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
 			sut.setOffAction(newAction);
-			trigger.verify(t => t.setAction(It.isAny()), Times.never());
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
+		});
+
+		it('should set new off action to triggers with ConditionActions decorating OnOffStateActions with boolean value false', () => {
+			const trigger = createMockTrigger('1');
+			const onOffStateAction = new OnOffStateActionBuilder()
+				.setOnValue('on')
+				.setOffValue('off')
+				.setBooleanValue(false)
+				.setIdsOfStatesToSet(['ids'])
+				.setStateService(TypeMoq.Mock.ofType<StateService>().object)
+				.build();
+			const conditionMock = TypeMoq.Mock.ofType<Condition>();
+			const action = new ConditionAction(conditionMock.object, onOffStateAction);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
+			sut.addTrigger(trigger.object);
+
+			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
+			sut.setOffAction(newAction);
+			expect(action.getAction()).to.equal(newAction);
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
+		});
+
+		it('should not set new off action to triggers with ConditionActions decorating OnOffStateActions with boolean value true', () => {
+			const trigger = createMockTrigger('1');
+			const onOffStateAction = new OnOffStateActionBuilder()
+				.setOnValue('on')
+				.setOffValue('off')
+				.setBooleanValue(true)
+				.setIdsOfStatesToSet(['ids'])
+				.setStateService(TypeMoq.Mock.ofType<StateService>().object)
+				.build();
+			const conditionMock = TypeMoq.Mock.ofType<Condition>();
+			const action = new ConditionAction(conditionMock.object, onOffStateAction);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
+			sut.addTrigger(trigger.object);
+
+			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
+			sut.setOffAction(newAction);
+			expect(action.getAction()).not.to.equal(newAction);
+			expect(action.getAction()).to.equal(onOffStateAction);
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
+		});
+
+		it('should not set new off action to triggers with ConditionActions decorating another type of action', () => {
+			const trigger = createMockTrigger('1');
+			const decoratedAction = TypeMoq.Mock.ofType<Action>().object;
+			const conditionMock = TypeMoq.Mock.ofType<Condition>();
+			const action = new ConditionAction(conditionMock.object, decoratedAction);
+			trigger.setup((t) => t.getAction()).returns((_) => action);
+			sut.addTrigger(trigger.object);
+
+			const newAction = TypeMoq.Mock.ofType<OnOffStateAction<string>>().object;
+			sut.setOffAction(newAction);
+			expect(action.getAction()).not.to.equal(newAction);
+			expect(action.getAction()).to.equal(decoratedAction);
+			trigger.verify((t) => t.setAction(It.isAny()), Times.never());
 		});
 	});
 
 	function createMockTrigger(id: string): IMock<Trigger> {
 		const t = TypeMoq.Mock.ofType<Trigger>();
-		t.setup(t => t.getId()).returns(_ => id);
+		t.setup((t) => t.getId()).returns((_) => id);
 		return t;
 	}
 });

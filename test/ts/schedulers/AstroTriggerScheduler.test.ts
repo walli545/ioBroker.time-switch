@@ -1,28 +1,30 @@
+import { expect } from 'chai';
+import { GetTimesResult } from 'suncalc';
 import * as TypeMoq from 'typemoq';
 import { It, Times } from 'typemoq';
-import { AstroTriggerScheduler } from '../../../src/scheduler/AstroTriggerScheduler';
-import { Coordinate } from '../../../src/Coordinate';
-import { TimeTriggerScheduler } from '../../../src/scheduler/TimeTriggerScheduler';
-import { GetTimesResult } from 'suncalc';
-import { TimeTrigger } from '../../../src/triggers/TimeTrigger';
-import { expect } from 'chai';
-import { AllWeekdays, Weekday } from '../../../src/triggers/Weekday';
-import { AstroTime } from '../../../src/triggers/AstroTime';
-import { AstroTrigger } from '../../../src/triggers/AstroTrigger';
 import { Action } from '../../../src/actions/Action';
+import { Coordinate } from '../../../src/Coordinate';
+import { AstroTriggerScheduler } from '../../../src/scheduler/AstroTriggerScheduler';
+import { TimeTriggerScheduler } from '../../../src/scheduler/TimeTriggerScheduler';
+import { LoggingService } from '../../../src/services/LoggingService';
+import { AstroTime } from '../../../src/triggers/AstroTime';
 import { AstroTriggerBuilder } from '../../../src/triggers/AstroTriggerBuilder';
+import { TimeTrigger } from '../../../src/triggers/TimeTrigger';
+import { AllWeekdays, Weekday } from '../../../src/triggers/Weekday';
 
 describe('AstroTriggerScheduler', () => {
 	let sut: AstroTriggerScheduler;
 	let timeTriggerScheduler: TypeMoq.IMock<TimeTriggerScheduler>;
 	let getTimesMock: TypeMoq.IMock<(date: Date, latitude: number, longitude: number) => GetTimesResult>;
 	let actionMock: TypeMoq.IMock<Action>;
+	let logMock: TypeMoq.IMock<LoggingService>;
 	const coordinate = new Coordinate(30, 50);
 
 	beforeEach(() => {
 		timeTriggerScheduler = TypeMoq.Mock.ofType<TimeTriggerScheduler>();
 		getTimesMock = TypeMoq.Mock.ofType<(date: Date, latitude: number, longitude: number) => GetTimesResult>();
-		sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
+		logMock = TypeMoq.Mock.ofType<LoggingService>();
+		sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate, logMock.object);
 		actionMock = TypeMoq.Mock.ofType<Action>();
 		timeTriggerScheduler.reset();
 	});
@@ -34,7 +36,7 @@ describe('AstroTriggerScheduler', () => {
 	describe('register', () => {
 		it('should schedule trigger if astro time is in the future', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 
 			sut.register(
@@ -47,7 +49,7 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
 			verifyRegisterTimeTrigger(
 				sunriseDate.getHours(),
 				sunriseDate.getMinutes(),
@@ -58,7 +60,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should schedule trigger if astro time is in the future (with positive shift)', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: new Date(sunriseDate) } as any) as GetTimesResult);
 
 			sut.register(
@@ -71,7 +73,7 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
 			sunriseDate.setMinutes(sunriseDate.getMinutes() + 20);
 			verifyRegisterTimeTrigger(
 				sunriseDate.getHours(),
@@ -83,7 +85,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should schedule trigger if astro time is in the future (with negative shift)', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 35);
 			setupGetTimes(({ sunrise: new Date(sunriseDate) } as any) as GetTimesResult);
 
 			sut.register(
@@ -96,7 +98,7 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
 			sunriseDate.setMinutes(sunriseDate.getMinutes() - 33);
 			verifyRegisterTimeTrigger(
 				sunriseDate.getHours(),
@@ -108,7 +110,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should call actions execute() when scheduled time trigger is executed', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: new Date(sunriseDate) } as any) as GetTimesResult);
 
 			sut.register(
@@ -120,11 +122,11 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 			timeTriggerScheduler.verify(
-				s =>
+				(s) =>
 					s.register(
-						It.is<TimeTrigger>(t => {
+						It.is<TimeTrigger>((t) => {
 							t.getAction().execute();
-							actionMock.verify(a => a.execute(), Times.once());
+							actionMock.verify((a) => a.execute(), Times.once());
 							return true;
 						}),
 					),
@@ -134,7 +136,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should not schedule trigger if astro time is in the past', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() - 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() - 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 
 			sut.register(
@@ -147,13 +149,13 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.never());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			timeTriggerScheduler.verify((s) => s.register(It.isAny()), Times.never());
 		});
 
 		it('should not schedule trigger if astro time is in the past (due to negative shift)', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 
 			sut.register(
@@ -166,13 +168,13 @@ describe('AstroTriggerScheduler', () => {
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.never());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			timeTriggerScheduler.verify((s) => s.register(It.isAny()), Times.never());
 		});
 
 		it('should not schedule trigger if today is not in weekdays', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() - 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() - 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 
 			sut.register(
@@ -180,13 +182,13 @@ describe('AstroTriggerScheduler', () => {
 					.setId('1')
 					.setAstroTime(AstroTime.Sunrise)
 					.setShift(0)
-					.setWeekdays(AllWeekdays.filter(w => w !== sunriseDate.getDay()))
+					.setWeekdays(AllWeekdays.filter((w) => w !== sunriseDate.getDay()))
 					.setAction(actionMock.object)
 					.build(),
 			);
 
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.never());
+			getTimesMock.verify((g) => g(It.isAny(), It.isAny(), It.isAny()), Times.once());
+			timeTriggerScheduler.verify((s) => s.register(It.isAny()), Times.never());
 		});
 
 		it('throws when trigger is already registered', () => {
@@ -216,7 +218,7 @@ describe('AstroTriggerScheduler', () => {
 
 		it('should unregister scheduled time trigger for today', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 			const trigger = new AstroTriggerBuilder()
 				.setId('1')
@@ -232,9 +234,9 @@ describe('AstroTriggerScheduler', () => {
 			sut.unregister(trigger);
 
 			timeTriggerScheduler.verify(
-				t =>
+				(t) =>
 					t.unregister(
-						It.is<TimeTrigger>(t => {
+						It.is<TimeTrigger>((t) => {
 							expect(t.getHour()).to.equal(sunriseDate.getHours());
 							expect(t.getMinute()).to.equal(sunriseDate.getMinutes());
 							expect(t.getWeekdays()).to.deep.equal([sunriseDate.getDay()]);
@@ -244,14 +246,14 @@ describe('AstroTriggerScheduler', () => {
 					),
 				Times.once(),
 			);
-			timeTriggerScheduler.verify(t => t.unregister(It.isAny()), Times.once());
+			timeTriggerScheduler.verify((t) => t.unregister(It.isAny()), Times.once());
 		});
 
 		it('should keep other scheduled triggers', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
 			const sunsetDate = new Date(sunriseDate);
-			sunsetDate.setHours(sunsetDate.getMinutes() + 1);
+			sunsetDate.setMinutes(sunsetDate.getMinutes() + 1);
 			setupGetTimes(({ sunrise: sunriseDate, sunset: sunsetDate } as any) as GetTimesResult);
 			const trigger1 = new AstroTriggerBuilder()
 				.setId('1')
@@ -275,9 +277,9 @@ describe('AstroTriggerScheduler', () => {
 			sut.unregister(trigger1);
 
 			timeTriggerScheduler.verify(
-				t =>
+				(t) =>
 					t.unregister(
-						It.is<TimeTrigger>(t => {
+						It.is<TimeTrigger>((t) => {
 							expect(t.getHour()).to.equal(sunriseDate.getHours());
 							expect(t.getMinute()).to.equal(sunriseDate.getMinutes());
 							expect(t.getWeekdays()).to.deep.equal([sunriseDate.getDay()]);
@@ -287,12 +289,12 @@ describe('AstroTriggerScheduler', () => {
 					),
 				Times.once(),
 			);
-			timeTriggerScheduler.verify(t => t.unregister(It.isAny()), Times.once());
+			timeTriggerScheduler.verify((t) => t.unregister(It.isAny()), Times.once());
 		});
 
 		it('should not unregister time trigger when not scheduled for today', () => {
 			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() - 1);
+			sunriseDate.setMinutes(sunriseDate.getMinutes() - 1);
 			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
 			const trigger = new AstroTriggerBuilder()
 				.setId('1')
@@ -307,151 +309,107 @@ describe('AstroTriggerScheduler', () => {
 
 			sut.unregister(trigger);
 
-			timeTriggerScheduler.verify(t => t.unregister(It.isAny()), Times.never());
+			timeTriggerScheduler.verify((t) => t.unregister(It.isAny()), Times.never());
 		});
 	});
 
 	describe('destroy', () => {
 		it('should destroy time trigger scheduler', () => {
 			sut.destroy();
-			timeTriggerScheduler.verify(s => s.destroy(), Times.once());
+			timeTriggerScheduler.verify((s) => s.destroy(), Times.once());
 		});
 	});
 
 	describe('reschedule', () => {
-		it('registers reschedule on 00:00', () => {
+		it('registers reschedule on 01:00', () => {
 			timeTriggerScheduler.reset();
-			sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
+			sut = new AstroTriggerScheduler(
+				timeTriggerScheduler.object,
+				getTimesMock.object,
+				coordinate,
+				logMock.object,
+			);
 			timeTriggerScheduler.verify(
-				s =>
+				(s) =>
 					s.register(
-						It.is<TimeTrigger>(t => {
-							expect(t.getHour()).to.equal(0);
+						It.is<TimeTrigger>((t) => {
+							expect(t.getHour()).to.equal(1);
 							expect(t.getMinute()).to.equal(0);
 							expect(t.getWeekdays()).to.deep.equal(AllWeekdays);
-							expect(t.getId().startsWith('AstroTriggerScheduler-Rescheduler-')).to.be.true;
+							expect(t.getId()).to.equal('AstroTriggerScheduler-Rescheduler');
 							return true;
 						}),
 					),
 				Times.once(),
 			);
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.once());
-		});
-
-		it('should schedule registered triggers for next day', () => {
-			let rescheduleAction: Action;
-			timeTriggerScheduler
-				.setup(s => s.register(It.isAny()))
-				.callback((t: TimeTrigger) => {
-					if (!rescheduleAction) {
-						rescheduleAction = t.getAction();
-					}
-				});
-			sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
-			const triggers = registerEveryAstroTrigger();
-			timeTriggerScheduler.reset();
-
-			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-			// @ts-ignore
-			rescheduleAction.execute();
-
-			triggers.forEach(a => {
-				verifyRegisterTimeTrigger(
-					a[1].getHours(),
-					a[1].getMinutes(),
-					[a[1].getDay()],
-					`TimeTriggerForAstroTrigger:${a[0].getId()}`,
-				);
-			});
-			timeTriggerScheduler.verify(s => s.register(It.isAny()), Times.exactly(3));
-			getTimesMock.verify(g => g(It.isAny(), It.isAny(), It.isAny()), Times.exactly(6));
+			timeTriggerScheduler.verify((s) => s.register(It.isAny()), Times.once());
 		});
 
 		it('should unregister scheduled triggers from yesterday', () => {
 			let rescheduleAction: Action;
 			timeTriggerScheduler
-				.setup(s => s.register(It.isAny()))
+				.setup((s) => s.register(It.is((t) => t.getId() === 'AstroTriggerScheduler-Rescheduler')))
 				.callback((t: TimeTrigger) => {
 					if (!rescheduleAction) {
 						rescheduleAction = t.getAction();
 					}
 				});
-			sut = new AstroTriggerScheduler(timeTriggerScheduler.object, getTimesMock.object, coordinate);
-			const triggers = registerEveryAstroTrigger();
+			const sunriseDate = new Date();
+			sunriseDate.setMinutes(sunriseDate.getMinutes() + 1);
+			setupGetTimes(({ sunrise: sunriseDate } as any) as GetTimesResult);
+			const trigger = new AstroTriggerBuilder()
+				.setId('1')
+				.setAstroTime(AstroTime.Sunrise)
+				.setShift(0)
+				.setWeekdays(AllWeekdays)
+				.setAction(actionMock.object)
+				.build();
+
+			sut = new AstroTriggerScheduler(
+				timeTriggerScheduler.object,
+				getTimesMock.object,
+				coordinate,
+				logMock.object,
+			);
+			sut.register(trigger);
 			timeTriggerScheduler.reset();
 
 			// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 			// @ts-ignore
 			rescheduleAction.execute();
 
-			triggers.forEach(a => {
-				verifyUnRegisterTimeTrigger(
-					a[1].getHours(),
-					a[1].getMinutes(),
-					[a[1].getDay()],
-					`TimeTriggerForAstroTrigger:${a[0].getId()}`,
-				);
-			});
-			timeTriggerScheduler.verify(s => s.unregister(It.isAny()), Times.exactly(3));
+			verifyUnRegisterTimeTrigger(
+				sunriseDate.getHours(),
+				sunriseDate.getMinutes(),
+				[sunriseDate.getDay()],
+				`TimeTriggerForAstroTrigger:${trigger.getId()}`,
+			);
+			timeTriggerScheduler.verify((s) => s.unregister(It.isAny()), Times.once());
 		});
-
-		function registerEveryAstroTrigger(): [AstroTrigger, Date][] {
-			const sunriseDate = new Date();
-			sunriseDate.setHours(sunriseDate.getHours() + 1);
-			const noonDate = new Date(sunriseDate);
-			noonDate.setHours(noonDate.getMinutes() + 1);
-			const sunsetDate = new Date(noonDate);
-			sunsetDate.setHours(sunsetDate.getMinutes() + 1);
-			setupGetTimes(({ sunrise: sunriseDate, sunset: sunsetDate, solarNoon: noonDate } as any) as GetTimesResult);
-			const builder = new AstroTriggerBuilder()
-				.setShift(0)
-				.setWeekdays(AllWeekdays)
-				.setAction(actionMock.object);
-			const trigger1 = builder
-				.setId('1')
-				.setAstroTime(AstroTime.Sunrise)
-				.build();
-			const trigger2 = builder
-				.setId('2')
-				.setAstroTime(AstroTime.Sunset)
-				.build();
-			const trigger3 = builder
-				.setId('3')
-				.setAstroTime(AstroTime.SolarNoon)
-				.build();
-			sut.register(trigger1);
-			sut.register(trigger2);
-			sut.register(trigger3);
-			return [
-				[trigger1, sunriseDate],
-				[trigger2, sunsetDate],
-				[trigger3, noonDate],
-			];
-		}
 	});
 
 	function setupGetTimes(result: GetTimesResult) {
 		getTimesMock
-			.setup(g =>
+			.setup((g) =>
 				g(
-					It.is<Date>(d => verifyDate(d, new Date())),
+					It.is<Date>((d) => verifyDate(d, new Date())),
 					It.isValue(coordinate.getLatitude()),
 					It.isValue(coordinate.getLongitude()),
 				),
 			)
-			.returns(_ => result);
+			.returns((_) => result);
 	}
 
 	function verifyRegisterTimeTrigger(hour: number, minute: number, weekdays: Weekday[], id: string) {
 		timeTriggerScheduler.verify(
-			s =>
+			(s) =>
 				s.register(
-					It.is<TimeTrigger>(t => {
+					It.is<TimeTrigger>((t) => {
 						return (
 							t.getHour() === hour &&
 							t.getMinute() === minute &&
 							t.getWeekdays().length === weekdays.length &&
-							t.getWeekdays().every(w => weekdays.indexOf(w) !== -1) &&
+							t.getWeekdays().every((w) => weekdays.indexOf(w) !== -1) &&
 							t.getId() === id
 						);
 					}),
@@ -462,14 +420,14 @@ describe('AstroTriggerScheduler', () => {
 
 	function verifyUnRegisterTimeTrigger(hour: number, minute: number, weekdays: Weekday[], id: string) {
 		timeTriggerScheduler.verify(
-			s =>
+			(s) =>
 				s.unregister(
-					It.is<TimeTrigger>(t => {
+					It.is<TimeTrigger>((t) => {
 						return (
 							t.getHour() === hour &&
 							t.getMinute() === minute &&
 							t.getWeekdays().length === weekdays.length &&
-							t.getWeekdays().every(w => weekdays.indexOf(w) !== -1) &&
+							t.getWeekdays().every((w) => weekdays.indexOf(w) !== -1) &&
 							t.getId() === id
 						);
 					}),

@@ -36,3 +36,7 @@ admin/i18n
 
 # maintenance scripts
 maintenance/**
+
+iobroker-container-data/
+docker-compose.yml
+deploy-docker.sh

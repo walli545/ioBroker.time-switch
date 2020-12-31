@@ -45,13 +45,17 @@ describe('OnOffScheduleSerializer', () => {
 			const schedule = new OnOffSchedule(onAction, offAction, triggerScheduler.object);
 			schedule.setName('Test Schedule');
 			schedule.setEnabled(true);
+
+			const wantOnActionSerialized = actionSerializer.serialize(onAction);
+			const wantOffActionSerialized = actionSerializer.serialize(offAction);
+
 			const result = sut.serialize(schedule);
 			const json = JSON.parse(result);
 			expect(json.type).to.equal('OnOffSchedule');
 			expect(json.name).to.equal('Test Schedule');
 			expect(json.enabled).to.be.undefined; // Is in another state
-			expect(json.onAction).to.deep.equal(JSON.parse(actionSerializer.serialize(onAction)));
-			expect(json.offAction).to.deep.equal(JSON.parse(actionSerializer.serialize(offAction)));
+			expect(json.onAction).to.deep.equal(JSON.parse(wantOnActionSerialized));
+			expect(json.offAction).to.deep.equal(JSON.parse(wantOffActionSerialized));
 			expect(json.triggers.length).to.equal(0);
 		});
 
@@ -74,13 +78,17 @@ describe('OnOffScheduleSerializer', () => {
 				.build();
 			schedule.addTrigger(t1);
 			schedule.addTrigger(t2);
+
+			const wantOnActionSerialized = actionSerializer.serialize(onAction);
+			const wantOffActionSerialized = actionSerializer.serialize(offAction);
+
 			const result = sut.serialize(schedule);
 			const json = JSON.parse(result);
 			expect(json.type).to.equal('OnOffSchedule');
 			expect(json.name).to.equal('New Schedule');
 			expect(json.enabled).to.be.undefined; // Is in another state
-			expect(json.onAction).to.deep.equal(JSON.parse(actionSerializer.serialize(onAction)));
-			expect(json.offAction).to.deep.equal(JSON.parse(actionSerializer.serialize(offAction)));
+			expect(json.onAction).to.deep.equal(JSON.parse(wantOnActionSerialized));
+			expect(json.offAction).to.deep.equal(JSON.parse(wantOffActionSerialized));
 			checkSerializedTimeTrigger(json.triggers[0], t1);
 			checkSerializedTimeTrigger(json.triggers[1], t2);
 			expect(json.triggers[0].action).to.deep.equal({ type: 'OnOffStateAction', name: 'On' });
@@ -222,6 +230,50 @@ describe('OnOffScheduleSerializer', () => {
 				"offAction": ${actionSerializer.serialize(offAction)},
 			}`;
 			expect(() => sut.deserialize(serialized)).to.throw();
+		});
+	});
+
+	describe('getTriggerSerializer', () => {
+		it('should return a trigger serializer that replaces OnOffActions with references when serializing', () => {
+			const schedule = new OnOffSchedule(onAction, offAction, triggerScheduler.object);
+			schedule.setEnabled(false);
+			const t1 = new TimeTriggerBuilder()
+				.setId('1')
+				.setHour(10)
+				.setMinute(15)
+				.setWeekdays([1, 2, 6])
+				.setAction(onAction)
+				.build();
+
+			const result = sut.getTriggerSerializer(schedule).serialize(t1);
+			const json = JSON.parse(result);
+			checkSerializedTimeTrigger(json, t1);
+			expect(json.action).to.deep.equal({ type: 'OnOffStateAction', name: 'On' });
+		});
+
+		it('should return a trigger serializer that replaces OnOffActions with references when deserializing', () => {
+			const schedule = new OnOffSchedule(onAction, offAction, triggerScheduler.object);
+			schedule.setEnabled(false);
+			const t1 = {
+				type: 'TimeTrigger',
+				id: '0',
+				hour: 13,
+				minute: 33,
+				weekdays: [1, 2, 3],
+				action: { type: 'OnOffStateAction', name: 'Off' },
+			};
+
+			const result = sut.getTriggerSerializer(schedule).deserialize(JSON.stringify(t1));
+			checkDeserializedTimeTrigger(result as TimeTrigger, t1);
+			expect(result.getAction()).to.equal(schedule.getOffAction());
+		});
+
+		it('throws when schedule is undefined', () => {
+			expect(() => sut.getTriggerSerializer(undefined as any)).to.throw();
+		});
+
+		it('throws when schedule is null', () => {
+			expect(() => sut.getTriggerSerializer(null as any)).to.throw();
 		});
 	});
 

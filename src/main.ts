@@ -1,24 +1,27 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from '@iobroker/adapter-core';
-import { IoBrokerStateService } from './services/IoBrokerStateService';
-import { TimeTriggerScheduler } from './scheduler/TimeTriggerScheduler';
-import { TimeTriggerSerializer } from './serialization/TimeTriggerSerializer';
-import { Trigger } from './triggers/Trigger';
-import { UniversalTriggerScheduler } from './scheduler/UniversalTriggerScheduler';
+import { cancelJob, scheduleJob } from 'node-schedule';
+import { getTimes } from 'suncalc';
 import { Action } from './actions/Action';
+import { Condition } from './actions/conditions/Condition';
+import { Coordinate } from './Coordinate';
+import { AstroTriggerScheduler } from './scheduler/AstroTriggerScheduler';
+import { TimeTriggerScheduler } from './scheduler/TimeTriggerScheduler';
+import { UniversalTriggerScheduler } from './scheduler/UniversalTriggerScheduler';
+import { Schedule } from './schedules/Schedule';
+import { AstroTriggerSerializer } from './serialization/AstroTriggerSerializer';
+import { ConditionActionSerializer } from './serialization/ConditionActionSerializer';
+import { StringStateAndConstantConditionSerializer } from './serialization/conditions/StringStateAndConstantConditionSerializer';
+import { StringStateAndStateConditionSerializer } from './serialization/conditions/StringStateAndStateConditionSerializer';
+import { OnOffScheduleSerializer } from './serialization/OnOffScheduleSerializer';
+import { OnOffStateActionSerializer } from './serialization/OnOffStateActionSerializer';
+import { TimeTriggerSerializer } from './serialization/TimeTriggerSerializer';
 import { UniversalSerializer } from './serialization/UniversalSerializer';
 import { IoBrokerLoggingService } from './services/IoBrokerLoggingService';
+import { IoBrokerStateService } from './services/IoBrokerStateService';
 import { MessageService } from './services/MessageService';
-import { Schedule } from './schedules/Schedule';
-import { OnOffStateActionSerializer } from './serialization/OnOffStateActionSerializer';
-import { OnOffStateActionBuilder } from './actions/OnOffStateActionBuilder';
-import { OnOffScheduleSerializer } from './serialization/OnOffScheduleSerializer';
-import { cancelJob, scheduleJob } from 'node-schedule';
-import { AstroTriggerSerializer } from './serialization/AstroTriggerSerializer';
-import { AstroTriggerScheduler } from './scheduler/AstroTriggerScheduler';
-import { getTimes } from 'suncalc';
-import { Coordinate } from './Coordinate';
+import { Trigger } from './triggers/Trigger';
 
 // Augment the adapter.config object with the actual types
 declare global {
@@ -40,11 +43,6 @@ export class TimeSwitch extends utils.Adapter {
 
 	private coordinate: Coordinate | undefined;
 
-	private actionSerializer = new UniversalSerializer<Action>([new OnOffStateActionSerializer(this.stateService)]);
-	private triggerSerializer = new UniversalSerializer<Trigger>([
-		new TimeTriggerSerializer(this.actionSerializer),
-		new AstroTriggerSerializer(this.actionSerializer),
-	]);
 	private messageService: MessageService | undefined;
 
 	public constructor(options: Partial<utils.AdapterOptions> = {}) {
@@ -79,36 +77,33 @@ export class TimeSwitch extends utils.Adapter {
 		const record = await this.getStatesAsync(`time-switch.${this.instance}.*.data`);
 		for (const id in record) {
 			const state = record[id];
-			this.log.debug(`got state: ${state ? state.toString() : 'null'}`);
+			this.log.debug(`got state: ${state ? state.toString() : 'null'} with id: ${id}`);
 			if (state) {
-				const schedule = (await this.createNewOnOffScheduleSerializer()).deserialize(state.val as string);
-				const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
-				if (enabledState) {
-					schedule.setEnabled(enabledState.val as boolean);
-					this.scheduleIdToSchedule.set(id, schedule);
-				} else {
-					this.log.error(`Could not retrieve state enabled state for ${id}`);
-				}
+				this.onScheduleChange(id, state.val as string);
 			} else {
 				this.log.error(`Could not retrieve state for ${id}`);
 			}
 		}
-		this.subscribeStates('*');
-		this.subscribeForeignObjects('system.config');
+		this.subscribeStates(`time-switch.${this.instance}.*`);
 	}
 
 	/**
 	 * Is called when adapter shuts down - callback has to be called under any circumstances!
 	 */
 	private onUnload(callback: () => void): void {
+		this.log.info('cleaning everything up...');
 		try {
 			for (const id in this.scheduleIdToSchedule.keys()) {
-				this.scheduleIdToSchedule.get(id)?.destroy();
+				try {
+					this.scheduleIdToSchedule.get(id)?.destroy();
+				} catch (e) {
+					this.logError(e);
+				}
 			}
 			this.scheduleIdToSchedule.clear();
-			this.log.info('cleaned everything up...');
-			callback();
 		} catch (e) {
+			this.logError(e);
+		} finally {
 			callback();
 		}
 	}
@@ -154,9 +149,7 @@ export class TimeSwitch extends utils.Adapter {
 				this.log.error('Message service not initialized');
 			}
 		} catch (e) {
-			this.log.error(e.stack);
-			this.log.error(e.message);
-			this.log.error(e.name);
+			this.logError(e);
 			this.log.error(`Could not handle message:`);
 		}
 	}
@@ -170,9 +163,7 @@ export class TimeSwitch extends utils.Adapter {
 			this.stateService,
 			this.loggingService,
 			this.scheduleIdToSchedule,
-			this.triggerSerializer,
-			this.actionSerializer,
-			await this.createNewOnOffScheduleSerializer(),
+			this.createNewOnOffScheduleSerializer.bind(this),
 		);
 	}
 
@@ -200,7 +191,7 @@ export class TimeSwitch extends utils.Adapter {
 			}
 		}
 		for (const i of statesInSettings.onOff) {
-			this.log.debug('Onoff state ' + i + 'not found, creating');
+			this.log.debug('Onoff state ' + i + ' not found, creating');
 			await this.createOnOffSchedule(i);
 		}
 	}
@@ -210,13 +201,6 @@ export class TimeSwitch extends utils.Adapter {
 	}
 
 	private async createOnOffSchedule(id: number): Promise<void> {
-		const builder = new OnOffStateActionBuilder()
-			.setOnValue(true)
-			.setOffValue(false)
-			.setStateService(this.stateService)
-			.setIdsOfStatesToSet(['default.state']);
-		const defOnAction = builder.setBooleanValue(true).build();
-		const defOffAction = builder.setBooleanValue(false).build();
 		await this.createDeviceAsync('onoff');
 		await this.createChannelAsync('onoff', id.toString());
 		await this.createStateAsync('onoff', id.toString(), 'data', {
@@ -227,8 +211,22 @@ export class TimeSwitch extends utils.Adapter {
 			def: `{
 				"type": "OnOffSchedule",
 				"name": "New Schedule",
-				"onAction": ${this.actionSerializer.serialize(defOnAction)},
-				"offAction": ${this.actionSerializer.serialize(defOffAction)},
+				"onAction": {
+					"type":"OnOffStateAction",
+					"valueType":"boolean",
+					"onValue":true,
+					"offValue":false,
+					"booleanValue":true,
+					"idsOfStatesToSet":["default.state"]
+					},
+				"offAction": {
+					"type":"OnOffStateAction",
+					"valueType":"boolean",
+					"onValue":true,
+					"offValue":false,
+					"booleanValue":false,
+					"idsOfStatesToSet":["default.state"]
+				},
 				"triggers":[]
 			}`.replace(/\s/g, ''),
 			desc: 'Contains the schedule data (triggers, etc.)',
@@ -246,30 +244,20 @@ export class TimeSwitch extends utils.Adapter {
 	private async onScheduleChange(id: string, scheduleString: string): Promise<void> {
 		this.log.debug('onScheduleChange: ' + scheduleString + ' ' + id);
 		this.log.debug('schedule found: ' + this.scheduleIdToSchedule.get(id));
-		const schedule = (await this.createNewOnOffScheduleSerializer()).deserialize(scheduleString);
-		const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
-		if (enabledState) {
-			this.scheduleIdToSchedule.get(id)?.destroy();
-			schedule.setEnabled(enabledState.val as boolean);
-			this.scheduleIdToSchedule.set(id, schedule);
-		} else {
-			this.log.error(`Could not retrieve state enabled state for ${id}`);
-		}
-	}
 
-	private async createNewOnOffScheduleSerializer(): Promise<OnOffScheduleSerializer> {
-		return new OnOffScheduleSerializer(
-			new UniversalTriggerScheduler([
-				new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
-				new AstroTriggerScheduler(
-					new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
-					getTimes,
-					await this.getCoordinate(),
-				),
-			]),
-			this.actionSerializer,
-			this.triggerSerializer,
-		);
+		try {
+			const schedule = (await this.createNewOnOffScheduleSerializer()).deserialize(scheduleString);
+			const enabledState = await this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
+			if (enabledState) {
+				this.scheduleIdToSchedule.get(id)?.destroy();
+				schedule.setEnabled(enabledState.val as boolean);
+				this.scheduleIdToSchedule.set(id, schedule);
+			} else {
+				this.log.error(`Could not retrieve state enabled state for ${id}`);
+			}
+		} catch (e) {
+			this.logError(e);
+		}
 	}
 
 	private async getCoordinate(): Promise<Coordinate> {
@@ -294,6 +282,41 @@ export class TimeSwitch extends utils.Adapter {
 				});
 			});
 		}
+	}
+
+	private logError(error: Error): void {
+		this.log.error(error.stack || `${error.name}: ${error.message}`);
+	}
+
+	private async createNewOnOffScheduleSerializer(): Promise<OnOffScheduleSerializer> {
+		const actionSerializer = new UniversalSerializer<Action>([new OnOffStateActionSerializer(this.stateService)]);
+		actionSerializer.useSerializer(
+			new ConditionActionSerializer(
+				new UniversalSerializer<Condition>([
+					new StringStateAndConstantConditionSerializer(this.stateService),
+					new StringStateAndStateConditionSerializer(this.stateService),
+				]),
+				actionSerializer,
+				this.loggingService,
+			),
+		);
+		const triggerSerializer = new UniversalSerializer<Trigger>([
+			new TimeTriggerSerializer(actionSerializer),
+			new AstroTriggerSerializer(actionSerializer),
+		]);
+		return new OnOffScheduleSerializer(
+			new UniversalTriggerScheduler([
+				new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
+				new AstroTriggerScheduler(
+					new TimeTriggerScheduler(scheduleJob, cancelJob, this.loggingService),
+					getTimes,
+					await this.getCoordinate(),
+					this.loggingService,
+				),
+			]),
+			actionSerializer,
+			triggerSerializer,
+		);
 	}
 }
 
