@@ -75,7 +75,7 @@ describe('OneTimeTrigger', () => {
 			const have = new OneTimeTriggerBuilder().setId('0').setAction(dummyAction).setDate(date).build();
 			expect(have.getId()).to.equal('0');
 			expect(have.getDate().getTime()).to.equal(date.getTime());
-			expect(have.getAction()).to.equal(dummyAction);
+			expect(have.getInternalAction()).to.equal(dummyAction);
 		});
 
 		it('returns copy of date on getDate() and stores copy on construct', () => {
@@ -89,8 +89,8 @@ describe('OneTimeTrigger', () => {
 			const sut = new OneTimeTriggerBuilder().setId('0').setAction(dummyAction).setDate(new Date()).build();
 			const newAction = TypeMoq.Mock.ofType<Action>().object;
 			sut.setAction(newAction);
-			expect(sut.getAction()).not.to.equal(dummyAction);
-			expect(sut.getAction()).to.equal(newAction);
+			expect(sut.getInternalAction()).not.to.equal(dummyAction);
+			expect(sut.getInternalAction()).to.equal(newAction);
 		});
 
 		it('setAction throws on undefined', () => {
@@ -123,6 +123,45 @@ describe('OneTimeTrigger', () => {
 			trigger.getAction().execute();
 
 			expect(executed).to.be.true;
+		});
+
+		it('calls onDestroy', () => {
+			let executed = false;
+			const testAction = {
+				execute: () => {
+					executed = true;
+				},
+			} as Action;
+
+			const onDestroyMock = TypeMoq.Mock.ofType<() => void>();
+			const trigger = new OneTimeTriggerBuilder()
+				.setId('0')
+				.setAction(testAction)
+				.setDate(new Date())
+				.setOnDestroy(onDestroyMock.object)
+				.build();
+
+			trigger.getAction().execute();
+
+			expect(executed).to.be.true;
+			onDestroyMock.verify((m) => m(), TypeMoq.Times.once());
+		});
+	});
+
+	describe('destroy', () => {
+		it('calls onDestroy', () => {
+			const testAction = TypeMoq.Mock.ofType<Action>();
+
+			const onDestroyMock = TypeMoq.Mock.ofType<() => void>();
+			const trigger = new OneTimeTriggerBuilder()
+				.setId('0')
+				.setAction(testAction.object)
+				.setDate(new Date())
+				.setOnDestroy(onDestroyMock.object)
+				.build();
+
+			trigger.getAction().execute();
+			onDestroyMock.verify((m) => m(), TypeMoq.Times.once());
 		});
 	});
 });

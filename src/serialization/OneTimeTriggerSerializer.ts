@@ -6,7 +6,10 @@ import { Serializer } from './Serializer';
 import { UniversalSerializer } from './UniversalSerializer';
 
 export class OneTimeTriggerSerializer implements Serializer<Trigger> {
-	constructor(private readonly actionSerializer: UniversalSerializer<Action>) {}
+	constructor(
+		private readonly actionSerializer: UniversalSerializer<Action>,
+		private readonly deleteTrigger?: (triggerId: string) => void,
+	) {}
 
 	public deserialize(stringToDeserialize: string): Trigger {
 		const json = JSON.parse(stringToDeserialize);
@@ -17,6 +20,11 @@ export class OneTimeTriggerSerializer implements Serializer<Trigger> {
 			.setAction(this.actionSerializer.deserialize(JSON.stringify(json.action)))
 			.setDate(new Date(Date.parse(json.date)))
 			.setId(json.id)
+			.setOnDestroy(() => {
+				if (this.deleteTrigger) {
+					this.deleteTrigger(json.id);
+				}
+			})
 			.build();
 	}
 
@@ -29,7 +37,7 @@ export class OneTimeTriggerSerializer implements Serializer<Trigger> {
 				type: this.getType(),
 				date: objectToSerialize.getDate().toISOString(),
 				id: objectToSerialize.getId(),
-				action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
+				action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getInternalAction())),
 			});
 		} else {
 			throw new Error('objectToSerialize must be of type OneTimeTrigger.');

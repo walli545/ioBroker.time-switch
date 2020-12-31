@@ -7,7 +7,7 @@ import { OneTimeTriggerScheduler } from '../../../src/scheduler/OneTimeTriggerSc
 import { LoggingService } from '../../../src/services/LoggingService';
 import { OneTimeTriggerBuilder } from '../../../src/triggers/OneTimeTriggerBuilder';
 
-describe('TimeTriggerScheduler', function () {
+describe('OneTimeTriggerScheduler', function () {
 	let action: TypeMoq.IMock<Action>;
 	let logger: TypeMoq.IMock<LoggingService>;
 	let scheduleJobMock: TypeMoq.IMock<(date: Date, callback: JobCallback) => Job>;
@@ -29,7 +29,11 @@ describe('TimeTriggerScheduler', function () {
 	describe('register', function () {
 		it('throws on registering same trigger twice', () => {
 			setUpScheduleJobToReturnAJob();
-			const trigger = new OneTimeTriggerBuilder().setId('0').setDate(new Date()).setAction(action.object).build();
+			const trigger = new OneTimeTriggerBuilder()
+				.setId('0')
+				.setDate(getFutureDate())
+				.setAction(action.object)
+				.build();
 
 			sut.register(trigger);
 			expect(() => sut.register(trigger)).to.throw();
@@ -37,14 +41,14 @@ describe('TimeTriggerScheduler', function () {
 
 		it('should schedule job on register', () => {
 			setUpScheduleJobToReturnAJob();
-			const date = new Date(1000);
+			const date = getFutureDate();
 			const trigger = new OneTimeTriggerBuilder().setId('0').setDate(date).setAction(action.object).build();
 			sut.register(trigger);
 			scheduleJobMock.verify(
 				(s) =>
 					s(
 						It.is<Date>((d) => {
-							expect(d.getTime()).to.equal(1000);
+							expect(d.getTime()).to.equal(date.getTime());
 							return true;
 						}),
 						It.isAny(),
@@ -56,7 +60,11 @@ describe('TimeTriggerScheduler', function () {
 
 		it('should call execute of action when on job callback', () => {
 			setUpScheduleJobToReturnAJob();
-			const trigger = new OneTimeTriggerBuilder().setId('0').setDate(new Date()).setAction(action.object).build();
+			const trigger = new OneTimeTriggerBuilder()
+				.setId('0')
+				.setDate(getFutureDate())
+				.setAction(action.object)
+				.build();
 			sut.register(trigger);
 			scheduleJobMock.verify(
 				(s) =>
@@ -73,18 +81,41 @@ describe('TimeTriggerScheduler', function () {
 			);
 			scheduleJobMock.verify((s) => s(It.isAny(), It.isAny()), Times.once());
 		});
+
+		it('should destroy trigger with date in the past', () => {
+			setUpScheduleJobToReturnAJob();
+			const date = getFutureDate(-20);
+			const onDestroyMock = TypeMoq.Mock.ofType<() => void>();
+			const trigger = new OneTimeTriggerBuilder()
+				.setId('0')
+				.setDate(date)
+				.setAction(action.object)
+				.setOnDestroy(onDestroyMock.object)
+				.build();
+			sut.register(trigger);
+			scheduleJobMock.verify((s) => s(It.isAny(), It.isAny()), Times.never());
+			onDestroyMock.verify((m) => m(), Times.once());
+		});
 	});
 
 	describe('unregister', () => {
 		it('throws on unregistering a not registered trigger', () => {
 			setUpScheduleJobToReturnAJob();
-			const trigger = new OneTimeTriggerBuilder().setId('0').setDate(new Date()).setAction(action.object).build();
+			const trigger = new OneTimeTriggerBuilder()
+				.setId('0')
+				.setDate(getFutureDate())
+				.setAction(action.object)
+				.build();
 			expect(() => sut.unregister(trigger)).to.throw();
 		});
 
 		it('should cancel job on unregister', () => {
 			const job = setUpScheduleJobToReturnAJob();
-			const trigger = new OneTimeTriggerBuilder().setId('0').setDate(new Date()).setAction(action.object).build();
+			const trigger = new OneTimeTriggerBuilder()
+				.setId('0')
+				.setDate(getFutureDate())
+				.setAction(action.object)
+				.build();
 			sut.register(trigger);
 			sut.unregister(trigger);
 			scheduleJobMock.verify((s) => s(It.isAny(), It.isAny()), Times.once());
@@ -98,14 +129,14 @@ describe('TimeTriggerScheduler', function () {
 			const job1 = setUpScheduleJobToReturnAJob();
 			const trigger1 = new OneTimeTriggerBuilder()
 				.setId('0')
-				.setDate(new Date(10))
+				.setDate(getFutureDate(10_000))
 				.setAction(action.object)
 				.build();
 			sut.register(trigger1);
 			const job2 = setUpScheduleJobToReturnAJob();
 			const trigger2 = new OneTimeTriggerBuilder()
 				.setId('1')
-				.setDate(new Date(20))
+				.setDate(getFutureDate(20_000))
 				.setAction(action.object)
 				.build();
 			sut.register(trigger2);
@@ -122,5 +153,9 @@ describe('TimeTriggerScheduler', function () {
 		const job = TypeMoq.Mock.ofType<Job>().object;
 		scheduleJobMock.setup((s) => s(It.isAny(), It.isAny())).returns((_) => job);
 		return job;
+	}
+
+	function getFutureDate(plus?: number): Date {
+		return new Date(new Date().getTime() + (plus ? plus : 1_000_000));
 	}
 });

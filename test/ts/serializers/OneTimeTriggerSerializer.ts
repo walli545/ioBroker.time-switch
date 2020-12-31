@@ -1,6 +1,7 @@
 import { fail } from 'assert';
 import { expect } from 'chai';
 import * as TypeMoq from 'typemoq';
+import { It, Times } from 'typemoq';
 import { Action } from '../../../src/actions/Action';
 import { OnOffStateAction } from '../../../src/actions/OnOffStateAction';
 import { OnOffStateActionBuilder } from '../../../src/actions/OnOffStateActionBuilder';
@@ -101,6 +102,21 @@ describe('OneTimeTriggerSerializer', () => {
 			} else {
 				fail(`Deserialization produced wrong action type`);
 			}
+		});
+
+		it('should deserialize and set onDestroy to call removeTrigger(id)', () => {
+			const removeTriggerMock = TypeMoq.Mock.ofType<(id: string) => void>();
+			const sut = new OneTimeTriggerSerializer(actionSerializer, removeTriggerMock.object);
+			const serialized = `{
+				"type": "${sut.getType()}",
+				"id": "0",
+				"date": "1970-01-01T00:00:00.100Z",
+				"action": ${onOffStateActionSerializer.serialize(onOffStateAction)}
+			}`;
+			const deserialized = sut.deserialize(serialized) as OneTimeTrigger;
+			removeTriggerMock.verify((r) => r(It.isValue('0')), Times.never());
+			deserialized.destroy();
+			removeTriggerMock.verify((r) => r(It.isValue('0')), Times.once());
 		});
 
 		it('throws when type is not OneTimeTrigger', () => {

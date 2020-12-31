@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OneTimeTrigger = void 0;
 class OneTimeTrigger {
-    constructor(id, action, date) {
+    constructor(id, action, date, onDestroy) {
         if (id == null) {
             throw new Error('Id may not be null or undefined.');
         }
@@ -15,9 +15,15 @@ class OneTimeTrigger {
         this.id = id;
         this.action = action;
         this.date = new Date(date);
+        this.onDestroy = onDestroy;
     }
     getAction() {
-        return this.action;
+        return {
+            execute: () => {
+                this.action.execute();
+                this.destroy();
+            },
+        };
     }
     setAction(action) {
         if (action == null) {
@@ -33,6 +39,14 @@ class OneTimeTrigger {
     }
     toString() {
         return `OneTimeTrigger {id=${this.getId()}, date=${this.getDate().toISOString()}}`;
+    }
+    getInternalAction() {
+        return this.action;
+    }
+    destroy() {
+        if (this.onDestroy) {
+            this.onDestroy();
+        }
     }
 }
 exports.OneTimeTrigger = OneTimeTrigger;

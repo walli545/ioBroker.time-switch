@@ -6,6 +6,7 @@ export class OneTimeTriggerBuilder implements Builder<OneTimeTrigger> {
 	private action: Action | null = null;
 	private id = '0';
 	private date: Date | null = null;
+	private onDestroy: (() => void) | null = null;
 
 	public setAction(action: Action): OneTimeTriggerBuilder {
 		this.action = action;
@@ -22,7 +23,12 @@ export class OneTimeTriggerBuilder implements Builder<OneTimeTrigger> {
 		return this;
 	}
 
+	public setOnDestroy(onDestroy: () => void): OneTimeTriggerBuilder {
+		this.onDestroy = onDestroy;
+		return this;
+	}
+
 	public build(): OneTimeTrigger {
-		return new OneTimeTrigger(this.id, this.action as any, this.date as any);
+		return new OneTimeTrigger(this.id, this.action as any, this.date as any, this.onDestroy);
 	}
 }

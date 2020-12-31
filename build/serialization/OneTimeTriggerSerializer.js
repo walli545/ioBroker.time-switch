@@ -4,8 +4,9 @@ exports.OneTimeTriggerSerializer = void 0;
 const OneTimeTrigger_1 = require("../triggers/OneTimeTrigger");
 const OneTimeTriggerBuilder_1 = require("../triggers/OneTimeTriggerBuilder");
 class OneTimeTriggerSerializer {
-    constructor(actionSerializer) {
+    constructor(actionSerializer, deleteTrigger) {
         this.actionSerializer = actionSerializer;
+        this.deleteTrigger = deleteTrigger;
     }
     deserialize(stringToDeserialize) {
         const json = JSON.parse(stringToDeserialize);
@@ -16,6 +17,11 @@ class OneTimeTriggerSerializer {
             .setAction(this.actionSerializer.deserialize(JSON.stringify(json.action)))
             .setDate(new Date(Date.parse(json.date)))
             .setId(json.id)
+            .setOnDestroy(() => {
+            if (this.deleteTrigger) {
+                this.deleteTrigger(json.id);
+            }
+        })
             .build();
     }
     serialize(objectToSerialize) {
@@ -27,7 +33,7 @@ class OneTimeTriggerSerializer {
                 type: this.getType(),
                 date: objectToSerialize.getDate().toISOString(),
                 id: objectToSerialize.getId(),
-                action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getAction())),
+                action: JSON.parse(this.actionSerializer.serialize(objectToSerialize.getInternalAction())),
             });
         }
         else {

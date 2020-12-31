@@ -7,6 +7,7 @@ class OneTimeTriggerBuilder {
         this.action = null;
         this.id = '0';
         this.date = null;
+        this.onDestroy = null;
     }
     setAction(action) {
         this.action = action;
@@ -20,8 +21,12 @@ class OneTimeTriggerBuilder {
         this.date = date;
         return this;
     }
+    setOnDestroy(onDestroy) {
+        this.onDestroy = onDestroy;
+        return this;
+    }
     build() {
-        return new OneTimeTrigger_1.OneTimeTrigger(this.id, this.action, this.date);
+        return new OneTimeTrigger_1.OneTimeTrigger(this.id, this.action, this.date, this.onDestroy);
     }
 }
 exports.OneTimeTriggerBuilder = OneTimeTriggerBuilder;

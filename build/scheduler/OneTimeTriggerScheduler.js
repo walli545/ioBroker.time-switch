@@ -15,24 +15,31 @@ class OneTimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         return OneTimeTrigger_1.OneTimeTrigger.prototype.constructor.name;
     }
     register(trigger) {
+        this.logger.logDebug(`Register trigger ${trigger}`);
         if (this.getAssociatedJob(trigger)) {
-            throw new Error('Trigger is already registered.');
+            throw new Error(`Trigger ${trigger} is already registered.`);
         }
-        this.logger.logDebug(`Scheduling trigger ${trigger}`);
-        const newJob = this.scheduleJob(trigger.getDate(), () => {
-            this.logger.logDebug(`Executing trigger ${trigger}`);
-            trigger.getAction().execute();
-        });
-        this.registered.push([trigger, newJob]);
+        if (trigger.getDate() < new Date()) {
+            this.logger.logDebug(`Date is in past, deleting trigger ${trigger}`);
+            trigger.destroy();
+        }
+        else {
+            const newJob = this.scheduleJob(trigger.getDate(), () => {
+                this.logger.logDebug(`Executing trigger ${trigger}`);
+                trigger.getAction().execute();
+            });
+            this.registered.push([trigger, newJob]);
+        }
     }
     unregister(trigger) {
+        this.logger.logDebug(`Unregister trigger ${trigger}`);
         const job = this.getAssociatedJob(trigger);
         if (job) {
             this.cancelJob(job);
             this.removeTrigger(trigger);
         }
         else {
-            throw new Error('Trigger is not registered.');
+            throw new Error(`Trigger ${trigger} is not registered.`);
         }
     }
     destroy() {
