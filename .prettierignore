@@ -2,3 +2,5 @@ package.json
 package-lock.json
 build/
 admin/words.js
+README.md
+io-package.json

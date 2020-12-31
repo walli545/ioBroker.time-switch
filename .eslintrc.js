@@ -4,7 +4,7 @@ module.exports = {
 		ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
 		sourceType: 'module', // Allows for the use of imports
 		project: './tsconfig.json',
-		createDefaultProgram: true
+		createDefaultProgram: true,
 	},
 	extends: [
 		'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
@@ -42,13 +42,16 @@ module.exports = {
 		'@typescript-eslint/no-non-null-assertion': 'off', // This is necessary for Map.has()/get()!
 		'no-var': 'error',
 		'prefer-const': 'error',
-		"prettier/prettier": ["error", {
-			"endOfLine":"auto"
-		}],
+		'prettier/prettier': [
+			'error',
+			{
+				endOfLine: 'auto',
+			},
+		],
 	},
 	overrides: [
 		{
-			files: ['*.test.ts'],
+			files: ['*.test.ts', 'widgets/**/*.js'],
 			rules: {
 				'@typescript-eslint/explicit-function-return-type': 'off',
 			},
