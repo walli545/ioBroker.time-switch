@@ -1,6 +1,6 @@
 {
   "name": "iobroker.time-switch",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Time based switching of devices",
   "author": {
     "name": "walli545",
@@ -37,7 +37,7 @@
     "@types/sinon-chai": "^3.2.5",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.8.1",

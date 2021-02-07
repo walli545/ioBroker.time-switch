@@ -34,6 +34,10 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
 
 ## Changelog
 
+### 2.2.1
+* (walli545)
+    * (Fix) Set js-controller dependency to >= 2.0.0
+
 ### 2.2.0
 * (walli545)
     * (New) Conditional triggers that only execute when a certain condition is met (#31)

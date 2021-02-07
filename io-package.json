@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "time-switch",
-        "version": "2.2.0",
+        "version": "2.2.1",
         "news": {
+            "2.2.1": {
+                "en": "Change js-controller dependency to >= 2.0.0",
+                "de": "js-controller Abhängigkeit auf >= 2.0.0 gesetzt",
+                "ru": "Измените зависимость js-контроллера на> = 2.0.0",
+                "pt": "Altere a dependência do js-controller para> = 2.0.0",
+                "nl": "Wijzig de afhankelijkheid van de js-controller in> = 2.0.0",
+                "fr": "Remplacez la dépendance js-controller par> = 2.0.0",
+                "it": "Cambia la dipendenza js-controller in> = 2.0.0",
+                "es": "Cambie la dependencia del controlador js a> = 2.0.0",
+                "pl": "Zmień zależność kontrolera js na> = 2.0.0",
+                "zh-cn": "将js-controller依赖项更改为> = 2.0.0"
+            },
             "2.2.0": {
                 "en": "Conditional trigger, fix for astro trigger and option to hide edit name button",
                 "de": "Bedingte Trigger, Fix für Astro Trigger und Option, den Button zum Ändern des Namens auszublenden.",
@@ -117,7 +129,7 @@
         "messagebox": true,
         "dependencies": [
             {
-                "js-controller": ">=1.4.2"
+                "js-controller": ">=2.0.0"
             },
             "vis"
         ]
