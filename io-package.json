@@ -132,7 +132,9 @@
                 "js-controller": ">=2.0.0"
             },
             "vis"
-        ]
+        ],
+        "connectionType": "local",
+        "dataSource": "push"
     },
     "native": {
         "schedules": {
