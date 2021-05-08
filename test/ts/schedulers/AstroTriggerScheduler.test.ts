@@ -321,7 +321,7 @@ describe('AstroTriggerScheduler', () => {
 	});
 
 	describe('reschedule', () => {
-		it('registers reschedule on 01:00', () => {
+		it('registers reschedule on 02:00', () => {
 			timeTriggerScheduler.reset();
 			sut = new AstroTriggerScheduler(
 				timeTriggerScheduler.object,
@@ -333,7 +333,7 @@ describe('AstroTriggerScheduler', () => {
 				(s) =>
 					s.register(
 						It.is<TimeTrigger>((t) => {
-							expect(t.getHour()).to.equal(1);
+							expect(t.getHour()).to.equal(2);
 							expect(t.getMinute()).to.equal(0);
 							expect(t.getWeekdays()).to.deep.equal(AllWeekdays);
 							expect(t.getId()).to.equal('AstroTriggerScheduler-Rescheduler');
