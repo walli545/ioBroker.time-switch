@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "time-switch",
-        "version": "2.2.2-pre.1",
+        "version": "2.2.2",
         "news": {
+            "2.2.2": {
+                "en": "Fix astro triggers not working after time change",
+                "de": "Fehler mit Astro Triggern nach Zeitumstellung behoben",
+                "ru": "Исправить астро-триггеры, не работающие после изменения времени",
+                "pt": "Corrigir os gatilhos do astro que não funcionam após a mudança de horário",
+                "nl": "Herstel van astro-triggers die niet werken na tijdverandering",
+                "fr": "Correction des déclencheurs astro ne fonctionnant pas après un changement d'heure",
+                "it": "Risolto il problema con i trigger astronomici che non funzionavano dopo il cambio di orario",
+                "es": "Se corrigieron los disparadores de astro que no funcionan después del cambio de hora",
+                "pl": "Napraw wyzwalacze astro, które nie działają po zmianie czasu",
+                "zh-cn": "修复astro触发器在时间更改后不起作用"
+            },
             "2.2.1": {
                 "en": "Change js-controller dependency to >= 2.0.0",
                 "de": "js-controller Abhängigkeit auf >= 2.0.0 gesetzt",
