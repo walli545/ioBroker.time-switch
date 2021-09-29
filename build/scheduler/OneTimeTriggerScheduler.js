@@ -21,7 +21,9 @@ class OneTimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         }
         if (trigger.getDate() < new Date()) {
             this.logger.logDebug(`Date is in past, deleting trigger ${trigger}`);
-            trigger.destroy();
+            setTimeout(() => {
+                trigger.destroy();
+            }, 2000);
         }
         else {
             const newJob = this.scheduleJob(trigger.getDate(), () => {
@@ -37,9 +39,6 @@ class OneTimeTriggerScheduler extends TriggerScheduler_1.TriggerScheduler {
         if (job) {
             this.cancelJob(job);
             this.removeTrigger(trigger);
-        }
-        else {
-            throw new Error(`Trigger ${trigger} is not registered.`);
         }
     }
     destroy() {

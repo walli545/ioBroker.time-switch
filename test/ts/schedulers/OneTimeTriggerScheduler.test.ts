@@ -82,7 +82,7 @@ describe('OneTimeTriggerScheduler', function () {
 			scheduleJobMock.verify((s) => s(It.isAny(), It.isAny()), Times.once());
 		});
 
-		it('should destroy trigger with date in the past', () => {
+		it('should destroy trigger with date in the past', (done) => {
 			setUpScheduleJobToReturnAJob();
 			const date = getFutureDate(-20);
 			const onDestroyMock = TypeMoq.Mock.ofType<() => void>();
@@ -93,20 +93,23 @@ describe('OneTimeTriggerScheduler', function () {
 				.setOnDestroy(onDestroyMock.object)
 				.build();
 			sut.register(trigger);
-			scheduleJobMock.verify((s) => s(It.isAny(), It.isAny()), Times.never());
-			onDestroyMock.verify((m) => m(), Times.once());
-		});
+			setTimeout(() => {
+				scheduleJobMock.verify((s) => s(It.isAny(), It.isAny()), Times.never());
+				onDestroyMock.verify((m) => m(), Times.once());
+				done();
+			}, 3_000);
+		}).timeout(3_100);
 	});
 
 	describe('unregister', () => {
-		it('throws on unregistering a not registered trigger', () => {
+		it('does nothing unregistering a not registered trigger', () => {
 			setUpScheduleJobToReturnAJob();
 			const trigger = new OneTimeTriggerBuilder()
 				.setId('0')
 				.setDate(getFutureDate())
 				.setAction(action.object)
 				.build();
-			expect(() => sut.unregister(trigger)).to.throw();
+			expect(() => sut.unregister(trigger)).not.to.throw();
 		});
 
 		it('should cancel job on unregister', () => {
