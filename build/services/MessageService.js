@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageService = void 0;
+const main_1 = require("../main");
+const OnOffSchedule_1 = require("../schedules/OnOffSchedule");
+const AstroTime_1 = require("../triggers/AstroTime");
+const AstroTriggerBuilder_1 = require("../triggers/AstroTriggerBuilder");
 const TimeTriggerBuilder_1 = require("../triggers/TimeTriggerBuilder");
 const Weekday_1 = require("../triggers/Weekday");
-const OnOffSchedule_1 = require("../schedules/OnOffSchedule");
-const main_1 = require("../main");
-const AstroTriggerBuilder_1 = require("../triggers/AstroTriggerBuilder");
-const AstroTime_1 = require("../triggers/AstroTime");
 class MessageService {
     constructor(stateService, logger, scheduleIdToSchedule, createOnOffScheduleSerializer) {
         this.stateService = stateService;
@@ -42,8 +42,11 @@ class MessageService {
                 case 'add-trigger':
                     yield this.addTrigger(schedule, data);
                     break;
+                case 'add-one-time-trigger':
+                    yield this.addOneTimeTrigger(schedule, data);
+                    break;
                 case 'update-trigger':
-                    yield this.updateTrigger(schedule, JSON.stringify(data.trigger));
+                    yield this.updateTrigger(schedule, JSON.stringify(data.trigger), data.dataId);
                     break;
                 case 'delete-trigger':
                     schedule.removeTrigger(data.triggerId);
@@ -69,7 +72,7 @@ class MessageService {
                     throw new Error('Unknown command received');
             }
             if (schedule instanceof OnOffSchedule_1.OnOffSchedule) {
-                yield this.stateService.setState(data.dataId, (yield this.createOnOffScheduleSerializer()).serialize(schedule));
+                yield this.stateService.setState(data.dataId, (yield this.createOnOffScheduleSerializer(data.dataId)).serialize(schedule));
             }
             else {
                 throw new Error('Cannot update schedule state after message, no serializer found for schedule');
@@ -92,8 +95,8 @@ class MessageService {
             throw new Error(`Cannot add trigger of type ${data.triggerType}`);
         }
         triggerBuilder.setWeekdays(Weekday_1.AllWeekdays).setId(this.getNextTriggerId(schedule.getTriggers()));
-        if (data.actionType === 'OnOffValueAction' && schedule instanceof OnOffSchedule_1.OnOffSchedule) {
-            this.logger.logDebug('Wants OnOffValueAction');
+        if (data.actionType === 'OnOffStateAction' && schedule instanceof OnOffSchedule_1.OnOffSchedule) {
+            this.logger.logDebug('Wants OnOffStateAction');
             triggerBuilder.setAction(schedule.getOnAction());
         }
         else {
@@ -101,11 +104,21 @@ class MessageService {
         }
         schedule.addTrigger(triggerBuilder.build());
     }
-    updateTrigger(schedule, triggerString) {
+    addOneTimeTrigger(schedule, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const t = JSON.parse(data.trigger);
+            t.id = this.getNextTriggerId(schedule.getTriggers());
+            const trigger = (yield this.createOnOffScheduleSerializer(data.dataId))
+                .getTriggerSerializer(schedule)
+                .deserialize(JSON.stringify(t));
+            schedule.addTrigger(trigger);
+        });
+    }
+    updateTrigger(schedule, triggerString, dataId) {
         return __awaiter(this, void 0, void 0, function* () {
             let updated;
             if (schedule instanceof OnOffSchedule_1.OnOffSchedule) {
-                updated = (yield this.createOnOffScheduleSerializer())
+                updated = (yield this.createOnOffScheduleSerializer(dataId))
                     .getTriggerSerializer(schedule)
                     .deserialize(triggerString);
             }

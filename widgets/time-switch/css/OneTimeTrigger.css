@@ -1,0 +1,101 @@
+@keyframes ripple {
+	0% {
+		box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0);
+	}
+	50% {
+		box-shadow: 0px 0px 0px 13px rgba(255, 255, 255, 0.1);
+	}
+	100% {
+		box-shadow: 0px 0px 0px 13px rgba(255, 255, 255, 0);
+	}
+}
+
+.container {
+	background: var(--ts-widget-trigger-bg-color, #272727);
+	border-radius: 3px;
+	padding: 10px 20px 10px 20px;
+	margin-top: 10px;
+	display: block;
+	align-items: center;
+}
+
+.validation-errors-container {
+	margin-top: 40px;
+	margin-bottom: 10px;
+	padding: 1px;
+	background-color: #cf6679;
+	border-radius: 3px;
+}
+
+.view .header {
+	display: flex;
+	width: 100%;
+}
+
+.view .header .trigger {
+	flex-grow: 3;
+	margin-left: 20px;
+}
+
+.time {
+	text-align: left;
+	color: var(--ts-widget-switched-time-fg-color, --ts-widget-fg-color);
+	font-size: var(--ts-widget-switched-time-font-size, 2em);
+	font-weight: bold;
+}
+
+.edit .header {
+	position: relative;
+	float: right;
+}
+
+.container.edit .action {
+	margin-left: 10px;
+}
+
+.container.edit .trigger {
+	margin: 10px;
+}
+
+.condition {
+	flex-direction: row;
+	display: flex;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-left: 10px;
+}
+
+.condition div {
+	margin-right: 20px;
+}
+
+/* Buttons */
+
+.button {
+	filter: var(--ts-widget-img-btn-filter, invert(1));
+	align-self: center;
+	cursor: pointer;
+}
+
+.button:active {
+	animation: ripple 0.2s linear forwards;
+}
+
+.button.delete {
+	margin-left: 10px;
+}
+
+.button.cancel {
+	margin-left: 10px;
+}
+
+input:invalid {
+	color: #cf6679;
+	border-color: #cf6679;
+	border-width: 3px;
+}
+
+input {
+	font-size: 1.2rem;
+	width: 40px;
+}
