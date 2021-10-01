@@ -1,6 +1,6 @@
 {
   "name": "iobroker.time-switch",
-  "version": "2.2.2",
+  "version": "2.3.0-pre.1",
   "description": "Time based switching of devices",
   "author": {
     "name": "walli545",

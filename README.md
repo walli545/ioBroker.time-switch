@@ -17,7 +17,8 @@
 This adapter allows the user to switch devices on and off using time schedules. 
 The schedules can be fully configured by a vis widget.
 One schedule switches one or more ioBroker states and consists of one or more triggers that define when and how the state should be switched. 
-It is possible to configure at which time and on which weekdays the trigger should be triggered. Astro triggers can also be created.
+It is possible to configure at which time and on which weekdays the trigger should be triggered. Astro triggers and one time countdown triggers
+can also be created.
 There can be custom on/off values also.
 In the widget the schedule can be disabled temporarily and the switched state can be controlled manually.
 
@@ -29,35 +30,39 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
      
 ## Possible features in the future
 
-- Countdown trigger
 - Switching of arbitrary values
 
 ## Changelog
-### 2.2.2
+
+### 2.3.0-pre.1 (2021-10-01)
+* (walli545)
+  * (New) One time triggers that can be set to execute once after hh:mm:ss
+  * (Test) Tested js-controller 3.3 and admin 5.x compatibility
+
+### 2.2.2 (2021-05-08)
 * (walli545)
   * (Fix) Astro triggers not executing after time change (#133)
   * (Fix) Set common.dataSource and common.connectionType in io-package.json (#135)
 
-
-### 2.2.1
+### 2.2.1 (2021-02-07)
 * (walli545)
     * (Fix) Set js-controller dependency to >= 2.0.0
 
-### 2.2.0
+### 2.2.0 (2020-12-31)
 * (walli545)
     * (New) Conditional triggers that only execute when a certain condition is met (#31)
     * (New) Option to hide edit name button in widget (#119)
     * (Fix) Astro triggers not executing on days after initial creation (#123)
     * (Fix) Improved error handling (#61)
 
-### 2.1.0
+### 2.1.0 (2020-07-03)
 * (walli545)
     * Added astro triggers which can trigger on sunrise, noon, sunset with +- 120 min offset (#30)
     * Added custom styling via css custom properties
     * Fixed a bug which lead to undefined button behaviour when the widget is used together with material design theme by Uhula (#62)
     * Changed state listening to be a be ack based and removed unused on object change listener (#6)
 
-### 2.0.0
+### 2.0.0 (2020-05-14)
 **Attention**: Due to breaking changes in the schedule data structure, schedules created with versions 1.x are not compatible with 2.x.
 
 *Before upgrading, remove all schedules in the instance settings and remove widgets in vis.*
@@ -69,13 +74,13 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
     * Added translations to widget (#35)
     * Fixed widget not working on Safari and fully browser
 
-### 1.1.0
+### 1.1.0 (2020-04-16)
 * (walli545) 
     * New option to hide switched oid in widget (#20)
     * Fixed admin page not working on Firefox (#18)
     * Showing full schedule oid in admin page (e.g. time-switch.0.schedule0 instead of schedule0).
 
-### 1.0.0
+### 1.0.0 (2020-03-22)
 * (walli545) initial release, features:
     * Admin settings to create schedules
     * vis widget to edit schedules and add actions

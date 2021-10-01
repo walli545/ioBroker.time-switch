@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "time-switch",
-        "version": "2.2.2",
+        "version": "2.3.0-pre.1",
         "news": {
+            "2.3.0-pre.1": {
+                "en": "One time trigger, tested js-controller 3.3 and admin 5.x compatibility",
+                "de": "Einmal Trigger, Kompatibilität mit js-controller 3.3 und Admin 5.x überprüft",
+                "ru": "Одноразовый триггер, проверена совместимость js-controller 3.3 и admin 5.x",
+                "pt": "Gatilho único, compatibilidade testada com js-controller 3.3 e admin 5.x",
+                "nl": "Eenmalige trigger, geteste js-controller 3.3 en admin 5.x-compatibiliteit",
+                "fr": "Déclencheur unique, compatibilité testée avec js-controller 3.3 et admin 5.x",
+                "it": "Trigger una tantum, testata js-controller 3.3 e compatibilità admin 5.x",
+                "es": "Disparador único, compatibilidad probada con js-controller 3.3 y admin 5.x",
+                "pl": "Jednorazowy wyzwalacz, przetestowana kompatybilność z kontrolerem js 3.3 i admin 5.x",
+                "zh-cn": "一次性触发器，测试 js-controller 3.3 和 admin 5.x 兼容性"
+            },
             "2.2.2": {
                 "en": "Fix astro triggers not working after time change",
                 "de": "Fehler mit Astro Triggern nach Zeitumstellung behoben",
