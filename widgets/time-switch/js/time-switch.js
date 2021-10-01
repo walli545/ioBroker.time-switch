@@ -1,7 +1,7 @@
 /*
 	ioBroker.vis time-switch Widget-Set
 
-	version: "2.2.2"
+	version: "2.3.0-pre.1"
 
 	Copyright 2019-2020 walli545 walli5446@gmail.com
 */
@@ -20,7 +20,7 @@ $.get('../time-switch.admin/words.js', function (script) {
 
 // export vis binds for widget
 vis.binds['time-switch'] = {
-	version: '2.2.2',
+	version: '2.3.0-pre.1',
 	showVersion: showVersion,
 	createOnOffWidget: createOnOffWidget,
 	onOffScheduleWidgets: {},
@@ -28,8 +28,11 @@ vis.binds['time-switch'] = {
 	onStateIdChange: onStateIdChange,
 	onConditionStateIdChange: onConditionStateIdChange,
 	getConditionStateIdsAndAlias: getConditionStateIdsAndAlias,
+	getElementNameForTriggerType: getElementNameForTriggerType,
+	getElementNameForActionType: getElementNameForActionType,
 	sendMessage: sendMessage,
 	translate: translate,
+	addConditionToAction: addConditionToAction,
 };
 vis.binds['time-switch'].showVersion();
 
@@ -145,4 +148,41 @@ function getConditionStateIdsAndAlias(widgetId) {
 		}
 	}
 	return ids;
+}
+
+function addConditionToAction(action, widgetId) {
+	if (action.type === 'OnOffStateAction') {
+		const conditionAction = {
+			type: 'ConditionAction',
+			condition: {
+				type: 'StringStateAndConstantCondition',
+				constant: 'true',
+				stateId: getConditionStateIdsAndAlias(widgetId)[0].id,
+				sign: '==',
+			},
+			action: action,
+		};
+		return conditionAction;
+	}
+	return null;
+}
+
+function getElementNameForTriggerType(type) {
+	if (type === 'TimeTrigger') {
+		return 'app-time-trigger';
+	} else if (type === 'AstroTrigger') {
+		return 'app-astro-trigger';
+	} else {
+		throw Error('No widget for trigger found');
+	}
+}
+
+function getElementNameForActionType(type) {
+	if (type === 'OnOffStateAction') {
+		return 'app-on-off-state-action';
+	} else if (type === 'ConditionAction') {
+		return 'app-condition-action';
+	} else {
+		throw Error('No widget for action found');
+	}
 }

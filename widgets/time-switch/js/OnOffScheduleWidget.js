@@ -16,7 +16,7 @@
 			if (this.connected) {
 				return;
 			}
-			this.sr.querySelector('#btn-add-trigger-dropdown').addEventListener('click', e => {
+			this.sr.querySelector('#btn-add-trigger-dropdown').addEventListener('click', (e) => {
 				const dropdown = this.sr.querySelector('#add-trigger-dropdown');
 				dropdown.classList.add('show');
 				e.stopImmediatePropagation();
@@ -30,6 +30,9 @@
 			});
 			this.sr.querySelector('#add-time-trigger').addEventListener('click', () => this.addTrigger('TimeTrigger'));
 			this.sr
+				.querySelector('#add-one-time-trigger')
+				.addEventListener('click', () => this.addTrigger('OneTimeTrigger'));
+			this.sr
 				.querySelector('#add-astro-trigger')
 				.addEventListener('click', () => this.addTrigger('AstroTrigger'));
 			this.sr.querySelector('.button.edit').addEventListener('click', this.onEditNameClick.bind(this));
@@ -38,7 +41,9 @@
 			this.sr.querySelector('button#manual-on').addEventListener('click', this.onManualClick.bind(this));
 			this.sr.querySelector('#enabled').addEventListener('click', () => {
 				this.enabled = !this.enabled;
-				vis.binds['time-switch'].sendMessage(this.enabled ? 'enable-schedule' : 'disable-schedule', { dataId: this.settings.dataId});
+				vis.binds['time-switch'].sendMessage(this.enabled ? 'enable-schedule' : 'disable-schedule', {
+					dataId: this.settings.dataId,
+				});
 			});
 			this.sr.querySelector('#manual').addEventListener('click', () => {
 				const toggle = this.sr.querySelector('#manual');
@@ -90,18 +95,27 @@
 		set triggers(triggers) {
 			this.currentTriggers = triggers;
 			const oldTriggers = this.sr.querySelector('.triggers');
+			const oneTimeTriggersInCreation = [];
 			while (oldTriggers.firstChild) {
-				oldTriggers.removeChild(oldTriggers.firstChild);
+				const t = oldTriggers.removeChild(oldTriggers.firstChild);
+				if (t.nodeName === 'APP-ONE-TIME-TRIGGER' && t.getAttribute('edit')) {
+					oneTimeTriggersInCreation.push(t);
+				}
 			}
-			triggers.forEach(t => {
-				const element = document.createElement('app-trigger-with-action');
+			oneTimeTriggersInCreation.forEach((t) => {
+				this.sr.querySelector(`.triggers`).appendChild(t);
+			});
+			triggers.forEach((t) => {
+				const element = document.createElement(
+					t.type === 'OneTimeTrigger' ? 'app-one-time-trigger' : 'app-trigger-with-action',
+				);
 				element.setAttribute('widgetid', this.widgetId);
 				element.setAttribute('action', JSON.stringify(t.action));
 				delete t.action;
 				element.setAttribute('trigger', JSON.stringify(t));
 				element.setAttribute('id', t.id);
-				element.addEventListener('delete', e => this.onTriggerDelete(e.detail.id));
-				element.addEventListener('update', e => this.onTriggerUpdate(e.detail.trigger));
+				element.addEventListener('delete', (e) => this.onTriggerDelete(e.detail.id));
+				element.addEventListener('update', (e) => this.onTriggerUpdate(e.detail.trigger));
 				this.sr.querySelector(`.triggers`).appendChild(element);
 			});
 		}
@@ -179,7 +193,7 @@
 			} else if (valueType === 'boolean') {
 				val = isOnClick;
 			}
-			stateIds.forEach(i => vis.conn.setState(i, val));
+			stateIds.forEach((i) => vis.conn.setState(i, val));
 		}
 
 		onTriggerDelete(triggerId) {
@@ -197,21 +211,15 @@
 		}
 
 		addTrigger(type) {
-			const message = {
-				dataId: this.settings.dataId,
-				triggerType: type,
-				actionType: 'OnOffValueAction',
-				valueType: this.settings.valueType,
-				stateIds: this.getStateIdsFromSettings(this.settings),
-			};
-			if (this.settings.valueType === 'number') {
-				message.onValue = Number.parseFloat(this.settings.onValue);
-				message.offValue = Number.parseFloat(this.settings.offValue);
-			} else if (this.settings.valueType === 'string') {
-				message.onValue = this.settings.onValue;
-				message.offValue = this.settings.offValue;
+			if (type === 'OneTimeTrigger') {
+				this.createOneTimeTrigger();
+			} else {
+				vis.binds['time-switch'].sendMessage('add-trigger', {
+					dataId: this.settings.dataId,
+					triggerType: type,
+					actionType: 'OnOffStateAction',
+				});
 			}
-			vis.binds['time-switch'].sendMessage('add-trigger', message);
 		}
 
 		updateStoredSettings(newSettings) {
@@ -279,6 +287,34 @@
 			return val;
 		}
 
+		createOneTimeTrigger() {
+			const trigger = document.createElement('app-one-time-trigger');
+			trigger.setAttribute('edit', true);
+			trigger.setAttribute('widgetid', this.getAttribute('widgetid'));
+			trigger.setAttribute(
+				'action',
+				JSON.stringify({
+					type: 'OnOffStateAction',
+					name: 'On',
+				}),
+			);
+			trigger.addEventListener('delete', (e) => this.onTriggerDelete(e.detail.id));
+			trigger.addEventListener('cancel-one-time-trigger-creation', (e) => {
+				const triggers = this.sr.querySelector(`.triggers`);
+				if (Array.from(triggers.children).find((element) => element === e.target)) {
+					triggers.removeChild(e.target);
+				}
+			});
+			trigger.addEventListener('create', (e) => {
+				console.log('got create, sending message');
+				vis.binds['time-switch'].sendMessage('add-one-time-trigger', {
+					dataId: this.settings.dataId,
+					trigger: JSON.stringify(e.detail.trigger),
+				});
+			});
+			this.sr.querySelector(`.triggers`).appendChild(trigger);
+		}
+
 		createShadowRoot() {
 			const shadowRoot = this.attachShadow({ mode: 'open' });
 			shadowRoot.innerHTML = `
@@ -324,6 +360,7 @@
 						  <div id="add-trigger-dropdown" class="dropdown-content">
 							<div class="dropdown-btn" id="add-time-trigger">${vis.binds['time-switch'].translate('addTimeTrigger')}</div>
 							<div class="dropdown-btn" id="add-astro-trigger">${vis.binds['time-switch'].translate('addAstroTrigger')}</div>
+							<div class="dropdown-btn" id="add-one-time-trigger">${vis.binds['time-switch'].translate('addOneTimeTrigger')}</div>
 						  </div>
 						</div>
 					</div>

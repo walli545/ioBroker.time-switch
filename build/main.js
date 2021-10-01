@@ -17,12 +17,14 @@ const node_schedule_1 = require("node-schedule");
 const suncalc_1 = require("suncalc");
 const Coordinate_1 = require("./Coordinate");
 const AstroTriggerScheduler_1 = require("./scheduler/AstroTriggerScheduler");
+const OneTimeTriggerScheduler_1 = require("./scheduler/OneTimeTriggerScheduler");
 const TimeTriggerScheduler_1 = require("./scheduler/TimeTriggerScheduler");
 const UniversalTriggerScheduler_1 = require("./scheduler/UniversalTriggerScheduler");
 const AstroTriggerSerializer_1 = require("./serialization/AstroTriggerSerializer");
 const ConditionActionSerializer_1 = require("./serialization/ConditionActionSerializer");
 const StringStateAndConstantConditionSerializer_1 = require("./serialization/conditions/StringStateAndConstantConditionSerializer");
 const StringStateAndStateConditionSerializer_1 = require("./serialization/conditions/StringStateAndStateConditionSerializer");
+const OneTimeTriggerSerializer_1 = require("./serialization/OneTimeTriggerSerializer");
 const OnOffScheduleSerializer_1 = require("./serialization/OnOffScheduleSerializer");
 const OnOffStateActionSerializer_1 = require("./serialization/OnOffStateActionSerializer");
 const TimeTriggerSerializer_1 = require("./serialization/TimeTriggerSerializer");
@@ -237,7 +239,7 @@ class TimeSwitch extends utils.Adapter {
             this.log.debug('onScheduleChange: ' + scheduleString + ' ' + id);
             this.log.debug('schedule found: ' + this.scheduleIdToSchedule.get(id));
             try {
-                const schedule = (yield this.createNewOnOffScheduleSerializer()).deserialize(scheduleString);
+                const schedule = (yield this.createNewOnOffScheduleSerializer(id)).deserialize(scheduleString);
                 const enabledState = yield this.getStateAsync(TimeSwitch.getEnabledIdFromScheduleId(id));
                 if (enabledState) {
                     (_a = this.scheduleIdToSchedule.get(id)) === null || _a === void 0 ? void 0 : _a.destroy();
@@ -280,7 +282,7 @@ class TimeSwitch extends utils.Adapter {
     logError(error) {
         this.log.error(error.stack || `${error.name}: ${error.message}`);
     }
-    createNewOnOffScheduleSerializer() {
+    createNewOnOffScheduleSerializer(dataId) {
         return __awaiter(this, void 0, void 0, function* () {
             const actionSerializer = new UniversalSerializer_1.UniversalSerializer([new OnOffStateActionSerializer_1.OnOffStateActionSerializer(this.stateService)]);
             actionSerializer.useSerializer(new ConditionActionSerializer_1.ConditionActionSerializer(new UniversalSerializer_1.UniversalSerializer([
@@ -290,10 +292,22 @@ class TimeSwitch extends utils.Adapter {
             const triggerSerializer = new UniversalSerializer_1.UniversalSerializer([
                 new TimeTriggerSerializer_1.TimeTriggerSerializer(actionSerializer),
                 new AstroTriggerSerializer_1.AstroTriggerSerializer(actionSerializer),
+                new OneTimeTriggerSerializer_1.OneTimeTriggerSerializer(actionSerializer, (triggerId) => {
+                    var _a;
+                    (_a = this.messageService) === null || _a === void 0 ? void 0 : _a.handleMessage({
+                        message: {
+                            dataId: dataId,
+                            triggerId: triggerId,
+                        },
+                        command: 'delete-trigger',
+                        from: 'time-switch.0',
+                    });
+                }),
             ]);
             return new OnOffScheduleSerializer_1.OnOffScheduleSerializer(new UniversalTriggerScheduler_1.UniversalTriggerScheduler([
                 new TimeTriggerScheduler_1.TimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService),
                 new AstroTriggerScheduler_1.AstroTriggerScheduler(new TimeTriggerScheduler_1.TimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService), suncalc_1.getTimes, yield this.getCoordinate(), this.loggingService),
+                new OneTimeTriggerScheduler_1.OneTimeTriggerScheduler(node_schedule_1.scheduleJob, node_schedule_1.cancelJob, this.loggingService),
             ]), actionSerializer, triggerSerializer);
         });
     }
