@@ -130,6 +130,7 @@
         "extIcon": "https://raw.githubusercontent.com/walli545/ioBroker.time-switch/master/admin/time-switch.png",
         "readme": "https://github.com/walli545/ioBroker.time-switch/blob/master/README.md",
         "loglevel": "info",
+        "tier": 2,
         "restartAdapters": [
             "vis"
         ],
