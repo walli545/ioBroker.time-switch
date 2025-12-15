@@ -124,7 +124,6 @@
         ],
         "license": "MIT",
         "platform": "Javascript/Node.js",
-        "main": "build/main.js",
         "icon": "time-switch.png",
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/walli545/ioBroker.time-switch/master/admin/time-switch.png",
