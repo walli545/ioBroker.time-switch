@@ -84,7 +84,7 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
 ## License
 MIT License
 
-Copyright (c) 2019-2021 walli545 <walli5446@gmail.com>
+Copyright (c) 2019-2026 walli545 <walli5446@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
