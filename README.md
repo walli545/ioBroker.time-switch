@@ -79,7 +79,8 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
 * (walli545) initial release, features:
     * Admin settings to create schedules
     * vis widget to edit schedules and add actions
-    
+
+[Older changelogs can be found there](CHANGELOG_OLD.md)
 
 ## License
 MIT License
