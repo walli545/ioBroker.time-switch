@@ -33,6 +33,10 @@ For setup instructions visit the [wiki](https://github.com/walli545/ioBroker.tim
 - Switching of arbitrary values
 
 ## Changelog
+
+### **WORK IN PROGRESS**
+- (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
+
 ### 2.2.2
 * (walli545)
   * (Fix) Astro triggers not executing after time change (#133)
